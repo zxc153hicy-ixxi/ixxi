@@ -67,6 +67,7 @@ ixxi/
 
 - **5 分钟上手**：从 clone 到跑通第一个 ingest，见 [GETTING-STARTED.md](GETTING-STARTED.md)。
 - **demo → 真实**：跑通演示后切换到你自己的真实数据（数据替换 / 场景注册 / skill 编写），见 [demo 到真实迁移指南](framework/docs/guides/demo到真实迁移指南.md)。
+- **维护者**：看懂每个目录 + 改什么跑什么 + 疏忽检查清单，见 [维护者手册](framework/docs/maintenance/维护者手册.md)。
 
 ## 核心判据
 
