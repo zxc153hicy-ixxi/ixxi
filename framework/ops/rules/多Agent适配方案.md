@@ -2,204 +2,91 @@
 tags: [规则, 设计]
 status: active
 confidence: high
-summary: 多 Agent 适配方案 v5——AGENT.md 为单一事实源，sync-agent-md.sh 直接复制同步，pre-commit hook 自动触发
+summary: 多 Agent 适配方案 v6——三层分离（能力/路由/适配）+ 三 agent 平等（Claude/Codex/Hermes 一等公民），6 个 sync 脚本 + parity 六项断言
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-08-14
 ---
 
-# 多 Agent 适配方案 v5
+# 多 Agent 适配方案 v6
 
-> **一句话**：AGENT.md 是单一事实源，改一处，脚本自动同步到所有 Agent。不翻译、不改编号、纯复制。
+> **一句话**：能力层 Agent 无关（权威源），路由层 Agent 无关（唯一），适配层每 agent 各用原生语法——三 agent 一等公民，谁来都能用得好，能力不缩水。
 
----
-
-## 一、模型
+## 一、三层分离（平等的地基）
 
 ```
-AGENT.md（人编辑，单一事实源，Agent 无关用语）
-      │
-      ▼
-sync-agent-md.sh（纯复制，零翻译）
-      │
-      ├──→ CLAUDE.md（自动生成，AUTO 区）
-      └──→ HERMES.md（自动生成，AUTO 区）
-```
-
-**与 v4 的关键差异**：
-
-| | v4 | v5 |
-|------|------|------|
-| 事实源 | CLAUDE.md | **AGENT.md**（新建） |
-| 同步方式 | Python 脚本逐段解析 + 翻译映射表 | Shell 脚本纯复制 |
-| 编号处理 | G→H 前缀替换 | **不变**，G 就是 G |
-| 命令处理 | slash command → terminal 命令映射 | 不翻译，操作体系本身是脚本驱动的 |
-| 代码量 | ~150 行 Python | ~20 行 Shell |
-| 出错点 | 翻译表遗漏、前缀改漏、映射错位 | **零**（无翻译环节） |
-
----
-
-## 二、AGENT.md 内容
-
-### 2.1 来源
-
-基于当前 CLAUDE.md（V4.2.0），做 7 处措辞调整——去 Claude 特定用语：
-
-| # | 行 | 旧 | 新 |
-|:---:|:---:|------|------|
-| 1 | 27 | Claude Code 原生默认行为 | **Agent** 原生默认行为 |
-| 2 | 29 | Claude Code 默认行为 | **Agent** 默认行为 |
-| 3 | 40 | 备份当前 CLAUDE.md | 备份当前 **AGENT.md** |
-| 4 | 42 | CLAUDE.md↔log.md一致性 | **AGENT.md**↔log.md一致性 |
-| 5 | 43 | 直接编辑 CLAUDE.md | 直接编辑 **AGENT.md** |
-| 6 | 102 | CLAUDE.md 总上限 | **AGENT.md** 总上限 |
-| 7 | 121 | 人直接编辑 CLAUDE.md | 人直接编辑 **AGENT.md** |
-
-其余内容完全不变：G1-G17 编号不动、T 层路由表不动、规则优先级不变。
-
-### 2.2 Agent 无关性分析
-
-逐段排查当前 CLAUDE.md，确定哪些需改才能放入 AGENT.md：
-
-| 段落 | 当前写法 | 需改？ | 说明 |
-|------|------|:---:|------|
-| G1-G17 约束 | 已通用（权限、确认、去噪、语言……） | 否 | 对任何 Agent 适用 |
-| 规则优先级声明 | 「覆盖 Claude Code 原生默认行为」 | **是** | →「覆盖 Agent 原生默认行为」 |
-| T 层路由表 | 全部路径引用（`ops/rules/`） | 否 | 路径对两个 Agent 相同 |
-| 扩展系统路由 | `.claude/kb/skills/` 等 | 否 | Hermes 能读同一文件系统 |
-| R 层、行数管控 | 纯规则 | 否 | — |
-| 核心操作 | `/check`、`/ingest` 等功能描述 | 否 | 操作体系是脚本驱动的，slash command 只是 Claude Code 入口语法，Hermes 用 terminal 命令跑同样脚本 |
-| 关键耦合点、安全 | 通用 | 否 | — |
-
-**结论**：90% 内容无需改动。
-
-### 2.3 操作可执行性
-
-所有操作背后均有实际脚本或流程：
-
-| 操作 | 实际执行内容 | 可执行方式 |
-|------|------|------|
-| `/check` | 调用 `check-*.py`（9 个 active）+ 内联 bash/python + LLM 判断，55 项 | `知识库检查体系.md` 逐项写了命令 |
-| `/ingest` | 10 步流水线（0→9） | `Ingest完整流程.md` 步骤 0-9 |
-| `/health` | 汇总最近检查报告的评分快照 | 公式在检查体系 H1 |
-| `/dedup` | `check-links.py --mode broken` + `--mode index` | 合并自两脚本 |
-| `/conflict` | 按 `矛盾消解流程.md` 裁决 | 有完整流程文档 |
-| `/compact` | 按行数管控的四维评分精简 | 规则在 AGENT.md 正文 |
-| `kb-do.sh` | 原子操作脚本 | `ops/scripts/kb-do.sh` 已建 |
-
-### 2.4 Skill 系统
-
-`.claude/kb/skills/` 下有 56 个 SKILL.md（内部 12 + 外部 44）。Hermes 可从同一路径加载。G17 的「Skill 自动调度」描述的是调度逻辑，与具体加载机制无关。
-
----
-
-## 三、同步脚本：`sync-agent-md.sh`
-
-### 3.1 逻辑（~20 行）
-
-```
-读 AGENT.md
-    │
-    ├──→ 覆盖 CLAUDE.md 的 AUTO 区（AGENT.md 完整内容）
-    │    保留 CLAUDE.md 底部 MANUAL 区（如有）
-    │
-    └──→ 覆盖 HERMES.md 的 AUTO 区（AGENT.md 完整内容）
-          保留 HERMES.md 底部 MANUAL 区（如有）
-```
-
-### 3.2 目标文件结构
-
-```markdown
-<!-- AUTO START — 由 sync-agent-md.sh 从 AGENT.md 生成，勿手动编辑 -->
-（AGENT.md 完整内容，包括 G1-G17、T 层路由、核心操作等全部段落）
-<!-- AUTO END -->
-
-<!-- MANUAL START — 本 Agent 专属配置，脚本不覆盖 -->
-（Claude 或 Hermes 各自的专属内容）
-<!-- MANUAL END -->
-```
-
-### 3.3 触发方式
-
-| 时机 | 方式 |
-|------|------|
-| `git commit`（AGENT.md 在暂存区） | **自动**：pre-commit hook 检测 → 跑脚本 → `git add` 目标文件 |
-| 手动触发 | `bash engine/scripts/sync-agent-md.sh` |
-| `/check` 检测 | 新增检查项：对比 AGENT.md ↔ CLAUDE.md ↔ HERMES.md 的 AUTO 区 hash，不一致告警 |
-
----
-
-## 四、pre-commit hook 改动
-
-在现有 `.git/hooks/pre-commit` 中，在 CLAUDE.md 检测**之前**插入：
-
-```bash
-# AGENT.md 变更 → 自动同步到 CLAUDE.md + HERMES.md
-if git diff --cached --name-only | grep -q "AGENT.md"; then
-  bash engine/scripts/sync-agent-md.sh
-  git add CLAUDE.md HERMES.md
-  echo "✅ AGENT.md → CLAUDE.md + HERMES.md 已同步"
-fi
-```
-
-插入位置在 CLAUDE.md 检测之前的理由：`sync-agent-md.sh` 会更新 CLAUDE.md，同步后的 CLAUDE.md 继续走原有 tag+log 验证逻辑。
-
-### 完整链路
-
-```
-人编辑 AGENT.md → git add → git commit
-                                │
-                    pre-commit 钩子触发
-                                │
-                    检测到 AGENT.md 在暂存区
-                                │
-                    跑 sync-agent-md.sh
-                                │
-                    git add CLAUDE.md HERMES.md（自动暂存）
-                                │
-                    继续现有检查（tag + log.md 验证）
-                                │
-                    全部通过 → 提交
-```
-
----
-
-## 五、回流通路
-
-Hermes 新增约束的回流：
-
-```
-Hermes 会话中提议新约束
-        │
+能力层 Capability（Agent 无关，单一事实源，唯一）
+  SKILL.md 权威源 / ops/rules/ / engine+ops scripts /
+  .claude/kb/agents/registry.json / .claude/kb/hooks/（git 层）
         ▼
-人确认"值得加"
-        │
+路由层 Routing（Agent 无关，唯一）
+  skill调度注册表.md —— 任务→能力匹配，同一套逻辑三 agent 共用
         ▼
-人编辑 AGENT.md（走 G 层修改流程）
-        │
-        ▼
-git commit → pre-commit 自动同步到 CLAUDE.md + HERMES.md
+适配层 Adaptation（每 agent 原生加载通道，只此层有差异）
+  Claude: .claude/skills/kb-* + .claude/agents/*.md + settings.json hooks
+  Codex : .agents/skills/ + .codex/agents/*.toml + .codex/hooks
+  Hermes: SKILL.md 原生直读 + ops/hermes/命令索引（脚本生成）
 ```
 
-AGENT.md 始终是唯一编辑入口。不存在双向冲突。
+**平等的地基定义**：对任意能力 C，三 agent 的适配层都能**完整加载** C，加载方式各用各的原生语法，但加载到的内容是**同一个**（同一份 SKILL.md、同一个脚本、同一份规则文件）。
 
----
+## 二、能力路由（可达性，替代降级翻译表）
 
-## 六、实施清单
+对每个能力给三列路由，**三列地位相等**，Hermes 列不是「降级产物」而是「Hermes 原生方式」：
 
-| # | 任务 | 产出 | 破坏性 |
-|:---:|------|------|:---:|
-| 1 | 新建 `AGENT.md` | 基于 CLAUDE.md + 7 处措辞调整 | 无 |
-| 2 | 改写 `CLAUDE.md` | 顶部加注释 + AUTO/MANUAL 区标记 | 极低 |
-| 3 | 新建 `engine/scripts/sync-agent-md.sh` | ~20 行 Shell 脚本 | 无 |
-| 4 | 修改 `.git/hooks/pre-commit` | 插入 AGENT.md 检测段 | 中 |
-| 5 | 更新 `多Agent适配方案.md`（本文件） | 替换为 v5 | 无 |
+| 能力 | Claude 原生访问 | Codex 原生访问 | Hermes 原生访问 |
+|---|---|---|---|
+| 契约 + 路由 | CLAUDE.md AUTO 区 | AGENTS.md AUTO 区 | HERMES.md AUTO 区（G 编号不变） |
+| 内部管理 skill（15） | `Skill: kb-*`（一级平铺） | `Skill: kb-*`（.agents/skills/ 发现） | 直读 SKILL.md + 命令索引执行 |
+| 外部领域 skill（57） | `Skill: <name>`（_external 注入） | `Skill: <name>`（.agents/skills/ 镜像） | 直读 SKILL.md，纯流程型无需命令即完整 |
+| 审查团（15） | `.claude/agents/*.md` 原生 subagent | `.codex/agents/*.toml` 原生 agent | 读 registry.json 提示调度 |
+| 自动化强制 | settings.json gate | .codex/hooks + git pre-commit | git pre-commit 委托链共享 + 脚本直跑 |
+| 机械脚本 | find + Bash 跑 engine/scripts/ | 同左 | 同左（零翻译） |
 
----
+> **可达性 ≠ 等价性**：LLM 非确定性下「行为等价」不可验证。parity 只校验「可达性」（能力能否被该 agent 调用），不承诺「等价性」。平等是治理原则（一等公民、能力透明、差异可见），不是「实现完全相同」的技术约束。
+
+## 三、同步脚本（6 个，能力层 → 适配层）
+
+| 脚本 | 权威源 → 适配层 |
+|---|---|
+| `sync-agent-md.sh` | AGENT.md → CLAUDE/HERMES/AGENTS（AUTO 区） |
+| `sync-skills-to-claude.py` | .claude/kb/skills → .claude/skills/kb-*（平铺） |
+| `sync-skills-to-codex.py` | .claude/kb/skills + _external → .agents/skills（镜像） |
+| `sync-skills-to-hermes.py` | 同上 → ops/hermes/Hermes-命令索引.md（脚本生成） |
+| `sync-agents-to-claude.py` | .claude/kb/agents → .claude/agents/*.md（原生 subagent） |
+| `sync-agents-to-codex.py` | .claude/kb/agents → .codex/agents/*.toml（原生 agent） |
+
+**适配层产物不入 git**：`.claude/skills/kb-*/`、`.agents/`、`.claude/agents/` 由 sync 脚本从能力层生成，`.gitignore` 排除；clone 后跑 sync 重新生成。权威源（能力层）是唯一 git 版本化的 skill/agent 定义。
+
+## 四、能力不缩水验证（check-skill-parity.py）
+
+对每个 skill 六项断言（P1-P6）：
+
+| 断言 | 检查 | 失败含义 |
+|---|---|---|
+| P1 权威源 | 能力层 SKILL.md 存在 | 能力层缺源 |
+| P2 Claude 可达 | .claude/skills/ 平铺或 _external 注入存在 | Claude 缩水 |
+| P3 Codex 可达 | .agents/skills/ 镜像存在 | Codex 缩水 |
+| P4 Hermes 可达 | Hermes-命令索引.md 含条目且非「不运行」 | Hermes 缩水 |
+| P5 引用资源 | SKILL.md 引用脚本/规则文件存在 | 能力层断链 |
+| P6 注册表覆盖 | skill调度注册表.md 三列均有条目 | 路由层缺列 |
+
+运行：`python engine/scripts/check-skill-parity.py`，六项全过 = 能力不缩水。
+
+## 五、各 agent 适配层要点
+
+- **Claude**：`.claude/agents/*.md` 启用原生 subagent（工具权限隔离）；MANUAL 区声明 statusline 与敏感降级通道。
+- **Codex**：`.codex/agents/*.toml` 原生 agent；`.agents/skills/` 仓库级发现；hooks 以 git pre-commit 委托链落实机械验证。
+- **Hermes**：SKILL.md 原生直读（文件系统共享，非 Claude 专属）+ 命令索引执行脚本；自动化等价物 = git pre-commit 委托链 + 脚本直跑（不引入事件 hook 的虚假对等承诺）。
+
+## 六、敏感内容与自动化边界声明
+
+- **敏感内容**：本地 LLM 适合敏感内容，云端 LLM 仅非敏感。敏感内容降级通道 = 本地 Hermes 原生占优，云端 Claude/Codex 处理时跳过或移交本地——诚实声明为「共享分工」，非能力缩水。
+- **自动化边界**：事件 hooks、原生 subagent 为 Claude/Codex 引擎原生；Hermes 的自动化等价物 = git pre-commit 委托链（护栏效果一致）+ 脚本直跑。明确标注「机制不同，能力等价」，不给虚假对等承诺。
 
 ## 七、关联
 
-- `AGENT.md` —— 单一事实源（待建）
-- `CLAUDE.md` —— Claude Code 指令文件（AUTO 区由脚本维护）
-- `HERMES.md` —— Hermes 指令文件（待建，AUTO 区由脚本维护）
-- [[知识库检查体系]] —— `/check` 将新增 AUTO 区 hash 比对项
-- [[ops/rules/版本管理规范]] —— G 层修改流程（编辑目标改为 AGENT.md）
+- `AGENT.md` —— 契约单一事实源
+- `skill调度注册表.md` —— 路由层单一事实源
+- `Hermes-命令索引.md` —— Hermes 适配层命令索引（脚本生成）
+- [[知识库检查体系]] —— /check 纳入 parity 检查项
+- [[ops/rules/版本管理规范]] —— G 层修改流程（编辑目标 = AGENT.md）

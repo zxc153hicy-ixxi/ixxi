@@ -22,5 +22,10 @@ description: Use when executing /promote or the user says "promote" "升级" "�
 3. 输出《升层候选清单》
 4. 逐条走 G 层修改流程确认
 
+## 硬闸门（不可跳过）
+- 晋升必须走 G 层修改流程确认，禁止直接改
+- 候选需 ≥3 次人类确认，不足不提名
+- 纯机械操作 → 否决晋升，改用脚本/技术强制
+
 ## 降级
 直接检查 ops/rules/ 触发记录
