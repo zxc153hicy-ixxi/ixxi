@@ -1,0 +1,188 @@
+#!/bin/bash
+# ixxi init —— 一键把 clone 下来的 ixxi 变成你自己的实例
+#
+# 问 3 个问题（agent / 数据目录 / hooks），自动完成：
+#   1. 挂 upstream（framework 作为上游依赖，供后续 pull 更新）
+#   2. 生成 personal 骨架（个人数据层，.gitignore 已排除）
+#   3. 按 agent 选择跑 sync 脚本（生成适配层）
+#   4. 激活 git hooks 护栏（可选）
+#
+# 用法：./ixxi init
+set -e
+
+REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
+FRAMEWORK="$REPO_ROOT/framework"
+
+echo "╔══════════════════════════════════════╗"
+echo "║  ixxi init —— 变成你自己的实例        ║"
+echo "╚══════════════════════════════════════╝"
+echo ""
+echo "framework 是开源通用层（机制），personal 是你的私有实例层（数据）。"
+echo "本脚本生成 personal 骨架 + 适配层，个人数据永不进 framework。"
+echo ""
+
+# ── Q1: 用哪个 Agent ──────────────────────────────
+echo "Q1. 你主要用哪个 Agent？"
+echo "  1) Claude Code（默认）  2) Codex  3) Hermes  4) 全部"
+read -r -p "选择 [1-4，默认 1]: " agent_choice
+agent_choice="${agent_choice:-1}"
+case "$agent_choice" in
+  2) AGENTS="codex" ;;
+  3) AGENTS="hermes" ;;
+  4) AGENTS="all" ;;
+  *) AGENTS="claude" ;;
+esac
+echo "  → $AGENTS"
+echo ""
+
+# ── Q2: 数据放哪 ──────────────────────────────────
+read -r -p "Q2. 个人数据目录名 [默认 personal]: " personal_dir
+personal_dir="${personal_dir:-personal}"
+PERSONAL="$REPO_ROOT/$personal_dir"
+echo "  → $personal_dir/"
+echo ""
+
+# ── Q3: 是否启用 hooks ────────────────────────────
+read -r -p "Q3. 是否启用 git hooks 护栏 [默认 y]？[y/n]: " enable_hooks
+enable_hooks="${enable_hooks:-y}"
+echo "  → $([ "$enable_hooks" = "y" ] && echo "启用" || echo "跳过")"
+echo ""
+
+echo "── 开始初始化 ──"
+echo ""
+
+# ── 1. 挂 upstream ────────────────────────────────
+if git -C "$REPO_ROOT" remote | grep -q "^upstream$"; then
+  echo "✓ upstream 已存在，跳过"
+elif git -C "$REPO_ROOT" remote | grep -q "^origin$"; then
+  git -C "$REPO_ROOT" remote rename origin upstream
+  echo "✓ origin → upstream（framework 作为上游依赖，pull 拉更新）"
+else
+  echo "⚠ 未检测到 remote，跳过挂 upstream（可手动 git remote add upstream <framework-url>）"
+fi
+
+# ── 2. 生成 personal 骨架 ─────────────────────────
+if [ -d "$PERSONAL" ]; then
+  echo "✓ $personal_dir/ 已存在，跳过骨架生成"
+else
+  mkdir -p "$PERSONAL/.claude/skills/personal"
+  mkdir -p "$PERSONAL/ops/patterns" "$PERSONAL/ops/anti-patterns" "$PERSONAL/ops/rules" "$PERSONAL/ops/queries"
+  mkdir -p "$PERSONAL/knowledge/projects" "$PERSONAL/knowledge/learning" "$PERSONAL/knowledge/archive"
+  mkdir -p "$PERSONAL/raw/feedback" "$PERSONAL/raw/sessions" "$PERSONAL/raw/inbox"
+
+  # 占位文件
+  cat > "$PERSONAL/README.md" <<'EOF'
+# personal 实例层
+
+本目录是你自己的数据层（私有，.gitignore 排除，不随 framework 开源）。
+
+- `knowledge/` —— 你的项目、学习笔记、归档
+- `ops/patterns/` + `ops/anti-patterns/` —— 你的正/反模式沉淀
+- `raw/` —— 原始输入（feedback / sessions / inbox）
+- `用户画像.md` —— 你的输出偏好与沟通风格（绝不导出）
+- `scene-registry.md` —— 你的场景注册数据
+EOF
+
+  cat > "$PERSONAL/index.md" <<'EOF'
+# 实例导航
+
+本导航 = framework 导航 + 你的个人扩展节点。
+
+## 个人项目
+<!-- 在此登记你的项目入口 -->
+
+## 个人学习
+<!-- 在此登记你的学习领域 -->
+
+## 个人沉淀
+- 正模式：ops/patterns/
+- 反模式：ops/anti-patterns/
+EOF
+
+  cat > "$PERSONAL/AGENT.md" <<'EOF'
+# 实例契约
+
+本文件 = framework 契约（AGENT.md）+ 你的个人覆盖层（语言偏好、本地知识优先、个人场景规则等）。
+
+<!-- 在此追加你的个人规则，如语言偏好、领域习惯 -->
+EOF
+
+  cat > "$PERSONAL/用户画像.md" <<'EOF'
+---
+status: active
+summary: 个人画像——输出偏好、沟通风格、决策模式（绝不导出）
+created: 2026-08-14
+---
+
+# 用户画像
+
+<!-- 填写你的偏好，例如：
+## 沟通风格
+- 回复语言：中文
+- 措辞：大白话，比例约 70%
+## 学习模式
+- 操作前先解释
+- 给选项等拍板
+## 术语
+- 避免自造词
+-->
+EOF
+
+  cat > "$PERSONAL/scene-registry.md" <<'EOF'
+# 场景注册表（数据）
+
+> schema 见 framework/engine/config/scene-registry-schema.md。
+
+| 编号 | 场景名 | 状态 | 场景描述 | 主要目录 | 创建时间 |
+|------|------|------|------|------|------|
+| （自填） | （自填） | active | （自填） | （自填） | （自填） |
+EOF
+
+  : > "$PERSONAL/queue.md"
+  : > "$PERSONAL/log.md"
+  echo "✓ personal 骨架已生成（$personal_dir/）"
+fi
+
+# ── 3. 跑 sync 脚本（生成适配层）──────────────────
+cd "$FRAMEWORK"
+case "$AGENTS" in
+  claude)
+    python engine/scripts/sync-skills-to-claude.py >/dev/null 2>&1 && echo "✓ Claude 适配层已生成（kb-* 平铺）"
+    python engine/scripts/sync-agents-to-claude.py >/dev/null 2>&1 && echo "✓ Claude subagent 已生成"
+    ;;
+  codex)
+    python engine/scripts/sync-skills-to-codex.py --target=repo >/dev/null 2>&1 && echo "✓ Codex 适配层已生成（.agents/skills）"
+    python engine/scripts/sync-agents-to-codex.py >/dev/null 2>&1 && echo "✓ Codex agent 已生成"
+    ;;
+  hermes)
+    python engine/scripts/sync-skills-to-hermes.py >/dev/null 2>&1 && echo "✓ Hermes 命令索引已生成"
+    ;;
+  all)
+    python engine/scripts/sync-skills-to-claude.py >/dev/null 2>&1 && echo "✓ Claude 适配层已生成"
+    python engine/scripts/sync-skills-to-codex.py --target=repo >/dev/null 2>&1 && echo "✓ Codex 适配层已生成"
+    python engine/scripts/sync-skills-to-hermes.py >/dev/null 2>&1 && echo "✓ Hermes 命令索引已生成"
+    python engine/scripts/sync-agents-to-claude.py >/dev/null 2>&1 && echo "✓ Claude subagent 已生成"
+    python engine/scripts/sync-agents-to-codex.py >/dev/null 2>&1 && echo "✓ Codex agent 已生成"
+    ;;
+esac
+
+# ── 4. 激活 hooks ──────────────────────────────────
+if [ "$enable_hooks" = "y" ]; then
+  if [ -f "$FRAMEWORK/core/hooks/git/pre-commit" ]; then
+    cp "$FRAMEWORK/core/hooks/git/pre-commit" "$REPO_ROOT/.git/hooks/pre-commit" 2>/dev/null && \
+      chmod +x "$REPO_ROOT/.git/hooks/pre-commit" 2>/dev/null
+    echo "✓ git pre-commit 护栏已激活（core/hooks/git/pre-commit）"
+  else
+    echo "⚠ 未找到 pre-commit 钩子，跳过（core/hooks/git/pre-commit）"
+  fi
+fi
+
+echo ""
+echo "╔══════════════════════════════════════╗"
+echo "║  ✅ init 完成                          ║"
+echo "╚══════════════════════════════════════╝"
+echo ""
+echo "下一步："
+echo "  1. 按 GETTING-STARTED.md 跑通第一个 ingest（入库 → 体检 → 检索）"
+echo "  2. 把资料放进 $personal_dir/，开始使用"
+echo "  3. framework 更新时：git pull upstream"
