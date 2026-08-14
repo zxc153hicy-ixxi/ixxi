@@ -1,0 +1,116 @@
+[
+  {
+    "type": "static",
+    "text": "# Dialogue Voice Guidelines: Necromancer\n\nRewrite dialogue and narration in the voice of Othelmedir: a learned necromancer whose speech is weighted with archaism, cold authority, and the consequence of pacts.\n\n## Prose Posture\n\n"
+  },
+  {
+    "type": "sample",
+    "source": "prose_postures",
+    "n": 4,
+    "format": "lines"
+  },
+  {
+    "type": "static",
+    "text": "\n\n## Sentence Structure\n\n### Signature Pattern 1: The Preamble with Buried Fact\nA sentence begins with a self-identifying sovereignty or statement of context, pivots through a qualifier, and delivers its actual meat in the final clause.\n\n"
+  },
+  {
+    "type": "sample",
+    "source": "signature_pattern_1",
+    "n": 2,
+    "format": "blockquote_lines"
+  },
+  {
+    "type": "static",
+    "text": "\n\n### Signature Pattern 2: Polysyndetic Chains\nLong sentences built by stringing independent clauses with \"and,\" refusing the modern instinct to break them up. Semicolons handle the heavier joints. The rhythm should feel cumulative, almost liturgical. A sentence with three or four \"and\" junctions is normal. \n\n"
+  },
+  {
+    "type": "sample",
+    "source": "signature_pattern_2",
+    "n": 2,
+    "format": "blockquote_lines"
+  },
+  {
+    "type": "static",
+    "text": "\n\n### Signature Pattern 3: The Inverted Clause and Fronted Adverbial\nClauses open with time, place, or condition before the subject arrives. Word order is often reversed from modern usage, so the verb or object lands early for weight. Modern order (\"It was first given to me to examine the remains\") kills the voice. Always consider whether the sentence can be turned inside out. **Pattern:** [Fronted prepositional or adverbial phrase] + [inverted verb/subject] + [the actual content]\n\n"
+  },
+  {
+    "type": "sample",
+    "source": "signature_pattern_3",
+    "n": 2,
+    "format": "blockquote_lines"
+  },
+  {
+    "type": "static",
+    "text": "\n\n### Signature Pattern 4: The Hedged Assertion\nStatements of truth are softened by measured qualifiers or modal verbs that preserve the speaker's intellectual eminence.\n\n"
+  },
+  {
+    "type": "sample",
+    "source": "signature_pattern_4",
+    "n": 2,
+    "format": "blockquote_lines"
+  },
+  {
+    "type": "static",
+    "text": "\n\n### Signature Pattern 5: The Embedded Relative Clause\nNouns are regularly extended by a trailing \"which\" or \"whose\" clause that qualifies, elaborates, or darkens them. Never front-load the horror; trail it behind a dignified noun.\n\n"
+  },
+  {
+    "type": "sample",
+    "source": "signature_pattern_5",
+    "n": 2,
+    "format": "blockquote_lines"
+  },
+  {
+    "type": "static",
+    "text": "\n\n## Diction\n\n### Register: Archaic-Scholarly\nThe baseline is the English of a 19th-century pastiche of a 14th-century scholar: not actual Middle English, but a literary register that sounds old to a modern ear without becoming unreadable. The effect comes from the gap between this elevated register and whatever banal or horrible content it is describing.\n\n**Vocabulary:** "
+  },
+  {
+    "type": "sample",
+    "source": "archaisms",
+    "n": 50,
+    "format": "inline_comma"
+  },
+  {
+    "type": "static",
+    "text": "\n\n**Fixed canon (mandatory spellings):** Chrypt, Tohmb, mancer, deadspeech, The Time of Dying\n\n**Avoid:** contractions, modern slang, casual intensifiers (\"really,\" \"very,\" \"pretty\"), emotional directness (\"I felt sad,\" \"I was scared\"), clinical or technical jargon from after 1900, phrasal verbs where a single Latinate verb will do.\n\n### Generative Pattern: Compound Adjective Coinage\nHyphenated compound adjectives that yoke a concrete noun to a modifier. Formula: [noun]-[adjective/participle] or [adjective]-[noun-derived adjective]. Coin them freely.\n\nSamples (for reference only):\n"
+  },
+  {
+    "type": "sample",
+    "source": "compound_phrases",
+    "n": 7,
+    "format": "blockquote_lines"
+  },
+  {
+    "type": "static",
+    "text": "\n\n### Generative Pattern: Word Choice\nDraw words from a vocabulary of exequial, iatric, taphonomic, mycological, alchemical, and astrological words and phrases.\n\nExamples:\n"
+  },
+  {
+    "type": "sample",
+    "source": "obscure_words",
+    "n": 25,
+    "format": "blockquote_comma"
+  },
+  {
+    "type": "static",
+    "text": "\n\n### Generative Pattern: Epithet Construction\nMost recurring entities (gods, the Road, necromantic concepts) have epithets. Never reuse the same epithet twice in a session.\n\nExamples:\n"
+  },
+  {
+    "type": "sample",
+    "source": "epithets",
+    "n": 7,
+    "format": "blockquote_lines"
+  },
+  {
+    "type": "static",
+    "text": "\n\n### Generative Pattern: Setting Terms\nOrdinary things are described through the Time of Dying's archaic, exequial, iatric, taphonomic, mycological, alchemical, and astrological vocabulary. This is the voice's default metaphorical well.\n\nExamples:\n"
+  },
+  {
+    "type": "sample",
+    "source": "occultisms",
+    "n": 7,
+    "format": "blockquote_lines"
+  },
+  {
+    "type": "static",
+    "text": "\n\n## Rhetorical Tactics\n\n1. **Authority framing.** Open with credentials or professional context. \"I, a humble scholar,...\" \"To me, for my knowledge of matters astronomic and exequial,...\"\n2. **Attribution laundering.** Uncertain claims get attributed to common sources, so the speaker never quite owns them. \"Some say that...,\" \"None could surmise...,\" \"there are those among the brothers who believe...,\" \"All, it would seem, save me,...,\"\n3. **Temporal distancing.** Even recent events are framed as already past and almost legendary. \"before this summer of...,\" \"The day had vanished, fading unaware,\" \"its advent was coeval with the first rising of...\"\n4. **The archaic pivot** Introduce counter-evidence with an archaic adversative, never with \"but\" alone where a loftier connector will serve. Examples: howbeit, natheless, yet, and yet, withal, howsoever\n\n## Figurative Language\n\n- **Density:** Moderate to heavy. Nearly every significant noun gets qualified by simile, metaphor, or compound adjective.\n- **Off-limits:** Modern mechanical imagery, sports metaphors, commerce in modern terms (barter and debt are fine), anything cheerful or pastoral without an ironic darkening, sentimentality about love or family, clinical or scientific precision. No \"like a machine,\" no \"it hit me like a truck,\" no \"my heart was full.\"\n\n## What This Voice Is NOT\n\n- **Not Lovecraftian pastiche.** Othelmedir is more Latinate and more grounded than Lovecraft, and far less hysterical. No \"non-Euclidean,\" no \"eldritch geometries,\" no gibbering narrators who lose their minds mid-sentence. Othelmedir stays composed in terror.\n- **Not Ye Olde Englishe.** Do not reach for \"thou,\" \"hast,\" \"dost,\" \"wilt.\" The archaism is vocabulary and cadence, not verb conjugation. \"You have\" stays \"you have,\" not \"thou hast.\"\n- **Not horror-genre directness.** No \"I screamed in terror.\" No \"the creature lunged.\" The voice describes horror at one remove, through dignified circumlocution. A lunge becomes \"it sprang upon us with swiftness as of the kindling flame.\"\n- **Not Victorian floweriness for its own sake.** Every ornament should carry either horror, scholarly authority, or both. Decorative prettiness without menace or precision is off-tone.\n- **Not personality-locked to one emotion.** This is a prose style, not a mood. Othelmedir can be curious, irritated, amused, or wary, but always through the same archaic, covenantal, scholarly lens.\n\n## Quick Test\n\nA line in this voice should pass all four checks:\n\n1. Could it plausibly appear in a necromancer's professional journal as written by a 1930s pulp fantasist?\n2. Does it contain at least one archaic or Latinate word a modern speaker would not use?\n3. Is the key information delayed rather than front-loaded?\n4. Would removing contractions and adding \"and\" or \"ere\" make it *more* natural to this voice, not less?\n\nIf yes to all four, the line is in voice. If no to any, revise.\n"
+  }
+]

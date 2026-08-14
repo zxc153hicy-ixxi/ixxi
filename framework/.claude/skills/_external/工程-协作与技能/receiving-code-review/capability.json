@@ -1,0 +1,12 @@
+{
+  "id": "receiving-code-review",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction"
+  ],
+  "provides": [
+    "code_review_receiving"
+  ],
+  "resources": []
+}

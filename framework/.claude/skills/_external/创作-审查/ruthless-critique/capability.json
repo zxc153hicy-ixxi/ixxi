@@ -1,0 +1,12 @@
+{
+  "id": "ruthless-critique",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction"
+  ],
+  "provides": [
+    "ruthless_critique"
+  ],
+  "resources": []
+}

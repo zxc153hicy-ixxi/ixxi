@@ -1,0 +1,31 @@
+# 版本清理配置
+# 默认保留最新 N 个版本（最新版 + N-1 个旧版）
+keep_latest: 2
+
+# 按 version_of 覆盖保留数
+# 键为 version_of 字段的值，值为保留数量
+per_chain:
+  ixxi-agent: 3
+  知识库方案: 1
+
+# 扫描路径（递归扫描 .md 文件）
+scan_paths:
+  - knowledge/
+  - raw/inbox/
+  - .inbox/
+
+# 排除路径（不扫描）
+exclude_paths:
+  - raw/sessions/
+  - raw/feedback/
+  - engine/
+  - .claude/
+  - .git/
+  - .inbox/sources/
+  - .inbox/_extracted/
+  - .inbox/_processed/
+  - .inbox/_failed/
+
+# 永不被清理的 version_of 值
+no_clean:
+  - 用户画像

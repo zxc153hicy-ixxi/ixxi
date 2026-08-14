@@ -1,0 +1,274 @@
+{
+  "_meta": {
+    "description": "Agent审查团注册表，curator统一管理",
+    "created": "2026-06-27",
+    "design_ref": "Hermes curator (background_review + auxiliary model + auto-transition)"
+  },
+  "agents": {
+    "draft-editor": {
+      "group": "content",
+      "stage": "in_use",
+      "tools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash",
+        "Grep",
+        "Glob"
+      ],
+      "description": "Prose editing specialist for reviewing and revising draft fiction",
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "fiction-tagger": {
+      "group": "content",
+      "stage": "in_use",
+      "tools": [
+        "WebSearch",
+        "WebFetch",
+        "Write",
+        "Read"
+      ],
+      "description": "Extract tags from fiction (games, books, films)",
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "lore-extractor": {
+      "group": "content",
+      "stage": "in_use",
+      "tools": [
+        "Glob",
+        "Grep",
+        "Read",
+        "Edit",
+        "Write",
+        "TodoWrite",
+        "AskUserQuestion",
+        "Skill"
+      ],
+      "description": "Extract setting-defining mythology and lore from fiction stories",
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "ruthless-pruner": {
+      "group": "content",
+      "stage": "in_use",
+      "tools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash",
+        "Grep",
+        "Glob"
+      ],
+      "description": "Aggressive prose pruner for tightening drafts",
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "text-trimmer": {
+      "group": "content",
+      "stage": "in_use",
+      "tools": [
+        "Glob",
+        "Grep",
+        "Read",
+        "Edit",
+        "Write",
+        "NotebookEdit",
+        "WebFetch",
+        "TodoWrite",
+        "WebSearch",
+        "AskUserQuestion",
+        "Skill"
+      ],
+      "description": "Compress and optimize text documents for LLM consumption",
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "security-agent": {
+      "group": "ops",
+      "stage": "startup",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "quality-agent": {
+      "group": "ops",
+      "stage": "startup",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash"
+      ],
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "pruner-agent": {
+      "group": "ops",
+      "stage": "in_use",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "mediator-agent": {
+      "group": "ops",
+      "stage": "in_use",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "userview-agent": {
+      "group": "user",
+      "stage": "startup",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "profile-agent": {
+      "group": "user",
+      "stage": "in_use",
+      "tools": [
+        "Read",
+        "Grep"
+      ],
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "learning-agent": {
+      "group": "user",
+      "stage": "mature",
+      "tools": [
+        "Read",
+        "Grep"
+      ],
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "architect-agent": {
+      "group": "design",
+      "stage": "mature",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash"
+      ],
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "forecaster-agent": {
+      "group": "design",
+      "stage": "mature",
+      "tools": [
+        "Read",
+        "Bash"
+      ],
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    },
+    "data-agent": {
+      "group": "design",
+      "stage": "mature",
+      "tools": [
+        "Read",
+        "Grep",
+        "Bash"
+      ],
+      "total_runs": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missed": 0,
+      "accuracy": null,
+      "last_run": null,
+      "reject_reasons": []
+    }
+  },
+  "temporary_agents": []
+}

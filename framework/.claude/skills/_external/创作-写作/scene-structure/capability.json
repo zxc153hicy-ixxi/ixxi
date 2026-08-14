@@ -1,0 +1,12 @@
+{
+  "id": "scene-structure-techniques",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction"
+  ],
+  "provides": [
+    "scene_structure"
+  ],
+  "resources": []
+}

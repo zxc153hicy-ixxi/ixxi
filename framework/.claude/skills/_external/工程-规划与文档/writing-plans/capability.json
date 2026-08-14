@@ -1,0 +1,13 @@
+{
+  "id": "writing-plans",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction",
+    "filesystem_write"
+  ],
+  "provides": [
+    "plan_writing"
+  ],
+  "resources": []
+}

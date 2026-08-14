@@ -1,0 +1,12 @@
+{
+  "id": "fiction-abstraction",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction"
+  ],
+  "provides": [
+    "fiction_abstraction"
+  ],
+  "resources": []
+}

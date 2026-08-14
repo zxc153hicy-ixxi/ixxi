@@ -1,0 +1,13 @@
+{
+  "id": "planning-with-files-es",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction",
+    "filesystem_write"
+  ],
+  "provides": [
+    "file_planning"
+  ],
+  "resources": []
+}

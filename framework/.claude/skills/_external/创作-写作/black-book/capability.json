@@ -1,0 +1,12 @@
+{
+  "id": "black-book",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction"
+  ],
+  "provides": [
+    "fiction_black_book"
+  ],
+  "resources": []
+}

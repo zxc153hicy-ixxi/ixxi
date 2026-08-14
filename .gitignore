@@ -1,0 +1,13 @@
+# ===== ixxi 私有层 =====
+# personal/ 是个人资产（数据 + 个人绑定 + 运行状态），绝不开源
+personal/
+
+# ===== 运行数据 =====
+__pycache__/
+*.pyc
+ocr-sources.json
+.DS_Store
+
+# ===== 个人配置 =====
+.claude/settings.json
+.claude/settings.local.json

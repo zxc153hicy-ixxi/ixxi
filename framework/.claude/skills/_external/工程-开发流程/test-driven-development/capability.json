@@ -1,0 +1,13 @@
+{
+  "id": "test-driven-development",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction",
+    "execute_script"
+  ],
+  "provides": [
+    "tdd"
+  ],
+  "resources": []
+}

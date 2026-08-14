@@ -1,0 +1,13 @@
+{
+  "id": "finishing-a-development-branch",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction",
+    "execute_script"
+  ],
+  "provides": [
+    "branch_finishing"
+  ],
+  "resources": []
+}

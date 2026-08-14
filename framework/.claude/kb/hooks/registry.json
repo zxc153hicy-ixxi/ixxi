@@ -1,0 +1,57 @@
+{
+  "_meta": {
+    "description": "钩子注册表，只管理纯机械操作，需语义判断的仍由LLM处理",
+    "created": "2026-06-27",
+    "updated": "2026-06-27"
+  },
+  "hooks": {
+    "stage-check": {
+      "trigger": "Stop",
+      "auto": true,
+      "script": "auto/stage-check.sh",
+      "description": "会话结束时自动检测阶段切换"
+    },
+    "version-check": {
+      "trigger": "pre-commit",
+      "auto": false,
+      "script": "gate/version-check.sh",
+      "description": "commit前检查版本一致性"
+    },
+    "deprecate-move": {
+      "trigger": "PostToolUse:Edit",
+      "auto": false,
+      "script": "gate/deprecate-move.sh",
+      "description": "编辑后检测是否有废弃文件未搬家"
+    },
+    "pattern-registration-check": {
+      "trigger": "PostToolUse:Edit/Write",
+      "auto": true,
+      "script": "gate/pattern-registration-check.sh",
+      "description": "新建/修改正反模式文件时检查是否登记 pattern-usage + 索引"
+    },
+    "script-registration-check": {
+      "trigger": "PostToolUse:Edit/Write",
+      "auto": true,
+      "script": "gate/script-registration-check.sh",
+      "description": "新建/修改脚本文件时检查是否登记 activation.md"
+    },
+    "rule-registration-check": {
+      "trigger": "PostToolUse:Edit/Write",
+      "auto": true,
+      "script": "gate/rule-registration-check.sh",
+      "description": "新建/修改规则文件时检查是否登记 index.md"
+    },
+    "session-metadata-check": {
+      "trigger": "PostToolUse:Edit/Write",
+      "auto": true,
+      "script": "gate/session-metadata-check.sh",
+      "description": "写入 session 文件时检查 YAML 是否含 status + summary"
+    },
+    "pre-commit": {
+      "trigger": "pre-commit",
+      "auto": true,
+      "script": "git/pre-commit",
+      "description": "G层修改验证tag+log，版本一致性检查"
+    }
+  }
+}

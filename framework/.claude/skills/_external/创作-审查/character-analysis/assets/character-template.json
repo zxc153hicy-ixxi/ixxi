@@ -1,0 +1,70 @@
+{
+  "purpose": {
+    "name": "",
+    "description": "",
+    "storyFunction": "",
+    "archetype": {
+      "type": "",
+      "polarization": "",
+      "avoidsCliches": false
+    },
+    "heroComparison": "",
+    "mystery": "",
+    "characterArc": {
+      "doesChange": false,
+      "changeDescription": "",
+      "isOptimalArc": false
+    },
+    "values": [],
+    "symbolism": {
+      "animal": "",
+      "movement": "",
+      "forms": [],
+      "symbolsEvolveWithCharacter": false
+    }
+  },
+  "believe": {
+    "earlyHumanityMoment": "",
+    "definedByActionsNotBackstory": false,
+    "publicIdentity": "",
+    "hiddenInteriorSelf": "",
+    "metaphorFamily": "",
+    "defaultPersonalityTrait": "",
+    "defaultArgumentTactic": "",
+    "primaryMotivation": ""
+  },
+  "care": {
+    "selfRevelation": "",
+    "falsePhilosophy": "",
+    "falseGoal": "",
+    "fears": {
+      "open": "",
+      "hidden": ""
+    },
+    "weaknessesAndNeeds": {
+      "psychological": [],
+      "moral": []
+    },
+    "socialProblem": "",
+    "specificDesireLine": ""
+  },
+  "invest": {
+    "greatestWeakness": "",
+    "correspondingStrength": "",
+    "isCurious": false,
+    "isResourceful": false,
+    "plan": "",
+    "rulesForLiving": [],
+    "uniqueQualityOthersLack": "",
+    "assertsThisQuality": false,
+    "introductoryAction": "",
+    "hasDecisionAuthority": false,
+    "specialSkills": [],
+    "opponent": {
+      "name": "",
+      "sharedGoal": "",
+      "exploitsWeakness": "",
+      "moralConflict": ""
+    }
+  }
+}

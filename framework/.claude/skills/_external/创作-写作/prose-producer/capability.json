@@ -1,0 +1,12 @@
+{
+  "id": "prose-producer",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction"
+  ],
+  "provides": [
+    "prose_production"
+  ],
+  "resources": []
+}

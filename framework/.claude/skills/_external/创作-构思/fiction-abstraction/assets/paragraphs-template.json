@@ -1,0 +1,16 @@
+{
+  "paragraphs": [
+    {
+      "word-count": "0-50 | 50-100 | 100-150 | 150-200 | 200+",
+      "type": "Action | Description | Exposition | Reflection | Dialogue",
+      "tension-arc": "Escalate | Release | Maintain",
+      "structure": "5-30 words describing sentence variation and rhetorical skeleton",
+      "rhetorical-dna": [
+        "Rhythm/length pattern",
+        "Key device or contrast",
+        "Register and tone"
+      ],
+      "respecification-seed": "5-15 words describing dramatic situation"
+    }
+  ]
+}

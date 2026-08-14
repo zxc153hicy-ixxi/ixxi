@@ -1,0 +1,12 @@
+{
+  "id": "character-analysis",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction"
+  ],
+  "provides": [
+    "character_analysis"
+  ],
+  "resources": []
+}

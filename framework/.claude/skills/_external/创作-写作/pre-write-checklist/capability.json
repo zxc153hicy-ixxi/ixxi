@@ -1,0 +1,12 @@
+{
+  "id": "pre-write-checklist",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction"
+  ],
+  "provides": [
+    "prewrite_checklist"
+  ],
+  "resources": []
+}

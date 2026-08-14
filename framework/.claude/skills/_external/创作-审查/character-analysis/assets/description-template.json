@@ -1,0 +1,64 @@
+{
+  "name": "",
+  "work": "",
+  "symbolicAnimal": "",
+  "fullDescription": "",
+  "physicalAttributes": {
+    "gender": "",
+    "roughAge": "",
+    "height": "",
+    "build": "",
+    "stance": "",
+    "skinTone": "",
+    "hands": ""
+  },
+  "hair": {
+    "style": "",
+    "color": "",
+    "condition": ""
+  },
+  "face": {
+    "nose": "",
+    "mouth": "",
+    "brow": "",
+    "eyes": {
+      "color": "",
+      "shape": ""
+    },
+    "expression": "",
+    "scarsMarksTattoos": ""
+  },
+  "voice": "",
+  "movement": {
+    "gait": "",
+    "gestures": ""
+  },
+  "sound": "",
+  "smell": "",
+  "equipment": [
+    {
+      "category": "clothing",
+      "items": []
+    },
+    {
+      "category": "weapons",
+      "items": []
+    },
+    {
+      "category": "headwear",
+      "items": []
+    },
+    {
+      "category": "footwear",
+      "items": []
+    },
+    {
+      "category": "bags",
+      "items": []
+    },
+    {
+      "category": "other",
+      "items": []
+    }
+  ]
+}

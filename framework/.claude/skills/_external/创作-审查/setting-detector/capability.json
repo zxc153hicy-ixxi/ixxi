@@ -1,0 +1,12 @@
+{
+  "id": "setting-detector",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction"
+  ],
+  "provides": [
+    "setting_detection"
+  ],
+  "resources": []
+}

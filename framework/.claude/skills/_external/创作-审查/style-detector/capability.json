@@ -1,0 +1,12 @@
+{
+  "id": "style-detector",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction"
+  ],
+  "provides": [
+    "style_detection"
+  ],
+  "resources": []
+}

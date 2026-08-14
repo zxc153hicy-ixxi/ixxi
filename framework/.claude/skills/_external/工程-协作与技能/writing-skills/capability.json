@@ -1,0 +1,12 @@
+{
+  "id": "writing-skills",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction"
+  ],
+  "provides": [
+    "skill_writing"
+  ],
+  "resources": []
+}
