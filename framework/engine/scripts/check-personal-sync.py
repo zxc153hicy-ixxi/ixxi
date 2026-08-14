@@ -20,6 +20,7 @@ Task 1.4「personal 隔离」护栏（防个人数据泄露，智谱风险 3.5�
   python engine/scripts/check-personal-sync.py --dry-run  # 只检查不阻断，始终退出 0
   python engine/scripts/check-personal-sync.py --repo <仓库根目录>
 
+错误码：IXXI-E500（git 不可用/执行错误）  IXXI-E501（个人数据阻断）
 退出码：0=放行  2=阻断(个人内容+非本地remote)  1=执行错误
 """
 
@@ -32,6 +33,10 @@ from urllib.parse import urlsplit
 
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+try:
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 except Exception:
     pass
 
@@ -161,7 +166,9 @@ def main():
     # 2) remotes
     remotes, err = collect_remotes(repo)
     if remotes is None:
-        print(f"[check-personal-sync] 错误：{err}", file=sys.stderr)
+        print("IXXI-E500 | 执行错误：git 命令不可用（未安装或不在 PATH），无法检查 remote", file=sys.stderr)
+        print(f"修复：安装 git 或将其加入 PATH 后重试；原始错误：{err}", file=sys.stderr)
+        print("参考：engine/scripts/check-personal-sync.py", file=sys.stderr)
         return 1
 
     # 3) 非本地 remote = 按公开/不可验证保守处理
@@ -182,13 +189,15 @@ def main():
         return 0
 
     # 阻断
+    print("IXXI-E501 | 个人数据阻断：个人目录含内容，且仓库配置了非本地（可能公开）remote", file=sys.stderr)
+    print("修复：将个人数据保留本地，删除或更换公开 remote 后重试 sync/push", file=sys.stderr)
+    print("参考：framework/ops/rules/personal隔离规范.md", file=sys.stderr)
     print(f"[check-personal-sync] BLOCK：个人目录 {', '.join(content_dirs)} 含内容，且存在可能公开的 remote：")
     for n, u in public_remotes.items():
         host = remote_host(u)
         kind = "公开托管" if (host and host in KNOWN_PUBLIC_HOSTS) else "未识别host(按公开保守处理)"
         print(f"    {n} = {u}   [{kind}]")
     print("[check-personal-sync] 告警：personal 内容不能同步到 public remote！")
-    print("[check-personal-sync] 处置：停止本次 sync/push，见 framework/ops/rules/personal隔离规范.md")
 
     if args.dry_run:
         print("[check-personal-sync] --dry-run：仅检查不阻断，退出 0")

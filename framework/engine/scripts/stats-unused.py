@@ -22,6 +22,7 @@ from datetime import date, datetime
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8")
+sys.stderr.reconfigure(encoding="utf-8")
 
 FRAMEWORK = Path(__file__).resolve().parent.parent.parent  # framework/
 REPO_ROOT = FRAMEWORK.parent  # 仓库根（含 personal/ 实例层）
@@ -59,11 +60,18 @@ def parse_date(value) -> date | None:
 
 
 def load_telemetry(path: Path) -> dict | None:
-    """读取 skill-usage.json → {skill名: {"last_seen": date|None, "days_since": int|None}}。解析失败返回 None。"""
+    """读取 skill-usage.json → {skill名: {"last_seen": date|None, "days_since": int|None}}。
+
+    解析失败输出错误码 IXXI-E010（非致命：调用方自动改读 capability.json 兜底）后返回 None。
+    """
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(data, dict):
+            raise ValueError("顶层结构不是对象（应为 {skill: 记录}）")
     except Exception as e:
-        print(f"⚠️ 遥测文件解析失败: {path}（{e}）")
+        print("IXXI-E010 | 遥测数据损坏：skill-usage.json 无法读取/解析", file=sys.stderr)
+        print(f"修复：检查 {path} 是否为合法 JSON 对象（修复后重试；本次自动改读 capability.json 兜底）；原始错误：{e}", file=sys.stderr)
+        print("参考：engine/scripts/stats-unused.py", file=sys.stderr)
         return None
     entries = {}
     today = date.today()

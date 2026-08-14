@@ -1,5 +1,11 @@
 # ixxi（曦曦）
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+<!-- 更多 badge 占位：替换下方两行为真实仓库链接即可
+[![CI](https://img.shields.io/github/actions/workflow/status/<owner>/<repo>/ci.yml?branch=main)](https://github.com/<owner>/<repo>/actions)
+[![Version](https://img.shields.io/github/v/tag/<owner>/<repo>)](https://github.com/<owner>/<repo>/releases)
+-->
+
 > **一句话**：ixxi = 一个「Agent 能力可迁移、可验证、可演化的中间层」。
 
 不是「又一个知识库」，而是让「能力」可迁移、可验证、可演化、不绑定任何 Agent。轻量知识库（kb 系统）是内置能力 + 参考实现，证明这套能力可用。
@@ -9,6 +15,36 @@
 ## 定位一句话
 
 > ixxi 是 Agent 的**使用层**，LangChain 是 Agent 的**构建层**。
+
+## 架构（三层分离）
+
+能力在 `framework/core/` 声明，路由在 skill 调度注册表裁决，适配层把能力挂到具体 Agent——三层解耦，能力不绑定任何 Agent。
+
+```
+┌──────────────────────────────────────────────────────────┐
+│  适配层  Adapter（具体 Agent）                             │
+│  Claude ── Codex ── Hermes                              │
+│  经原生机制加载：Skill 注入 / .agents 发现 / SKILL.md 直读  │
+└──────────────────────────┬───────────────────────────────┘
+                           │ 调用已挂载的能力
+┌──────────────────────────▼───────────────────────────────┐
+│  路由层  Routing（Skill 调度注册表 · 单一事实源）            │
+│  给定任务 → 匹配 skill → 各 Agent 的调用方式                │
+│  framework/ops/rules/skill调度注册表.md                    │
+└──────────────────────────┬───────────────────────────────┘
+                           │ 引用（只引用 Capability ID，不变量 I5）
+┌──────────────────────────▼───────────────────────────────┐
+│  能力层  Capability（Agent-neutral · 不绑定任何 Agent）     │
+│  framework/core/：skills · agents · hooks · rules          │
+│  capability.json：requires（需要什么）+ provides（提供什么）│
+└──────────────────────────────────────────────────────────┘
+```
+
+## ixxi 不是什么
+
+- **不是 LangChain 的替代品**：ixxi 是**使用层**（能力如何被 Agent 调度、验证、演化），LangChain 是**构建层**（能力如何被构建、编排）。两者层面不同，不冲突。
+- **不是知识库**：kb 知识库只是内置的一个能力 + 参考实现，用来证明「能力可迁移、可验证、可演化」。ixxi 本身是能力的中间层，不是内容的仓库。
+- **不是多 Agent 编排器**：ixxi 不负责多个 Agent 协作完成任务，只保证「同一个能力，换个 Agent 也能用」——能力与 Agent 解耦。
 
 ## 目录结构
 
@@ -22,7 +58,8 @@ ixxi/
 
 ## 快速上手
 
-见 [GETTING-STARTED.md](GETTING-STARTED.md) —— 5 分钟从 clone 到跑通第一个 ingest。
+- **5 分钟上手**：从 clone 到跑通第一个 ingest，见 [GETTING-STARTED.md](GETTING-STARTED.md)。
+- **demo → 真实**：跑通演示后切换到你自己的真实数据（数据替换 / 场景注册 / skill 编写），见 [demo 到真实迁移指南](framework/docs/guides/demo到真实迁移指南.md)。
 
 ## 核心判据
 
