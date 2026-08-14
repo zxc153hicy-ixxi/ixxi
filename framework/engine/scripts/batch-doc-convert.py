@@ -9,11 +9,13 @@
 import argparse
 import os
 import subprocess
+import os
 import sys
 import time
+import shutil
 from pathlib import Path
 
-ANTIWORD = "D:/git/Git/mingw64/bin/antiword.exe"
+ANTIWORD = os.environ.get("ANTIWORD") or shutil.which("antiword") or ""
 
 SKIP_FILES = {"Thumbs.db", ".DS_Store", "desktop.ini", ".gitkeep", ".placeholder"}
 

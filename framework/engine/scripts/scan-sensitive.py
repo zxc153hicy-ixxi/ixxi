@@ -118,10 +118,7 @@ SKIP_DIRS = {".git", "__pycache__", ".fix-backup", "node_modules", "_external"}
 SKIP_ROOT_DIRS = {".claudian", "docs", "raw", ".obsidian", ".claude", ".agents"}
 # 学习/教学材料目录——自然包含安全示例（密码、手机号等），非真实泄露
 SKIP_SENSITIVE_DIRS = {
-    "knowledge/learning/网络安全",
-    "knowledge/learning/华为数通-HCIP",
-    "knowledge/learning/系统架构设计师",
-    "knowledge/learning/HCIA-Cloud-Service",
+    "knowledge/learning",  # 学习/教学材料目录（实例自填具体领域，天然含安全示例）
     "engine/templates",  # 扫描器自身模板
     "engine/scripts/malicious-samples",  # 恶意样例测试夹具（本就是恶意内容）
 }
