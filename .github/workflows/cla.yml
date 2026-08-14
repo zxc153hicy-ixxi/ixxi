@@ -1,0 +1,48 @@
+# CLA Assistant 自动化签署检查
+# 触发：PR 打开 / PR 评论（含签署、recheck）/ PR 合并
+# 机制：外部贡献者首次 PR 时，机器人留言引导签署 .github/CLA.md，签署后 PR 放行
+name: "CLA Assistant"
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_target:
+    types: [opened, closed, synchronize]
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+  statuses: write
+
+jobs:
+  CLAAssistant:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "CLA Assistant"
+        # 仅在需要签署或复核 CLA 时运行
+        if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
+        uses: cla-assistant/CLA-Assistant@v2.5.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 建议配置 PAT（Repository Settings → Secrets → 新建 CLA_PAT，权限勾选 repo）：
+          # 用于把签名文件写入签名仓库。若 main 分支受保护，必须配置此 PAT。
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.CLA_PAT }}
+        with:
+          # CLA 文本指向仓库内 .github/CLA.md
+          # 替换 <你的GitHub组织> 为实际组织名
+          path-to-document: 'https://raw.githubusercontent.com/<你的GitHub组织>/ixxi/main/.github/CLA.md'
+          # 签名存储位置（默认写入当前仓库）
+          path-to-signatures: 'signatures/version1/cla.json'
+          # 签名写入的分支（保持与仓库默认分支一致）
+          branch: 'main'
+          # 无需签署的机器人白名单
+          allowlist: bot,dependabot,dependabot[bot],github-actions[bot]
+          # 可选：把签名存到独立仓库（需配合上方 PAT）
+          # remote-organization-name: <你的GitHub组织>
+          # remote-repository-name: ixxi-cla-signatures
+          create-file-commit-message: '创建 CLA 签名存储文件'
+          signed-commit-message: '$contributorName 已签署 CLA（$owner/$repo）'
+          custom-notsigned-prcomment: '感谢你的贡献！请先阅读并签署《贡献者许可协议》（.github/CLA.md）：点击本评论中的签署按钮，签署后 CI 将自动重新检查。'
+          custom-pr-sign-comment: '请阅读《贡献者许可协议》（.github/CLA.md）后，点击按钮签署（签署一次长期有效）。'
+          custom-allsigned-prcomment: '所有贡献者均已签署 CLA，审查流程继续。'

@@ -1,5 +1,6 @@
 # AGENT.md · framework
 
+> ⚠️ 本文件为 framework 通用契约，只读。个人规则请放 personal/ 覆盖层，升级时会覆盖 framework 文件。
 > 多 Agent 行为契约单一事实源。CLAUDE.md / HERMES.md / AGENTS.md 由本文件经 sync 脚本生成。
 > 本文件是 framework 通用契约；实例级个人规则（语言偏好、本地知识优先、个人场景规则等）由 personal 覆盖层提供。
 

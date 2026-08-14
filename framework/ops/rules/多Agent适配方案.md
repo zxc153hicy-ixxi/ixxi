@@ -83,7 +83,27 @@ updated: 2026-08-14
 - **敏感内容**：本地 LLM 适合敏感内容，云端 LLM 仅非敏感。敏感内容降级通道 = 本地 Hermes 原生占优，云端 Claude/Codex 处理时跳过或移交本地——诚实声明为「共享分工」，非能力缩水。
 - **自动化边界**：事件 hooks、原生 subagent 为 Claude/Codex 引擎原生；Hermes 的自动化等价物 = git pre-commit 委托链（护栏效果一致）+ 脚本直跑。明确标注「机制不同，能力等价」，不给虚假对等承诺。
 
-## 七、关联
+## 七、hooks 边界澄清
+
+> **一句话纠偏**：「hooks 已被统一」是误解。正确的是——**git 层 hooks 三 agent 共享，runtime hooks 各 agent 原生**，两者不可混淆。
+
+ixxi 有两类「hooks」，名称相近、机制完全不同：
+
+| 维度 | git hooks | runtime hooks |
+|---|---|---|
+| 触发时机 | git 操作 | 每次工具调用 |
+| 覆盖范围 | commit / push / merge | 会话内行为 |
+| 归属 | 三 agent 共享（一份） | 各 agent 各自机制（互不相同） |
+| 实现 | core/hooks/ + .git/hooks（委托链） | 各引擎 settings（Claude settings.json / Codex .codex/hooks 等） |
+| 代表 | pre-commit 委托链做机械验证 | settings.json PostToolUse / Stop、Codex hooks.json |
+
+**断言**：
+- git hooks 不能统一 runtime hooks：git pre-commit 只在 git 事件时触发，管不到会话内工具调用；runtime hooks 由各 agent 引擎自身机制执行，git 层不可见、不可代理。
+- 机械验证（计数 / 断链 / 版本）→ 走 git pre-commit 委托链，一次落实三 agent 共享生效。
+- 行为验证（语义判断）→ 走各 agent 自身机制 + LLM 纪律，git 层管不到。
+- Hermes 无事件 hook 等价物，其自动化等价物 = git pre-commit 委托链 + 脚本直跑（见「五、各 agent 适配层要点」），不承诺 runtime hooks 层面的虚假对等。
+
+## 八、关联
 
 - `AGENT.md` —— 契约单一事实源
 - `skill调度注册表.md` —— 路由层单一事实源
