@@ -5,8 +5,8 @@
 每个 skill 统一按 skill 名作 key：优先取 SKILL.md frontmatter 的 name，失败用父目录名。
 
 权威源（不修改）：
-  .claude/kb/skills/<技能>/                 # 15 个管理技能
-  .claude/skills/_external/<分类>/<技能>/   # 领域技能（跳过无 SKILL.md 的资源目录）
+  core/skills/<技能>/                 # 15 个管理技能
+  core/skills/_external/<分类>/<技能>/   # 领域技能（跳过无 SKILL.md 的资源目录）
 
 六项断言：
   P1 权威源    权威源 SKILL.md 存在（collect 已保证，恒真）
@@ -33,8 +33,8 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent.parent
 
-SRC_MGMT = REPO / ".claude/kb/skills"
-SRC_EXT = REPO / ".claude/skills/_external"
+SRC_MGMT = REPO / "core/skills"
+SRC_EXT = REPO / "core/skills/_external"
 DST_CLAUDE = REPO / ".claude/skills"  # 管理 skill 一级平铺目标（sync-skills-to-claude.py 输出）
 DST_CODEX = REPO / ".agents/skills"   # Codex 镜像目标（sync-skills-to-codex.py 输出）
 HERMES_IDX = REPO / "ops/hermes/Hermes-命令索引.md"

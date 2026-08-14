@@ -20,9 +20,9 @@ mkdir -p personal
 
 按 framework 里的 kb-ingest skill 流程，跑通「入库 → 体检 → 检索」最小闭环：
 
-- 入库：`framework/.claude/kb/skills/ingest/SKILL.md`
-- 体检：`framework/.claude/kb/skills/lint/SKILL.md`
-- 检索：`framework/.claude/kb/skills/knowledge-query/SKILL.md`
+- 入库：`framework/core/skills/ingest/SKILL.md`
+- 体检：`framework/core/skills/lint/SKILL.md`
+- 检索：`framework/core/skills/knowledge-query/SKILL.md`
 
 ## 判据自检
 

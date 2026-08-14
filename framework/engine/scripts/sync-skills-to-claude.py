@@ -2,7 +2,7 @@
 """sync-skills-to-claude.py — 知识库管理 skills → Claude Code 适配层平铺
 
 权威源（不修改）：
-  .claude/kb/skills/<技能>/          # 15 个管理技能
+  core/skills/<技能>/          # 15 个管理技能
 
 目标（受控复制，一级平铺供 Claude Code 发现）：
   .claude/skills/kb-<name>/          # Claude Code 只扫一级 .claude/skills/<name>/SKILL.md
@@ -21,7 +21,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent.parent
-SRC = REPO / ".claude/kb/skills"
+SRC = REPO / "core/skills"
 DST = REPO / ".claude/skills"
 
 

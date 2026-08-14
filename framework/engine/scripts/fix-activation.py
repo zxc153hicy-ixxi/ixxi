@@ -21,7 +21,7 @@ except Exception:
 
 SKIP_FILES = {"Thumbs.db", ".DS_Store", "desktop.ini", ".gitkeep", ".placeholder"}
 SKIP_DIRS = {".git", "__pycache__", ".fix-backup", "node_modules", "_external", ".obsidian", ".claudian", ".mineru-tmp"}
-SKIP_FULL_DIRS = {".claude/kb/skills", ".claude/kb/agents", ".claude/kb/hooks", "engine/__pycache__"}
+SKIP_FULL_DIRS = {"core/skills", "core/agents", "core/hooks", "engine/__pycache__"}
 SCAN_ROOTS = ["knowledge", "ops", "engine", "raw", ".inbox", ".claude"]
 TODAY = date.today().isoformat()
 

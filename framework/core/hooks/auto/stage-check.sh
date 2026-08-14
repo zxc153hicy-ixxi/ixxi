@@ -4,7 +4,7 @@ set -e
 # 阶段自动检测 — 挂载到 PostToolUse (after /lint)
 # 对比 skill 数 + wiki 页数 vs 阈值表，跨阶段时更新 _meta.stage
 
-SKILL_DIR="$KB_ROOT/.claude/kb/skills"
+SKILL_DIR="$KB_ROOT/core/skills"
 WIKI_DIR="$KB_ROOT/knowledge"
 COUNTER_FILE="$KB_ROOT/raw/sessions/skill-usage.json"
 # Windows python 需要 Windows 路径（Git Bash 的 /d/ 格式不识别）

@@ -176,5 +176,5 @@ Step 0 扫描 `.inbox/converted/` 时，若发现 0KB 的 .md 文件：
 
 **关联**：
 - 标签体系配置：`engine/config/tag-taxonomy.yaml`
-- Skill 实现：`.claude/kb/skills/enrich/SKILL.md`
+- Skill 实现：`core/skills/enrich/SKILL.md`
 - 批量模式：`/kb:enrich --batch <目录>` 可对存量文章批量补全

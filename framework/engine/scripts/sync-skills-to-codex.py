@@ -2,8 +2,8 @@
 """sync-skills-to-codex.py — 知识库 skills → Codex 适配层受控同步
 
 权威源（不修改）：
-  .claude/kb/skills/<技能>/          # 15 个管理技能
-  .claude/skills/_external/<分类>/<技能>/  # 61 个领域技能（跳过 6 个分类级重复 SKILL.md）
+  core/skills/<技能>/          # 15 个管理技能
+  core/skills/_external/<分类>/<技能>/  # 61 个领域技能（跳过 6 个分类级重复 SKILL.md）
 
 目标（受控复制，每次运行镜像更新）：
   1. 知识库根 .agents/skills/        # Codex 仓库级发现（git 版本化）
@@ -17,8 +17,8 @@ sys.stdout.reconfigure(encoding="utf-8")
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent.parent
-SRC_MGMT = REPO / ".claude/kb/skills"
-SRC_EXT = REPO / ".claude/skills/_external"
+SRC_MGMT = REPO / "core/skills"
+SRC_EXT = REPO / "core/skills/_external"
 TARGET_REPO = REPO / ".agents/skills"
 TARGET_USER = Path.home() / ".agents/skills"
 
@@ -104,7 +104,7 @@ def main():
     # 输出清单
     print("\n技能清单（写 AGENTS.md 用）:")
     for name, src in sources:
-        src_label = "管理" if ".claude/kb" in str(src) else "领域"
+        src_label = "领域" if "_external" in src.parts else "管理"
         print(f"  - {name} [{src_label}]")
 
 

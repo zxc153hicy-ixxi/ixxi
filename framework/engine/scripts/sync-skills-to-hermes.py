@@ -2,8 +2,8 @@
 """sync-skills-to-hermes.py — 知识库 skills → Hermes 命令索引自动生成
 
 权威源（不修改，与 sync-skills-to-codex.py 同源收集逻辑）：
-  .claude/kb/skills/<技能>/                       # 管理技能
-  .claude/skills/_external/<分类>/<技能>/SKILL.md  # 外部技能（跳过分类级 SKILL.md）
+  core/skills/<技能>/                       # 管理技能
+  core/skills/_external/<分类>/<技能>/SKILL.md  # 外部技能（跳过分类级 SKILL.md）
 
 目标（生成，每次运行整体重建）：
   ops/hermes/Hermes-命令索引.md  # 替代手维护翻译表的 Hermes 命令索引
@@ -22,8 +22,8 @@ sys.stdout.reconfigure(encoding="utf-8")
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent.parent
-SRC_MGMT = REPO / ".claude/kb/skills"
-SRC_EXT = REPO / ".claude/skills/_external"
+SRC_MGMT = REPO / "core/skills"
+SRC_EXT = REPO / "core/skills/_external"
 OUT = REPO / "ops/hermes/Hermes-命令索引.md"
 
 # 脚本引用：engine/scripts/*.py|*.sh、engine/templates/*.sh、ops/scripts/*.sh
@@ -141,8 +141,8 @@ def build_index(mgmt_rows, ext_rows) -> str:
     parts.append("---")
     parts.append("tags: [命令索引, Hermes]")
     parts.append("status: active")
-    parts.append("summary: 由 engine/scripts/sync-skills-to-hermes.py 从权威源（.claude/kb/skills + "
-                 ".claude/skills/_external）生成；手改请改 SKILL.md")
+    parts.append("summary: 由 engine/scripts/sync-skills-to-hermes.py 从权威源（core/skills + "
+                 "core/skills/_external）生成；手改请改 SKILL.md")
     parts.append("---")
     parts.append("")
     parts.append("# Hermes 命令索引")
@@ -172,8 +172,8 @@ def main():
     check_only = "--check" in sys.argv[1:]
 
     sources = collect_sources()
-    mgmt = [(n, d) for n, d in sources if d.is_relative_to(SRC_MGMT)]
-    ext = [(n, d) for n, d in sources if not d.is_relative_to(SRC_MGMT)]
+    mgmt = [(n, d) for n, d in sources if "_external" not in d.parts]
+    ext = [(n, d) for n, d in sources if "_external" in d.parts]
     print(f"收集到技能源: 管理 {len(mgmt)} + 外部 {len(ext)} = {len(sources)} 个")
 
     if check_only:

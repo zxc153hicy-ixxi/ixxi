@@ -16,7 +16,7 @@ updated: 2026-08-14
 ```
 能力层 Capability（Agent 无关，单一事实源，唯一）
   SKILL.md 权威源 / ops/rules/ / engine+ops scripts /
-  .claude/kb/agents/registry.json / .claude/kb/hooks/（git 层）
+  core/agents/registry.json / core/hooks/（git 层）
         ▼
 路由层 Routing（Agent 无关，唯一）
   skill调度注册表.md —— 任务→能力匹配，同一套逻辑三 agent 共用
@@ -49,11 +49,11 @@ updated: 2026-08-14
 | 脚本 | 权威源 → 适配层 |
 |---|---|
 | `sync-agent-md.sh` | AGENT.md → CLAUDE/HERMES/AGENTS（AUTO 区） |
-| `sync-skills-to-claude.py` | .claude/kb/skills → .claude/skills/kb-*（平铺） |
-| `sync-skills-to-codex.py` | .claude/kb/skills + _external → .agents/skills（镜像） |
+| `sync-skills-to-claude.py` | core/skills → .claude/skills/kb-*（平铺） |
+| `sync-skills-to-codex.py` | core/skills + _external → .agents/skills（镜像） |
 | `sync-skills-to-hermes.py` | 同上 → ops/hermes/Hermes-命令索引.md（脚本生成） |
-| `sync-agents-to-claude.py` | .claude/kb/agents → .claude/agents/*.md（原生 subagent） |
-| `sync-agents-to-codex.py` | .claude/kb/agents → .codex/agents/*.toml（原生 agent） |
+| `sync-agents-to-claude.py` | core/agents → .claude/agents/*.md（原生 subagent） |
+| `sync-agents-to-codex.py` | core/agents → .codex/agents/*.toml（原生 agent） |
 
 **适配层产物不入 git**：`.claude/skills/kb-*/`、`.agents/`、`.claude/agents/` 由 sync 脚本从能力层生成，`.gitignore` 排除；clone 后跑 sync 重新生成。权威源（能力层）是唯一 git 版本化的 skill/agent 定义。
 

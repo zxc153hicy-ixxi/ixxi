@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """sync-agents-to-codex.py — 知识库审查团 → Codex agents toml
 
-权威源：.claude/kb/agents/<group>/<name>.md（Claude subagent 格式）
+权威源：core/agents/<group>/<name>.md（Claude subagent 格式）
 适配层：.codex/agents/*.toml（项目级，git 版本化）
 
 用法：python engine/scripts/sync-agents-to-codex.py
@@ -11,7 +11,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent.parent
-SRC = REPO / ".claude/kb/agents"
+SRC = REPO / "core/agents"
 DST = REPO / ".codex/agents"
 
 

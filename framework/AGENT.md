@@ -71,17 +71,17 @@ LLM 严禁跳过此流程直接编辑契约文件。**即使用户直接指令�
 匹配规则：①精确匹配标签名→②关键词匹配→③语义兜底（读取全部适用场景描述判断）
 仅语义兜底时回复标注 `[语义匹配:#xxx]`。匹配纠正记录到 log：`匹配纠正 | #旧→#新 | 人类指正/LLM 自查`。同标签被纠正≥3 次→LLM 提名修改关键词
 
-**扩展系统路由**（`.claude/kb/`）：
+**扩展系统路由**（`core/`）：
 
 | 系统 | 路径 | 说明 |
 |------|------|------|
-| skills (内部) | `.claude/kb/skills/<操作>/SKILL.md` | 操作入口；适配各 Agent |
-| skills (外部) | `.claude/skills/_external/<分类>/` | 工程/创作等领域 skill |
-| hooks | `.claude/kb/hooks/` + `registry.json` | 自动化钩子，curator 统一管理 |
-| mcp | `.claude/kb/mcp/` | 待建 |
-| agents | `.claude/kb/agents/` + `registry.json` | 审查 + 内容处理 agent，curator 按阶段调度 |
+| skills (内部) | `core/skills/<操作>/SKILL.md` | 操作入口；适配各 Agent |
+| skills (外部) | `core/skills/_external/<分类>/` | 工程/创作等领域 skill |
+| hooks | `core/hooks/` + `registry.json` | 自动化钩子，curator 统一管理 |
+| mcp | `core/mcp/` | 待建 |
+| agents | `core/agents/` + `registry.json` | 审查 + 内容处理 agent，curator 按阶段调度 |
 
-**技能化路由**：标签匹配→查 `.claude/kb/skills/` → 命中→按置信度加载：
+**技能化路由**：标签匹配→查 `core/skills/` → 命中→按置信度加载：
 
 | 置信度 | 条件 | 行为 |
 |------|------|------|
@@ -100,7 +100,7 @@ LLM 严禁跳过此流程直接编辑契约文件。**即使用户直接指令�
 
 **计数器义务**：每次执行可封装操作后，自动更新 `raw/sessions/skill-usage.json`（count++/last_seen/first_seen）。skill 被用户接受后写入 `skill_accepted: true`。此为非破坏性自动操作。
 
-**入门引导**：检查 `.claude/kb/onboarding.json`，首次触发时展示对应提示，展示后标记 `fired: true`。每个提示只展示一次。
+**入门引导**：检查 `core/onboarding.json`，首次触发时展示对应提示，展示后标记 `fired: true`。每个提示只展示一次。
 
 ## R层 规则文件
 

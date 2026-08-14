@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """sync-agents-to-claude.py — 知识库审查团 → Claude Code subagents 适配层
 
-权威源：.claude/kb/agents/<group>/<name>.md（Claude subagent 格式前件，Agent 无关）
+权威源：core/agents/<group>/<name>.md（Claude subagent 格式前件，Agent 无关）
 适配层：.claude/agents/<agent-name>.md（Claude Code 原生 subagent，一级平铺）
 
-三层分离：同一能力源（.claude/kb/agents）两个生成器各产出引擎原生语法——
+三层分离：同一能力源（core/agents）两个生成器各产出引擎原生语法——
   sync-agents-to-codex.py → .codex/agents/*.toml（Codex）
   sync-agents-to-claude.py → .claude/agents/*.md（Claude，本脚本）
 
@@ -17,7 +17,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent.parent
-SRC = REPO / ".claude/kb/agents"
+SRC = REPO / "core/agents"
 DST = REPO / ".claude/agents"
 
 

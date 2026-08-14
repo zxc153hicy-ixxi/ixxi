@@ -35,4 +35,4 @@ description: Use when managing hook lifecycle or when hooks are added/removed/up
 - 拦停型钩子失败时给出明确文字提示，不输出堆栈
 
 ## 降级
-SKILL 加载失败时，直接读取：`.claude/kb/hooks/registry.json` + 各脚本源码
+SKILL 加载失败时，直接读取：`core/hooks/registry.json` + 各脚本源码

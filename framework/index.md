@@ -22,10 +22,10 @@
 
 ## 扩展系统
 
-- .claude/kb/skills/ —— 框架机制技能 kb-*（ingest/lint/query/audit/curator…）
-- .claude/kb/agents/ —— 审查 agent + 内容处理 agent（registry.json 统一调度）
-- .claude/kb/hooks/ —— 钩子脚本 + registry.json（机械强制护栏）
-- .claude/skills/_external/ —— 外部通用 skill（工程/创作/工具）
+- core/skills/ —— 框架机制技能 kb-*（ingest/lint/query/audit/curator…）
+- core/agents/ —— 审查 agent + 内容处理 agent（registry.json 统一调度）
+- core/hooks/ —— 钩子脚本 + registry.json（机械强制护栏）
+- core/skills/_external/ —— 外部通用 skill（工程/创作/工具）
 
 ## 知识
 

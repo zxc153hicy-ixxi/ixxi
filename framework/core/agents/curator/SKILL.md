@@ -79,4 +79,4 @@ curator 读 `knowledge/projects/知识库管理/queries/审计提示词-第三�
 - 只归档不删除（参考 Hermes curator 设计）
 
 ## 降级
-SKILL 加载失败时，直接读取：`.claude/kb/agents/registry.json` + 各 agent 文件
+SKILL 加载失败时，直接读取：`core/agents/registry.json` + 各 agent 文件

@@ -102,37 +102,37 @@ echo "复制 ops/scripts..."
 cp -r "$SOURCE/ops/scripts/"* "$TARGET/ops/scripts/" 2>/dev/null || true
 echo "  ✅ $(find "$TARGET/ops/scripts" -type f | wc -l) 个 ops 脚本文件"
 
-# 10. 复制 .claude/kb/skills/（内部操作 skill）
+# 10. 复制 core/skills/（内部操作 skill）
 echo "复制内部 skills..."
-cp -r "$SOURCE/.claude/kb/skills/"* "$TARGET/.claude/kb/skills/" 2>/dev/null || true
-echo "  ✅ $(find "$TARGET/.claude/kb/skills" -type f | wc -l) 个内部 skill 文件"
+cp -r "$SOURCE/core/skills/"* "$TARGET/core/skills/" 2>/dev/null || true
+echo "  ✅ $(find "$TARGET/core/skills" -type f | wc -l) 个内部 skill 文件"
 
-# 11. 复制 .claude/kb/hooks/
+# 11. 复制 core/hooks/
 echo "复制 hooks..."
-cp -r "$SOURCE/.claude/kb/hooks/"* "$TARGET/.claude/kb/hooks/" 2>/dev/null || true
-echo "  ✅ $(find "$TARGET/.claude/kb/hooks" -type f | wc -l) 个 hook 文件"
+cp -r "$SOURCE/core/hooks/"* "$TARGET/core/hooks/" 2>/dev/null || true
+echo "  ✅ $(find "$TARGET/core/hooks" -type f | wc -l) 个 hook 文件"
 
-# 12. 复制 .claude/kb/agents/
+# 12. 复制 core/agents/
 echo "复制 agents..."
-cp -r "$SOURCE/.claude/kb/agents/"* "$TARGET/.claude/kb/agents/" 2>/dev/null || true
-echo "  ✅ $(find "$TARGET/.claude/kb/agents" -type f | wc -l) 个 agent 文件"
+cp -r "$SOURCE/core/agents/"* "$TARGET/core/agents/" 2>/dev/null || true
+echo "  ✅ $(find "$TARGET/core/agents" -type f | wc -l) 个 agent 文件"
 
-# 13. 复制 .claude/skills/_external/（默认：仅工程类）
+# 13. 复制 core/skills/_external/（默认：仅工程类）
 echo "复制外部 skills..."
 # 工程类总是导出
-for dir in "$SOURCE/.claude/skills/_external/工程-"*; do
+for dir in "$SOURCE/core/skills/_external/工程-"*; do
   if [ -d "$dir" ]; then
     name=$(basename "$dir")
-    cp -r "$dir" "$TARGET/.claude/skills/_external/$name"
+    cp -r "$dir" "$TARGET/core/skills/_external/$name"
     echo "  ✅ 工程类: $name"
   fi
 done
 # 创作类：仅 --with-creative 时导出
 if [ "$WITH_CREATIVE" = true ]; then
-  for dir in "$SOURCE/.claude/skills/_external/创作-"*; do
+  for dir in "$SOURCE/core/skills/_external/创作-"*; do
     if [ -d "$dir" ]; then
       name=$(basename "$dir")
-      cp -r "$dir" "$TARGET/.claude/skills/_external/$name"
+      cp -r "$dir" "$TARGET/core/skills/_external/$name"
       echo "  ✅ 创作类: $name"
     fi
   done
@@ -179,8 +179,8 @@ echo "  4. 说「系统操作」查看可用指令"
 echo ""
 echo "导出范围说明："
 echo "  ✅ 规则引擎 (ops/rules/ + ops/hermes/)"
-echo "  ✅ 内部 skills (.claude/kb/skills/)"
-echo "  ✅ hooks + agents (.claude/kb/hooks/ + agents/)"
+echo "  ✅ 内部 skills (core/skills/)"
+echo "  ✅ hooks + agents (core/hooks/ + agents/)"
 echo "  ✅ 原子操作 (ops/scripts/)"
 echo "  ✅ 检查脚本 (engine/scripts/)"
 echo "  ✅ 配置文件 (engine/config/)"

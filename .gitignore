@@ -16,3 +16,4 @@ ocr-sources.json
 .claude/skills/kb-*/
 .claude/agents/
 .agents/
+.codex/

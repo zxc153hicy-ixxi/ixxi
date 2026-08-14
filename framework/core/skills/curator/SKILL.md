@@ -48,7 +48,7 @@ description: Use when /lint detects skill-ification candidates or the user says 
 1. `/lint` 输出《技能化候选清单》
 2. 用户确认「封装 <操作名>」
 3. LLM 读取对应规则文件 → 生成 SKILL.md（~200词）
-4. 写入 `.claude/kb/skills/<操作名>/SKILL.md`（权威源）
+4. 写入 `core/skills/<操作名>/SKILL.md`（权威源）
 5. 更新 CLAUDE.md T 层路由
 6. 计数器追加 `skill_active: true`
 
