@@ -41,7 +41,7 @@ TEMPLATE_DIRS="rules patterns anti-patterns hermes engine/templates"
 SKIP_DIRS="knowledge/projects knowledge/learning knowledge/archive knowledge/notes knowledge/reference raw .inbox .claude .claudian .fix-backup .obsidian .git engine/config engine/scripts engine/tools docs Excalidraw queries scripts"
 
 # 导出时排除的个人文件
-SKIP_FILES="knowledge/projects/知识库管理/用户画像.md log.md"
+SKIP_FILES="用户画像.md log.md"
 
 # 1. 扫描全部 ops/ 子目录
 echo "ops/ 全覆盖:"
