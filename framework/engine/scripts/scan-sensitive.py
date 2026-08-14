@@ -113,7 +113,7 @@ OBF_IMPORT_CONCAT_RE = re.compile(r"__import__\s*\([^)]*\s*\+\s*['\"]")
 # ────────────────────────────────────────────────────────────────
 # 跳过配置（与原有保持一致，保证仓库级扫描行为不变）
 # ────────────────────────────────────────────────────────────────
-SKIP_FILES = {"Thumbs.db", ".DS_Store", "desktop.ini", ".gitkeep", ".placeholder"}
+SKIP_FILES = {"Thumbs.db", ".DS_Store", "desktop.ini", ".gitkeep", ".placeholder", "scan-sensitive.py"}
 SKIP_DIRS = {".git", "__pycache__", ".fix-backup", "node_modules", "_external"}
 SKIP_ROOT_DIRS = {".claudian", "docs", "raw", ".obsidian", ".claude", ".agents"}
 # 学习/教学材料目录——自然包含安全示例（密码、手机号等），非真实泄露
@@ -123,6 +123,7 @@ SKIP_SENSITIVE_DIRS = {
     "knowledge/learning/系统架构设计师",
     "knowledge/learning/HCIA-Cloud-Service",
     "engine/templates",  # 扫描器自身模板
+    "engine/scripts/malicious-samples",  # 恶意样例测试夹具（本就是恶意内容）
 }
 
 

@@ -39,7 +39,7 @@ if git diff --cached --name-only | grep -q "AGENT.md"; then
 fi
 
 # 版本一致性检查（每次 commit 都跑）
-bash "$KB_ROOT"/.claude/kb/hooks/gate/version-check.sh
+bash "$KB_ROOT"/framework/core/hooks/gate/version-check.sh
 if [ $? -ne 0 ]; then
   echo "   请同步设计方案版本号后重新 commit"
   exit 1
