@@ -143,6 +143,12 @@ EOF
   echo "✓ personal 骨架已生成（$personal_dir/）"
 fi
 
+# 确保个人数据目录被 .gitignore 排除（Q2 目录名可自定义）
+if ! grep -qxF "$personal_dir/" "$REPO_ROOT/.gitignore" 2>/dev/null; then
+  echo "$personal_dir/" >> "$REPO_ROOT/.gitignore"
+  echo "✓ $personal_dir/ 已加入 .gitignore（个人数据不入 git）"
+fi
+
 # ── 3. 跑 sync 脚本（生成适配层）──────────────────
 cd "$FRAMEWORK"
 case "$AGENTS" in
