@@ -11,3 +11,8 @@ ocr-sources.json
 # ===== 个人配置 =====
 .claude/settings.json
 .claude/settings.local.json
+
+# ===== 适配层生成产物（sync 脚本从能力层生成，不版本化，clone 后跑 sync 重新生成）=====
+.claude/skills/kb-*/
+.claude/agents/
+.agents/

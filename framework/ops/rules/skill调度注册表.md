@@ -4,39 +4,39 @@ status: active
 confidence: high
 summary: 跨 agent skill 调度注册表——单一事实源，Claude/Hermes/Codex 三 agent 统一路由依据
 created: 2026-08-13
-updated: 2026-08-13
+updated: 2026-08-14
 ---
 
 # Skill 调度注册表
 
 > **单一事实源**：给定任务 → 匹配 skill → 各 agent 调用方式。三 agent（Claude/Hermes/Codex）统一指向本表。
-> **维护**：新增/修改 skill 后①更新本表②跑 `sync-skills-to-claude.py`（Claude 平铺）③跑 `sync-skills-to-codex.py`（Codex 平铺）。
+> **维护**：新增/修改 skill 后①更新本表②跑 `sync-skills-to-claude.py`（Claude 平铺）③跑 `sync-skills-to-codex.py`（Codex 平铺）④跑 `sync-skills-to-hermes.py`（Hermes 命令索引）。
 
 ## 表 A · 内部管理 skill（15 条，跨 agent 核心）
 
-> Claude / Codex 通过原生 skill 机制加载（system-reminder / `.agents/skills/`）；Hermes 无原生 skill 机制，走「命令翻译表」的终端命令。
+> 三 agent 均通过原生机制加载：Claude=Skill 注入、Codex=.agents/skills/ 发现、Hermes=SKILL.md 直读 + 命令索引执行。
 
 | skill | 触发场景 | 关键词 | Claude | Hermes | Codex | 规则文件 |
 |---|---|---|---|---|---|---|
-| kb-ingest | 入库/提炼资料 | ingest、入库、提炼、整理、收录 | Skill: kb-ingest | `check-inbox.py --mode health` + `scan-sensitive.py` + 10步流水线 | Skill: kb-ingest | [[ops/rules/Ingest完整流程]] |
-| kb-lint | 体检/健康度检查 | lint、体检、健康度、检查、有没有毛病 | Skill: kb-lint | `check_*.py --repo .` 全量 55 项 | Skill: kb-lint | [[ops/rules/知识库检查体系]] |
-| kb-audit | 全量审计/查漏 | audit、审计、回溯、遗漏、查漏 | Skill: kb-audit | 全量审计（已并入 /check） | Skill: kb-audit | [[ops/rules/全量审计流程]] |
-| kb-compact | 精简/瘦身/合并 | compact、精简、压缩、太长了、合并 | Skill: kb-compact | `--mode lines` 行数精简 / `--mode files` 合并碎片 | Skill: kb-compact | [[ops/rules/核心操作流程]] |
-| kb-conflict | 矛盾/冲突裁决 | 矛盾、冲突、裁决、规则打架 | Skill: kb-conflict | LLM 按流程：检测矛盾→输出《反馈冲突提示》→暂停 | Skill: kb-conflict | [[ops/rules/矛盾消解流程]] |
-| kb-analyze | 可行性评估 | 评估、可行性、打分、值不值得、分析 | Skill: kb-analyze | 五维加权评分（LLM） | Skill: kb-analyze | [[ops/rules/可行性分析流程]] |
-| kb-export-template | 导出/打包/备份 | 导出、打包、备份、迁移 | Skill: kb-export-template | `bash engine/templates/export-template.sh` | Skill: kb-export-template | [[ops/rules/系统操作菜单]] |
-| kb-query | 领域精准问答 | 问、怎么、什么是、区别、对比 | Skill: kb-query | 结构化检索（index→T层路由→规则文件） | Skill: kb-query | [[ops/rules/知识库运维规范]] |
-| kb-health | 健康度快照 | health、健康、打分、怎么样 | Skill: kb-health | H1 系统健康度（已并入 /check） | Skill: kb-health | [[ops/rules/知识库检查体系]] |
-| kb-dedup | 去重/查重 | 去重、重复、查重、dedup | Skill: kb-dedup | `check-links.py --mode broken/index`（已并入 /check） | Skill: kb-dedup | [[ops/rules/知识库检查体系]] |
-| kb-refresh | 刷新过时内容 | refresh、刷新、过时、更新 | Skill: kb-refresh | H2+H5 过时检测（已并入 /check） | Skill: kb-refresh | [[ops/rules/知识库检查体系]] |
-| kb-promote | 规则升层 | promote、升级、升层、晋升 | Skill: kb-promote | R→G 升层（已并入 /check --deep） | Skill: kb-promote | [[ops/rules/版本管理规范]] |
-| kb-enrich | 富化/补标签 | enrich、富化、补全标签、补充元数据、打标签 | Skill: kb-enrich | LLM 读文章补 tags/summary/pt_phase | Skill: kb-enrich | [[ops/rules/核心操作流程]] |
-| kb-session-close | 会话收尾 | 结束、关闭、再见、不记了、今天就这样 | Skill: kb-session-close | 回溯评价→写入 sessions→检查正反模式 | Skill: kb-session-close | [[ops/rules/会话收尾检查]] |
-| kb-curator | 技能化/封装 | 技能化、封装、curator、管家 | Skill: kb-curator | LLM 按 [[ops/rules/技能化流程]] 执行 | Skill: kb-curator | [[ops/rules/技能化流程]] |
+| kb-ingest | 入库/提炼资料 | ingest、入库、提炼、整理、收录 | Skill: kb-ingest | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：check-inbox.py --mode health + scan-sensitive.py + 10步流水线 | Skill: kb-ingest | [[ops/rules/Ingest完整流程]] |
+| kb-lint | 体检/健康度检查 | lint、体检、健康度、检查、有没有毛病 | Skill: kb-lint | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：check_*.py --repo . 全量 55 项 | Skill: kb-lint | [[ops/rules/知识库检查体系]] |
+| kb-audit | 全量审计/查漏 | audit、审计、回溯、遗漏、查漏 | Skill: kb-audit | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：全量审计（已并入 /check） | Skill: kb-audit | [[ops/rules/全量审计流程]] |
+| kb-compact | 精简/瘦身/合并 | compact、精简、压缩、太长了、合并 | Skill: kb-compact | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：--mode lines 行数精简 / --mode files 合并碎片 | Skill: kb-compact | [[ops/rules/核心操作流程]] |
+| kb-conflict | 矛盾/冲突裁决 | 矛盾、冲突、裁决、规则打架 | Skill: kb-conflict | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：LLM 按流程检测矛盾→输出《反馈冲突提示》→暂停 | Skill: kb-conflict | [[ops/rules/矛盾消解流程]] |
+| kb-analyze | 可行性评估 | 评估、可行性、打分、值不值得、分析 | Skill: kb-analyze | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：五维加权评分（LLM） | Skill: kb-analyze | [[ops/rules/可行性分析流程]] |
+| kb-export-template | 导出/打包/备份 | 导出、打包、备份、迁移 | Skill: kb-export-template | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：bash engine/templates/export-template.sh | Skill: kb-export-template | [[ops/rules/系统操作菜单]] |
+| kb-query | 领域精准问答 | 问、怎么、什么是、区别、对比 | Skill: kb-query | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：结构化检索（index→T层路由→规则文件） | Skill: kb-query | [[ops/rules/知识库运维规范]] |
+| kb-health | 健康度快照 | health、健康、打分、怎么样 | Skill: kb-health | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：H1 系统健康度（已并入 /check） | Skill: kb-health | [[ops/rules/知识库检查体系]] |
+| kb-dedup | 去重/查重 | 去重、重复、查重、dedup | Skill: kb-dedup | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：check-links.py --mode broken/index（已并入 /check） | Skill: kb-dedup | [[ops/rules/知识库检查体系]] |
+| kb-refresh | 刷新过时内容 | refresh、刷新、过时、更新 | Skill: kb-refresh | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：H2+H5 过时检测（已并入 /check） | Skill: kb-refresh | [[ops/rules/知识库检查体系]] |
+| kb-promote | 规则升层 | promote、升级、升层、晋升 | Skill: kb-promote | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：R→G 升层（已并入 /check --deep） | Skill: kb-promote | [[ops/rules/版本管理规范]] |
+| kb-enrich | 富化/补标签 | enrich、富化、补全标签、补充元数据、打标签 | Skill: kb-enrich | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：LLM 读文章补 tags/summary/pt_phase | Skill: kb-enrich | [[ops/rules/核心操作流程]] |
+| kb-session-close | 会话收尾 | 结束、关闭、再见、不记了、今天就这样 | Skill: kb-session-close | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：回溯评价→写入 sessions→检查正反模式 | Skill: kb-session-close | [[ops/rules/会话收尾检查]] |
+| kb-curator | 技能化/封装 | 技能化、封装、curator、管家 | Skill: kb-curator | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：LLM 按 [[ops/rules/技能化流程]] 执行 | Skill: kb-curator | [[ops/rules/技能化流程]] |
 
 ## 表 B · 外部领域 skill（61 条，Claude/Codex 原生）
 
-> Claude 与 Codex 均通过**原生 skill 机制**加载（system-reminder / `.agents/skills/`），本表不重复维护其 description。Hermes 不运行领域 skill（无终端命令对应）。本表价值：①跨 agent 判断「这活是 Claude/Codex 的活」；②关键词调度与完整性索引。Claude/Codex 列统一为「原生」，不再逐条列出。
+> 三 agent 原生加载，Hermes 直读 SKILL.md，纯流程型无需命令即完整。本表不重复维护其 description。本表价值：①跨 agent 判断任务归属；②关键词调度与完整性索引。Claude/Codex 列统一为「原生」，不再逐条列出。
 
 ### B1 工程/开发类（22 条）
 
@@ -56,7 +56,12 @@ updated: 2026-08-13
 | finishing-a-development-branch | 实现完成测试通过后决定分支去留 | 完成分支、合并、收尾 branch |
 | using-git-worktrees | 需要隔离工作区的功能开发 | worktree、隔离开发、分支隔离 |
 | dispatching-parallel-agents | 2+ 无共享状态的独立任务并行 | 并行、分发 agent、多任务并行 |
-| planning-with-files | 复杂任务的文件式规划跟踪（含 ar/de/es/zh/zht 多语言变体） | 文件规划、Manus 风格、任务跟踪 |
+| planning-with-files | 复杂任务的文件式规划跟踪 | 文件规划、Manus 风格、任务跟踪 |
+| planning-with-files-ar | planning-with-files 阿拉伯语变体 | 文件规划、阿拉伯语、任务跟踪 |
+| planning-with-files-de | planning-with-files 德语变体 | 文件规划、德语、任务跟踪 |
+| planning-with-files-es | planning-with-files 西班牙语变体 | 文件规划、西班牙语、任务跟踪 |
+| planning-with-files-zh | planning-with-files 中文变体 | 文件规划、中文、任务跟踪 |
+| planning-with-files-zht | planning-with-files 繁体中文变体 | 文件规划、繁体中文、任务跟踪 |
 | using-superpowers | 会话开始建立找/用 skill 的方式 | superpowers、技能使用引导 |
 | writing-skills | 创建/编辑/验证 skill | 写 skill、创建技能、编辑技能 |
 
