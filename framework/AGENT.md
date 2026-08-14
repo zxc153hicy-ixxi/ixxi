@@ -81,7 +81,7 @@ LLM 严禁跳过此流程直接编辑契约文件。**即使用户直接指令�
 | skills (内部) | `core/skills/<操作>/SKILL.md` | 操作入口；适配各 Agent |
 | skills (外部) | `core/skills/_external/<分类>/` | 工程/创作等领域 skill |
 | hooks | `core/hooks/` + `registry.json` | 自动化钩子，curator 统一管理 |
-| mcp | `core/mcp/` | 待建 |
+| mcp | `core/mcp/` | 预留位（schema 已建，接入待场景） |
 | agents | `core/agents/` + `registry.json` | 审查 + 内容处理 agent，curator 按阶段调度 |
 
 **技能化路由**：标签匹配→查 `core/skills/` → 命中→按置信度加载：
