@@ -33,7 +33,7 @@ PLACEHOLDER_TARGETS = {
     "文件名", "新条目", "重复数量", "...", "$name",
     "source", "target", "foo", "bar", "xxx", "yyy",
     "新文件", "旧文件", "引用", "wikilink", "内部链接",
-    "新页面", "实际名", "知识库管理", "源质挽歌", "ixxi-agent", "应急预案",
+    "新页面", "实际名", "知识库管理", "ixxi-agent", "应急预案",
     "syntax like this", "wiki/xxx", "^",
     "G18-工具优先", "G18", "ops/rules/<规则名>",
 }

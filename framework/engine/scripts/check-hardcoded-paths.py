@@ -37,11 +37,11 @@ SKIP_INDIVIDUAL_FILES = {
 }
 SCAN_DIRS = {"knowledge", "ops", "engine/scripts"}  # 检查 .md 正文（非脚本内）
 
-# 硬编码模式
+# 硬编码模式——检查任何绝对路径（而非特定机器的路径）
 PATTERNS = [
-    (re.compile(r"D:[/\\]KnowledgeBase"), "D:/KnowledgeBase"),
-    (re.compile(r"C:[/\\]Users[/\\]29909"), "C:/Users/29909"),
-    (re.compile(r"C:\\\\Users\\\\29909"), "C:\\Users\\29909 (反斜杠)"),
+    (re.compile(r"[A-Za-z]:[/\\]Users[/\\]"), "用户目录（C:/Users/）"),
+    (re.compile(r"[A-Za-z]:[/\\]"), "Windows 盘符绝对路径"),
+    (re.compile(r"/(?:home|Users|mnt)/"), "Unix 绝对路径"),
 ]
 
 
