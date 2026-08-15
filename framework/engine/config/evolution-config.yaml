@@ -1,0 +1,7 @@
+# 演化阈值配置（R-EVO 06 阈值自适应——阈值参数化到每实例，按实例规模自适应）
+# 各脚本从本文件读阈值，不再硬编码；实例层（personal/）可覆盖同名字段。
+
+stale_days: 90       # 内容过时阈值：active 页面 updated 距今 > N 天 → 刷新建议
+draft_days: 30       # draft 滞留阈值：draft 状态 > N 天未处理 → 告警
+archive_days: 90     # capability 未使用归档阈值：last_used 距今 > N 天 → 归档候选
+unused_days: 30      # stats --unused 默认「N 天未触发」报告阈值

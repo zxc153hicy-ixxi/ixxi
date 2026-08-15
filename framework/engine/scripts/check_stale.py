@@ -35,6 +35,16 @@ SCAN_DIRS = {"knowledge", "ops"}
 TODAY = date.today()
 
 
+def _load_evolution_config(repo: Path) -> dict:
+    """读 engine/config/evolution-config.yaml（R-EVO 06 阈值配置化），失败返回空 dict 用默认值。"""
+    cfg_path = repo / "engine" / "config" / "evolution-config.yaml"
+    try:
+        data = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) or {}
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
 def _parse_frontmatter(file_path: Path) -> dict | None:
     """提取 YAML frontmatter，失败返回 None"""
     try:
@@ -161,15 +171,22 @@ def check_field(repo: Path, fix: bool = False) -> list[dict]:
 # ── main ──
 
 def main(mode: str = "all", repo_path: str = None, json_out: bool = False,
-         max_age: int = 30, fix: bool = False):
+         max_age: int = None, fix: bool = False):
     repo = Path(repo_path).resolve() if repo_path else Path(__file__).resolve().parent.parent.parent
+
+    # 演化阈值从配置读（R-EVO 06），实例层可覆盖
+    evo = _load_evolution_config(repo)
+    stale_days = evo.get("stale_days", 90)
+    draft_days = evo.get("draft_days", 30)
+    if max_age is None:
+        max_age = draft_days
 
     modes_to_run = ["content", "drafts", "field"] if mode == "all" else [mode]
     all_results = {}
 
     for m in modes_to_run:
         if m == "content":
-            items = check_content(repo, max_age=90)  # content always 90 days
+            items = check_content(repo, max_age=stale_days)  # content 阈值来自 evolution-config
             all_results["content"] = {"label": f"内容过时 (>90天)", "items": items,
                                        "score": max(0, 10 - max(0, (len(items) - 10) // 5))}
         elif m == "drafts":

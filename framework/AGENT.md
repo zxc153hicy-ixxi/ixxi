@@ -138,4 +138,10 @@ LLM 严禁跳过此流程直接编辑契约文件。**即使用户直接指令�
 
 ## 时间约束速查
 
-统一生命周期见 `ops/rules/核心操作流程#统一生命周期`。当前阶段由遥测数据 `_meta.stage` 定义，`/lint` 自动检测切换。各子系统阈值（Ingest/draft/反模式/技能化/过时检测）均按阶段自适应。
+统一生命周期见 `ops/rules/核心操作流程#统一生命周期`。当前阶段由遥测数据 `_meta.stage` 定义，`/lint` 自动检测切换。各子系统阈值（Ingest/draft/反模式/技能化/过时检测）均按阶段自适应（阈值源 `engine/config/evolution-config.yaml`）。
+
+## 引擎特定声明（MANUAL 区）
+
+本契约是 framework 通用层（三 agent 共享单一事实源）。引擎特定内容（statusline、敏感降级通道、定时任务等）放在各 agent 产物的 MANUAL 区（`<!-- MANUAL START -->` 段，由 `sync-agent-md.sh` 保留，不随 AUTO 区覆盖）。
+
+**定时任务三 agent 等权**：Claude `.claude/scheduled_tasks.json`、Codex `.codex/automations.md`、Hermes 会话级 Cron，均为各 agent 原生定时机制，不承诺统一、不搞虚假对等。

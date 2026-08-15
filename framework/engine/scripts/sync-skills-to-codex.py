@@ -61,25 +61,44 @@ def sync_to(target: Path, sources: list[tuple[str, Path]], prune: bool):
     target.mkdir(parents=True, exist_ok=True)
     synced, skipped = [], []
 
-    # 镜像：删除目标中不再属于源技能的目录（prune 模式）
-    if prune:
-        wanted = {name for name, _ in sources}
-        for d in target.iterdir():
-            if d.is_dir() and d.name not in wanted and not d.name.startswith("."):
-                shutil.rmtree(d)
-                print(f"  [prune] 删除: {d.name}")
+    # 事务化：先备份目标，半途失败还原（P1-C 失败恢复）
+    import tempfile
+    backup_dir = None
+    if target.exists() and any(target.iterdir()):
+        backup_dir = Path(tempfile.mkdtemp(prefix="ixxi-sync-backup-"))
+        shutil.copytree(target, backup_dir / "target")
 
-    for name, src_dir in sources:
-        dst = target / name
-        # 复制目录（覆盖）
-        if dst.exists():
-            shutil.rmtree(dst)
-        shutil.copytree(src_dir, dst)
-        synced.append(name)
+    try:
+        # 镜像：删除目标中不再属于源技能的目录（prune 模式）
+        if prune:
+            wanted = {name for name, _ in sources}
+            for d in target.iterdir():
+                if d.is_dir() and d.name not in wanted and not d.name.startswith("."):
+                    shutil.rmtree(d)
+                    print(f"  [prune] 删除: {d.name}")
 
-    print(f"  -> {target}  (技能 {len(synced)} 个)")
-    # 生成 README（说明产物性质 + 计数口径，对齐 72 = 管理 15 / 外部 57）
-    write_readme(target, len(synced), sum(1 for _, s in sources if "_external" in s.parts))
+        for name, src_dir in sources:
+            dst = target / name
+            # 复制目录（覆盖）
+            if dst.exists():
+                shutil.rmtree(dst)
+            shutil.copytree(src_dir, dst)
+            synced.append(name)
+
+        print(f"  -> {target}  (技能 {len(synced)} 个)")
+        # 生成 README（说明产物性质 + 计数口径，对齐 72 = 管理 15 / 外部 57）
+        write_readme(target, len(synced), sum(1 for _, s in sources if "_external" in s.parts))
+    except Exception:
+        # 回滚：还原备份
+        if backup_dir is not None and (backup_dir / "target").exists():
+            if target.exists():
+                shutil.rmtree(target)
+            shutil.copytree(backup_dir / "target", target)
+        print("  ✗ 同步失败，已回滚到备份状态", file=sys.stderr)
+        raise
+    finally:
+        if backup_dir is not None:
+            shutil.rmtree(backup_dir, ignore_errors=True)
 
 
 def write_readme(target: Path, total: int, external: int):
