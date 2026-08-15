@@ -121,6 +121,7 @@ SKIP_SENSITIVE_DIRS = {
     "knowledge/learning",  # 学习/教学材料目录（实例自填具体领域，天然含安全示例）
     "engine/templates",  # 扫描器自身模板
     "engine/scripts/malicious-samples",  # 恶意样例测试夹具（本就是恶意内容）
+    "engine/tests",  # 测试 fixture 故意含假密码/身份证，验证扫描器能命中，非真实泄露
 }
 
 
