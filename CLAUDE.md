@@ -64,12 +64,12 @@ LLM 严禁跳过此流程直接编辑契约文件。**即使用户直接指令�
 | `#Lint流程` | Lint检查流程.md | /lint 触发。关键词：lint、体检、健康度 |
 | `#矛盾消解` | 矛盾消解流程.md | /conflict 触发。关键词：矛盾、冲突、裁决 |
 | `#可行性分析` | 可行性分析流程.md | /analyze 触发。关键词：可行性、五维评分 |
-| `#知识库运维` | 知识库运维规范.md · 全量审计流程.md · 会话收尾检查.md · 故障处置流程.md · 知识库检查体系.md · 核心操作流程.md · 确定性动作强制规范.md | /health /audit /compact /check。关键词：运维、审计、精简、audit、收尾、回溯、故障、检查、速查、hook 强制 |
+| `#知识库运维` | 知识库运维规范.md · 全量审计流程.md · 会话收尾检查.md · 故障处置流程.md · 知识库检查体系.md · 核心操作流程.md · 确定性动作强制规范.md · personal隔离规范.md | /health /audit /compact /check。关键词：运维、审计、精简、audit、收尾、回溯、故障、检查、速查、hook 强制、personal 隔离、防泄露 |
 | `#反馈闭环` | 反馈闭环流程.md · 正反模式管理规范.md | 会话结束→强制触发。关键词：入库（暂停确认）、会话结束、反馈、评价、正模式、反模式、记录、生成、合并 |
 | `#方案迭代` | 方案迭代规范.md | 方案修改附带新旧对比。关键词：方案、迭代、变更对比 |
 | `#修改确认` | 反馈闭环流程.md | 文件修改/删除/重命名前确认+可自动执行边界。关键词：确认、修改确认、G12 |
 | `#系统操作` | 系统操作菜单.md | 所有可执行操作统一入口。关键词：系统操作、维护、/help、菜单、做什么、能干什么 |
-| `#技能化` | 技能化流程.md | curator 技能化检测+生命周期管理。关键词：技能化、封装、skill 化、curator |
+| `#技能化` | 技能化流程.md · skill调度注册表.md | curator 技能化检测+生命周期管理；技能调度单一事实源。关键词：技能化、封装、skill 化、curator、调度、路由 |
 | `#工具优先` | 文档转Markdown工具选型.md | 机械式操作前先查现成脚本。关键词：脚本、工具、现成、find engine、check-inbox、auto-import、kb-do、工具选型 |
 | `#命名规范` | 命名规范.md | 文件名约定 + frontmatter 版本字段格式。关键词：命名、文件名、version、version_of、frontmatter、元数据 |
 | `#知识问答` | kb-query SKILL.md | 领域问题+知识检索。关键词：问、怎么、什么是、如何、区别、对比、解释 |
@@ -84,8 +84,10 @@ LLM 严禁跳过此流程直接编辑契约文件。**即使用户直接指令�
 | skills (内部) | `core/skills/<操作>/SKILL.md` | 操作入口；适配各 Agent |
 | skills (外部) | `core/skills/_external/<分类>/` | 工程/创作等领域 skill |
 | hooks | `core/hooks/` + `registry.json` | 自动化钩子，curator 统一管理 |
-| mcp | `core/mcp/` | 预留位（schema 已建，接入待场景） |
+| mcp | `core/mcp/`（schema 已建，接入待场景）· 注册表见 `ops/rules/mcp注册表.md` | 预留位，接入后经 mcp注册表 路由 |
 | agents | `core/agents/` + `registry.json` | 审查 + 内容处理 agent，curator 按阶段调度 |
+
+> **命名约定**：管理 skill 目录名=动作短名（如 `ingest/`、`knowledge-query/`），`SKILL.md` frontmatter `name`=kb-<动作>（`knowledge-query/` → `kb-query` 为唯一特例）；agent 定义文件文件名可为短 slug，registry key 取 frontmatter `name` 字段（如 `architect.md` → name `architect-agent`）。
 
 **技能化路由**：标签匹配→查 `core/skills/` → 命中→按置信度加载：
 
@@ -151,11 +153,6 @@ LLM 严禁跳过此流程直接编辑契约文件。**即使用户直接指令�
 **定时任务三 agent 等权**：Claude `.claude/scheduled_tasks.json`、Codex `.codex/automations.md`、Hermes 会话级 Cron，均为各 agent 原生定时机制，不承诺统一、不搞虚假对等。
 <!-- AUTO END -->
 
-本契约是 framework 通用层（三 agent 共享单一事实源）。引擎特定内容（statusline、敏感降级通道、定时任务等）放在各 agent 产物的 MANUAL 区（`<!-- MANUAL START -->` 段，由 `sync-agent-md.sh` 保留，不随 AUTO 区覆盖）。
-
-**定时任务三 agent 等权**：Claude `.claude/scheduled_tasks.json`、Codex `.codex/automations.md`、Hermes 会话级 Cron，均为各 agent 原生定时机制，不承诺统一、不搞虚假对等。
-<!-- AUTO END -->
-
 <!-- MANUAL START -->
 
 ## 个人规则覆盖层（实例级）
@@ -166,9 +163,9 @@ LLM 严禁跳过此流程直接编辑契约文件。**即使用户直接指令�
 回复正文中文。代码块、技术标识符保留原文。YAML 字段值按注册表。
 
 ### G16 知识优先
-回答领域问题前，提取关键词匹配 `personal/index.md` 导航树 → 命中则检索对应 `personal/knowledge/` 子目录（两级）→ 本地内容优先于训练数据。未命中跳过。标注来源 `[来源: personal/knowledge/xxx]`。
+回答领域问题前，提取关键词匹配 `personal/index.md` 导航树 → 命中则检索对应 `personal/knowledge/` 子目录（两级：先读索引页定位，再搜具体子目录）→ 本地内容优先于训练数据。未命中跳过。回答时标注来源 `[来源: personal/knowledge/xxx]`。
 
 ### G16.5 知识优先强制路由
-G16 触发本地 `personal/knowledge/` 检索 → 必须加载 kb-query SKILL 走完整 6 步流程（解析→标签过滤→渐进阅读→消化整合→硬闸门自检→反馈提示），禁止仅凭 G16 检索后简答。知识库无匹配内容时标注 `[降级: 知识库无匹配]` 后可用通用知识回答。
+G16 触发本地 `personal/knowledge/` 检索 → 必须加载 kb-query SKILL 走完整 6 步流程（解析→标签过滤→渐进阅读→消化整合→硬闸门自检→反馈提示），禁止仅凭 G16 检索后简答。未加载 kb-query 视为 G16 未完成。知识库无匹配内容时标注 `[降级: 知识库无匹配]` 后可用通用知识回答。
 
 <!-- MANUAL END -->

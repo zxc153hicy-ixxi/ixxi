@@ -4,6 +4,8 @@ description: "Use during chapter writing to automatically check character behavi
 allowed-tools: Read, Grep
 ---
 
+> 分类索引说明：本文件为「创作-审查」分类主技能文档。`name: story-consistency-monitor` 对应该分类子目录 `consistency-checker`（该技能声明的 name 即为 story-consistency-monitor），二者是同一技能。
+
 # 故事一致性监控
 
 ## 自动检查系统

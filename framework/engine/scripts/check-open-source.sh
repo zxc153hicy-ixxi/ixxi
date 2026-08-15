@@ -11,8 +11,10 @@ echo ""
 
 # 1. 个人数据零残留
 echo "[1] 个人数据零残留"
-PII=$(grep -rn '29909\|源质挽歌\|D:/KnowledgeBase\|C:/Users' "$FRAMEWORK"/ --include='*.md' --include='*.py' --include='*.sh' --include='*.json' --include='*.yaml' 2>/dev/null | grep -v '_external/')
-PII_COUNT=$(printf '%s' "$PII" | grep -c . 2>/dev/null || echo 0)
+# PII 模式：优先读环境变量 IXXI_PII_PATTERNS（多个模式用 | 分隔），未设置则用占位示例默认值（不含真实身份，需自行替换）
+PII_PATTERNS="${IXXI_PII_PATTERNS:-真实用户名|真实项目名|/真实/家目录}"
+PII=$(grep -rEn "$PII_PATTERNS" "$FRAMEWORK"/ --include='*.md' --include='*.py' --include='*.sh' --include='*.json' --include='*.yaml' --exclude='check-open-source.sh' 2>/dev/null | grep -v '_external/')
+PII_COUNT=$(printf '%s' "$PII" | grep -c . 2>/dev/null)
 echo "  命中 $PII_COUNT 处（应只含检查标准示例，无真实数据）"
 if [ -n "$PII" ]; then echo "$PII" | head -5 | sed 's/^/    /'; fi
 
@@ -20,7 +22,7 @@ if [ -n "$PII" ]; then echo "$PII" | head -5 | sed 's/^/    /'; fi
 echo ""
 echo "[2] 适配层产物不进 git"
 ADAPTER=$(git -C "$KB_ROOT" ls-files framework/.claude framework/.agents framework/.codex)
-ADAPTER_COUNT=$(printf '%s' "$ADAPTER" | grep -c . 2>/dev/null || echo 0)
+ADAPTER_COUNT=$(printf '%s' "$ADAPTER" | grep -c . 2>/dev/null)
 if [ "$ADAPTER_COUNT" -gt 0 ]; then
   echo "  ❌ $ADAPTER_COUNT 个适配层文件被跟踪（应 git rm --cached）"
   echo "$ADAPTER" | head -5 | sed 's/^/    /'

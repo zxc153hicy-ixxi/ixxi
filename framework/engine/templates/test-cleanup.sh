@@ -20,7 +20,12 @@ while IFS= read -r f; do
     continue
   fi
   # 安全闸门：路径必须在 KB_ROOT 范围内
-  real_f=$(realpath "$f" 2>/dev/null || echo "$f")
+  # realpath 在 macOS/BSD 非自带，改用 cd+pwd 解析物理路径（子shell内执行，不影响脚本cwd）
+  if [ -d "$f" ]; then
+    real_f=$(cd "$f" 2>/dev/null && pwd) || real_f="$f"
+  else
+    real_f=$(cd "$(dirname "$f")" 2>/dev/null && pwd)/$(basename "$f") || real_f="$f"
+  fi
   case "$real_f" in
     "$KB_ROOT"/*)
       if [ -e "$f" ]; then

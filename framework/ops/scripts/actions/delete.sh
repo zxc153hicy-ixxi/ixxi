@@ -59,8 +59,8 @@ main() {
     # E3: 清理索引引用 + 重排编号 + 更新计数
     local basename_noext="${basename%.md}"
 
-    # 检查正模式索引
-    local pattern_index="$KB_ROOT/ops/patterns/正模式索引.md"
+    # 检查正模式索引（实际布局：正/反模式平铺在 framework/ops/framework-patterns，当前无正模式索引.md）
+    local pattern_index="$KB_ROOT/framework/ops/framework-patterns/正模式索引.md"
     if [ -f "$pattern_index" ]; then
         if grep -q "\[\[$basename_noext\]\]" "$pattern_index" 2>/dev/null; then
             remove_index_row "$pattern_index" "$basename_noext"
@@ -71,8 +71,8 @@ main() {
         fi
     fi
 
-    # 检查反模式索引
-    local anti_index="$KB_ROOT/ops/anti-patterns/反模式索引.md"
+    # 检查反模式索引（当前无反模式索引.md）
+    local anti_index="$KB_ROOT/framework/ops/framework-patterns/反模式索引.md"
     if [ -f "$anti_index" ]; then
         if grep -q "\[\[$basename_noext\]\]" "$anti_index" 2>/dev/null; then
             remove_index_row "$anti_index" "$basename_noext"
@@ -83,8 +83,8 @@ main() {
         fi
     fi
 
-    # E4: 清理 index.md 中的导航引用
-    local main_index="$KB_ROOT/index.md"
+    # E4: 清理 framework/index.md 中的导航引用
+    local main_index="$KB_ROOT/framework/index.md"
     if [ -f "$main_index" ]; then
         if grep -q "\[\[$path\]\]" "$main_index" 2>/dev/null; then
             sed -i "\|\[\[$path\]\]|d" "$main_index"

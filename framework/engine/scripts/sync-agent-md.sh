@@ -18,9 +18,9 @@ sync_to() {
   local target_name="${target##*/}"      # CLAUDE.md 或 HERMES.md
   local target_base="${target_name%.*}" # CLAUDE 或 HERMES
 
-  # 提取 MANUAL 区（如有）
-  if [ -f "$target" ] && grep -q "<!-- MANUAL START -->" "$target"; then
-    manual_content=$(sed -n '/<!-- MANUAL START -->/,$p' "$target")
+  # 提取 MANUAL 区（如有）——锚定行首，避免「引擎特定声明」块反引号内的 `<!-- MANUAL START -->` 字样被误匹配
+  if [ -f "$target" ] && grep -q "^<!-- MANUAL START -->" "$target"; then
+    manual_content=$(sed -n '/^<!-- MANUAL START -->/,$p' "$target")
   else
     manual_content="<!-- MANUAL START -->"$'\n'"<!-- MANUAL END -->"
   fi
@@ -35,13 +35,11 @@ sync_to() {
       # AGENTS 含 AGENT 子串，跳过标题二次替换避免 AGENTSS
       sed -e "1s/AGENT\.md/${target_name}/" \
           -e "s/AGENT\.md/${target_name}/g" \
-          -e "s/→AGENT变更/→${target_base}变更/g" \
           "$AGENT_MD"
     else
       sed -e "1s/AGENT\.md/${target_name}/" \
           -e "1s/AGENT/${target_base}/g" \
           -e "s/AGENT\.md/${target_name}/g" \
-          -e "s/→AGENT变更/→${target_base}变更/g" \
           "$AGENT_MD"
     fi
     echo "<!-- AUTO END -->"

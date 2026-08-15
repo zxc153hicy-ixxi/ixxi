@@ -2,14 +2,16 @@
 """sync-skills-to-claude.py — 知识库管理 skills → Claude Code 适配层平铺
 
 权威源（不修改）：
-  core/skills/<技能>/          # 16 个管理技能
+  core/skills/<技能>/          # 管理技能（16）
+  core/skills/_external/<分类>/<技能>/  # 外部技能
+  personal/system/skills/<分类>/<技能>/ # 个人技能（归外部，覆盖同名）
 
 目标（受控复制，一级平铺供 Claude Code 发现）：
-  .claude/skills/kb-<name>/          # Claude Code 只扫一级 .claude/skills/<name>/SKILL.md
+  .claude/skills/<name>/          # Claude Code 只扫一级 .claude/skills/<name>/SKILL.md
 
 背景：Claude Code 只扫描 .claude/skills/ 一级目录、不递归；此前内部技能藏在
-  .claude/skills/kb/<name>/SKILL.md（二级嵌套）导致不可见。本脚本把 15 个管理
-  技能平铺到一级（kb-<name> 目录），与 sync-skills-to-codex.py 对 Codex 的做法一致。
+  .claude/skills/kb/<name>/SKILL.md（二级嵌套）导致不可见。本脚本把权威源全部技能
+  平铺到一级，与 sync-skills-to-codex.py 对 Codex 的做法一致。
 
 用法：
   python engine/scripts/sync-skills-to-claude.py            # 同步（复制权威源→目标）
@@ -66,8 +68,13 @@ def collect_sources() -> dict[str, Path]:
     return skills
 
 
+def is_mgmt(src: Path) -> bool:
+    """口径统一：核心/skills 顶层 = 管理；_external 与 personal/system/skills 归外部/个人"""
+    return "_external" not in src.parts and "personal" not in src.parts
+
+
 def check_only(sources: dict[str, Path]) -> int:
-    """校验目标中所有 kb-* 平铺目录是否齐全；返回缺失数"""
+    """校验目标中所有平铺目录是否齐全；返回缺失数"""
     missing = []
     for name, src in sources.items():
         dst = DST / name
@@ -76,7 +83,7 @@ def check_only(sources: dict[str, Path]) -> int:
     if missing:
         print(f"❌ 缺失 {len(missing)} 个 Claude 平铺入口: {missing}")
         return len(missing)
-    print(f"✅ 校验通过：{len(sources)} 个 kb-* 平铺入口齐全")
+    print(f"✅ 校验通过：{len(sources)} 个平铺入口齐全")
     return 0
 
 
@@ -103,7 +110,8 @@ def sync(sources: dict[str, Path], prune: bool) -> None:
 def main():
     args = sys.argv[1:]
     sources = collect_sources()
-    print(f"权威源管理技能: {len(sources)} 个")
+    mgmt = sum(1 for s in sources.values() if is_mgmt(s))
+    print(f"权威源技能 {len(sources)} 个（管理 {mgmt} + 外部/个人 {len(sources) - mgmt}）")
 
     if "--check" in args:
         sys.exit(check_only(sources))

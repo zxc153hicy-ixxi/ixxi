@@ -9,7 +9,9 @@ source "$SCRIPT_DIR/../_lib/git.sh"
 source "$SCRIPT_DIR/../_lib/index.sh"
 
 KB_ROOT=$(kb_root)
-ANTI_PATTERNS_DIR="$KB_ROOT/ops/anti-patterns"
+# 实际布局：正/反模式平铺在 framework/ops/framework-patterns（无独立 anti-patterns/ 目录）
+ANTI_PATTERNS_DIR="$KB_ROOT/framework/ops/framework-patterns"
+# framework-patterns 当前无 反模式索引.md，索引维护仅在索引文件存在时执行（不强行新建）
 INDEX_FILE="$ANTI_PATTERNS_DIR/反模式索引.md"
 
 main() {
@@ -60,26 +62,29 @@ EOF
         git_rollback "写入模板文件失败: $filepath"
     fi
 
-    # E3: 追加到索引
-    local old_count
-    old_count=$(count_index_entries "$INDEX_FILE")
-    append_index_row "$INDEX_FILE" "[[$name]] | （待补充）"
-
-    # E4: 重排编号
-    renumber_index "$INDEX_FILE"
-
-    # E5: 更新 index.md 计数
-    local new_count
-    new_count=$(count_index_entries "$INDEX_FILE")
-    update_main_count "anti-patterns" "反模式索引" "$new_count"
+    # E3-E5: 索引维护——framework-patterns 无 反模式索引.md 时跳过（不强行新建），仅写文件
+    local old_count="" new_count=""
+    if [ -f "$INDEX_FILE" ]; then
+        old_count=$(count_index_entries "$INDEX_FILE")
+        append_index_row "$INDEX_FILE" "[[$name]] | （待补充）"
+        renumber_index "$INDEX_FILE"
+        new_count=$(count_index_entries "$INDEX_FILE")
+        update_main_count "anti-patterns" "反模式索引" "$new_count"
+    else
+        echo "   ⚠️ 索引文件不存在，跳过索引维护: $INDEX_FILE" >&2
+    fi
 
     git_cleanup
 
     # E6: 输出摘要
     echo "📝 kb-do.sh create-anti-pattern $name"
-    echo "   创建: ops/anti-patterns/$filename"
-    echo "   索引: 反模式索引 #$new_count"
-    echo "   计数: $old_count → $new_count"
+    echo "   创建: framework/ops/framework-patterns/$filename"
+    if [ -n "$new_count" ]; then
+        echo "   索引: 反模式索引 #$new_count"
+        echo "   计数: $old_count → $new_count"
+    else
+        echo "   索引: 无反模式索引.md，未更新索引"
+    fi
 }
 
 main "$@"

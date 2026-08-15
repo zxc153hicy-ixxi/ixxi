@@ -11,7 +11,8 @@ TIMESTAMP=$(date "+%Y-%m-%d %H:%M")
 cd "$KB_ROOT"
 
 # 1. 标记queue中所有未完成的条目为[x]
-sed -i 's/^\[ \]/[x]/' queue.md
+# sed -i 在 macOS/BSD 语法不同（需 -i '' 备份后缀），改用临时文件+mv 的可移植写法
+sed 's/^\[ \]/[x]/' queue.md > queue.md.tmp && mv queue.md.tmp queue.md
 
 # 2. 追加log
 echo "$TIMESTAMP | Ingest | $LOG_ENTRY" >> log.md

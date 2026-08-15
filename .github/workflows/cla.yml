@@ -1,6 +1,9 @@
 # CLA Assistant 自动化签署检查
 # 触发：PR 打开 / PR 评论（含签署、recheck）/ PR 合并
 # 机制：外部贡献者首次 PR 时，机器人留言引导签署 .github/CLA.md，签署后 PR 放行
+#
+# TODO：path-to-document 与 remote-organization-name 中的 <你的GitHub组织> 为占位符，
+#        待真实组织名确定后替换（开源后事项，见下方 ⚠️ 待办注释）。
 name: "CLA Assistant"
 
 on:
@@ -31,6 +34,7 @@ jobs:
         with:
           # CLA 文本指向仓库内 .github/CLA.md
           # 替换 <你的GitHub组织> 为实际组织名
+          # ⚠️ 待办：真实组织名尚未确定（开源后事项），确定后替换 <你的GitHub组织>
           path-to-document: 'https://raw.githubusercontent.com/<你的GitHub组织>/ixxi/main/.github/CLA.md'
           # 签名存储位置（默认写入当前仓库）
           path-to-signatures: 'signatures/version1/cla.json'

@@ -4,6 +4,8 @@ status: active
 summary: 场景注册表 schema——字段定义 + 状态机 + domain 受控词表机制。机制归 framework，数据行归 personal。
 ---
 
+> **纯参考文档**：字段定义/状态机/domain 受控词表机制以本文档为准；**实现以 `check-scene-domain.py` 为准**（脚本仅做 scene/domain 与目录路径的一致性校验，不读取本 schema，本文件无程序化消费者）。
+
 # 场景注册表 schema
 
 > 机制（本文件）归 framework，数据行归 personal。新实例在此 schema 下登记自己的场景。

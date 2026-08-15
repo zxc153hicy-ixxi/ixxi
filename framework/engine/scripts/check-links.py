@@ -99,6 +99,9 @@ def _should_skip(link: str) -> bool:
     """Check if a link should be skipped entirely (not counted as a link at all)."""
     if link.startswith(("http://", "https://", "mailto:")):
         return True
+    if link.startswith("@"):
+        # @ 用户句柄（如 [[@chasen_liao]]）是提及不是 wikilink
+        return True
     if link in PLACEHOLDER_TARGETS:
         return True
     if "${" in link:
@@ -115,7 +118,9 @@ def _resolve_wikilink(link: str, current_file: Path, repo_root: Path) -> Path | 
         candidate = (current_file.parent / link).resolve()
         if candidate.exists():
             return candidate
-        candidate_md = (current_file.parent / f"{link}.md").resolve()
+        # 已带 .md 后缀的链接不再追加 .md，避免双后缀 miss
+        suffix = "" if link.endswith(".md") else ".md"
+        candidate_md = (current_file.parent / f"{link}{suffix}").resolve()
         return candidate_md if candidate_md.exists() else None
     # Try repo-root relative first
     candidate = repo_root / f"{link}.md"
@@ -162,11 +167,21 @@ def _resolve_wikilink(link: str, current_file: Path, repo_root: Path) -> Path | 
         if candidate.exists() and candidate.is_file():
             return candidate
 
-    # Fallback: search by filename stem anywhere in repo
+    # Fallback: 按文件名在仓库内任意位置查找
+    # - 已带 .md 后缀的链接（[[xxx.md]]）直接按实际文件名查，不再重复拼接 .md（避免双后缀 miss）
+    # - 非 .md 目标（如 [[engine/scripts/cleanup-versions.py]]）按实际文件名（含后缀）查存在性
     stem = link.split("/")[-1]
-    for f in repo_root.rglob(f"{stem}.md"):
-        if f.name not in SKIP_FILES:
-            return f
+    if stem.endswith(".md"):
+        for f in repo_root.rglob(stem):
+            if f.name not in SKIP_FILES:
+                return f
+    else:
+        for f in repo_root.rglob(stem):
+            if f.name not in SKIP_FILES:
+                return f
+        for f in repo_root.rglob(f"{stem}.md"):
+            if f.name not in SKIP_FILES:
+                return f
     return None
 
 
@@ -197,6 +212,9 @@ def check_broken(repo: Path, files: list[str] | None = None) -> tuple[list[dict]
             if _should_skip(link):
                 continue
             resolved = _resolve_wikilink(link, f, repo)
+            # 越出 repo 根的链接（如 [[../GETTING-STARTED]]）视为外部链接，跳过不计入断链
+            if resolved is not None and not resolved.is_relative_to(repo):
+                continue
             entry = {"source": str(f.relative_to(repo)), "target": link,
                      "resolved": str(resolved.relative_to(repo)) if resolved else None}
             all_links.append(entry)

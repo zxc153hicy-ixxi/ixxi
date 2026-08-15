@@ -13,9 +13,14 @@ import sys
 import time
 from pathlib import Path
 
-from markitdown import MarkItDown
-
-_md = MarkItDown()
+# MarkItDown Python API（缺包时优雅降级：打印安装提示而非崩溃，对齐 auto-import.py 做法）
+try:
+    from markitdown import MarkItDown
+    _md = MarkItDown()
+    _MD_AVAILABLE = True
+except ImportError:
+    _md = None
+    _MD_AVAILABLE = False
 
 SKIP_FILES = {"Thumbs.db", ".DS_Store", "desktop.ini", ".gitkeep", ".placeholder"}
 DEFAULT_EXTS = {".docx", ".pdf", ".epub", ".doc", ".pptx", ".ppt"}
@@ -37,6 +42,8 @@ def convert_file(input_path: Path, output_path: Path) -> tuple[bool, str]:
     """转换单个文件，返回 (成功, 消息)，原子写入防中断残留"""
     start = time.time()
     tmp_path = output_path.with_suffix(".tmp")
+    if not _MD_AVAILABLE:
+        return False, "需要 pip install markitdown"
     try:
         result = _md.convert(str(input_path))
         text = result.text_content
@@ -88,6 +95,10 @@ def main():
             out_name = f"{f.stem}.md"
             print(f"  {rel}  →  {out_name}")
         return
+
+    if not _MD_AVAILABLE:
+        print("[错误] 缺少依赖 markitdown：需要 pip install markitdown")
+        sys.exit(1)
 
     tgt.mkdir(parents=True, exist_ok=True)
 

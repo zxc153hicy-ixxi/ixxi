@@ -194,6 +194,9 @@ def check_p6(name: str, is_mgmt: bool, rows: dict[str, list[str]]) -> tuple[bool
 
 def main() -> int:
     args = set(sys.argv[1:])
+    if "-h" in args or "--help" in args:
+        print(__doc__)
+        return 0
     verbose = "--verbose" in args
     if "--check" in args:
         pass  # 本脚本天然只读，--check 为显式声明

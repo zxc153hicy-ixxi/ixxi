@@ -1,6 +1,6 @@
 # 操作入口注册表（framework 模板）
 
-> 命令 / 脚本 / skill 的统一登记入口。护栏目标：新建即登记（见 framework-patterns/工具建成即登记）。
+> 命令 / 脚本 / skill 的统一登记入口。护栏目标：新建即登记（由 engine/scripts/check-script-refs.py 校验）。
 > 机制（本文件）归 framework；实例的具体登记数据（目录规模、脚本清单、运行快照）归 personal 实例的 activation.md。
 
 ## 登记格式

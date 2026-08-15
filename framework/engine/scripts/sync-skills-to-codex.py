@@ -3,7 +3,8 @@
 
 权威源（不修改）：
   core/skills/<技能>/          # 16 个管理技能
-  core/skills/_external/<分类>/<技能>/  # 57 个领域技能（跳过分类级重复 SKILL.md）
+  core/skills/_external/<分类>/<技能>/  # 外部技能（跳过分类级重复 SKILL.md）
+  personal/system/skills/<分类>/<技能>/ # 个人技能（归外部，覆盖同名）
 
 目标（受控复制，每次运行镜像更新）：
   1. 知识库根 .agents/skills/        # Codex 仓库级发现（git 版本化）
@@ -11,6 +12,7 @@
 
 用法：
   python engine/scripts/sync-skills-to-codex.py [--target user|repo|all] [--prune]
+  python engine/scripts/sync-skills-to-codex.py --check  # 只读校验（对比源/目标，不写文件）
 """
 import sys, shutil, re
 sys.stdout.reconfigure(encoding="utf-8")
@@ -40,7 +42,7 @@ def collect_sources() -> list[tuple[str, Path]]:
     """返回 [(技能名, 技能目录路径)]，跳过分类级重复 SKILL.md"""
     skills = {}
 
-    # 管理技能（15）
+    # 管理技能（16）
     if SRC_MGMT.exists():
         for d in sorted(SRC_MGMT.iterdir()):
             if d.is_dir() and (d / "SKILL.md").exists():
@@ -65,6 +67,20 @@ def collect_sources() -> list[tuple[str, Path]]:
                     skills[skill_name(sub / "SKILL.md")] = sub
 
     return sorted(skills.items())
+
+
+def check_only(sources: list[tuple[str, Path]]) -> int:
+    """校验仓库根 .agents/skills/ 中所有镜像是否齐全；返回缺失数（只读，不写文件）"""
+    missing = []
+    for name, _src in sources:
+        dst = TARGET_REPO / name
+        if not (dst / "SKILL.md").exists():
+            missing.append(name)
+    if missing:
+        print(f"❌ 缺失 {len(missing)} 个 Codex 镜像: {missing}")
+        return len(missing)
+    print(f"✅ 校验通过：{len(sources)} 个 Codex 镜像齐全")
+    return 0
 
 
 def sync_to(target: Path, sources: list[tuple[str, Path]], prune: bool):
@@ -96,8 +112,9 @@ def sync_to(target: Path, sources: list[tuple[str, Path]], prune: bool):
             synced.append(name)
 
         print(f"  -> {target}  (技能 {len(synced)} 个)")
-        # 生成 README（说明产物性质 + 计数口径，对齐 73 = 管理 16 / 外部 57）
-        write_readme(target, len(synced), sum(1 for _, s in sources if "_external" in s.parts))
+        # 生成 README（说明产物性质 + 计数口径，统一口径 = 管理 16 / 外部 62）
+        write_readme(target, len(synced),
+                     sum(1 for _, s in sources if "_external" in s.parts or "personal" in s.parts))
     except Exception:
         # 回滚：还原备份
         if backup_dir is not None and (backup_dir / "target").exists():
@@ -125,9 +142,10 @@ def write_readme(target: Path, total: int, external: int):
     )
 
 
-def main():
+def main() -> int:
     args = [a for a in sys.argv[1:]]
     prune = "--prune" in args
+    check = "--check" in args
     targets = {"repo": TARGET_REPO, "user": TARGET_USER}
     sel = "all"
     for a in args:
@@ -141,17 +159,21 @@ def main():
     if dup:
         print(f"⚠️ 重名: {dup}")
 
+    if check:
+        return check_only(sources)
+
     if sel in ("repo", "all"):
         sync_to(TARGET_REPO, sources, prune)
     if sel in ("user", "all"):
         sync_to(TARGET_USER, sources, prune)
 
-    # 输出清单
+    # 输出清单（个人归外部，与 parity 口径一致）
     print("\n技能清单（写 AGENTS.md 用）:")
     for name, src in sources:
-        src_label = "领域" if "_external" in src.parts else "管理"
+        src_label = "外部" if ("_external" in src.parts or "personal" in src.parts) else "管理"
         print(f"  - {name} [{src_label}]")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -2,8 +2,9 @@
 """sync-skills-to-hermes.py — 知识库 skills → Hermes 命令索引自动生成
 
 权威源（不修改，与 sync-skills-to-codex.py 同源收集逻辑）：
-  core/skills/<技能>/                       # 管理技能
+  core/skills/<技能>/                       # 管理技能（16）
   core/skills/_external/<分类>/<技能>/SKILL.md  # 外部技能（跳过分类级 SKILL.md）
+  personal/system/skills/<分类>/<技能>/SKILL.md # 个人技能（归外部，覆盖同名）
 
 目标（生成，每次运行整体重建）：
   ops/hermes/Hermes-命令索引.md  # 替代手维护翻译表的 Hermes 命令索引
@@ -152,7 +153,7 @@ def build_index(mgmt_rows, ext_rows) -> str:
     parts.append("tags: [命令索引, Hermes]")
     parts.append("status: active")
     parts.append("summary: 由 engine/scripts/sync-skills-to-hermes.py 从权威源（core/skills + "
-                 "core/skills/_external）生成；手改请改 SKILL.md")
+                 "core/skills/_external + personal/system/skills）生成；手改请改 SKILL.md")
     parts.append("---")
     parts.append("")
     parts.append("# Hermes 命令索引")
@@ -182,8 +183,9 @@ def main():
     check_only = "--check" in sys.argv[1:]
 
     sources = collect_sources()
-    mgmt = [(n, d) for n, d in sources if "_external" not in d.parts]
-    ext = [(n, d) for n, d in sources if "_external" in d.parts]
+    # 统一口径（与 check-skill-parity.py 一致）：管理=core/skills 顶层，外部=_external + personal/system/skills
+    mgmt = [(n, d) for n, d in sources if "_external" not in d.parts and "personal" not in d.parts]
+    ext = [(n, d) for n, d in sources if "_external" in d.parts or "personal" in d.parts]
     print(f"收集到技能源: 管理 {len(mgmt)} + 外部 {len(ext)} = {len(sources)} 个")
 
     if check_only:

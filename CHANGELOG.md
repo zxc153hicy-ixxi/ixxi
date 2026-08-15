@@ -15,11 +15,14 @@
 ### 修复
 
 - **适配层产物目录统一到仓库根**：5 个 sync 脚本 DST + sync-agent-md + .gitignore 同步改，Claude/Codex 各 Agent 冷启动能扫到 kb-*（原误放 framework/ 导致冷启动读不到）
+- **全量修复审计问题（30 项，2 P0 + 12 P1 + 16 P2）**：校验脚本崩溃（check-links 越界 ValueError + @句柄/非.md/双后缀假报错、check-open-source PII 硬编码自匹配 + ADAPTER_COUNT 恒假通过）、契约漂移（sync-agent-md MANUAL 提取误匹配反引号内标记、T 层挂 3 未路由规则、MANUAL 回填 G16.5 硬闸门句）、测试失败（fixture 补 SRC_PERSONAL/SRC_EXT monkeypatch）、正反模式双源（framework-patterns 删 66 重复留 3 独有）、sync 归类口径统一（管理16/外部62）、CI 补测试 job、跨平台 GNU-only 命令、入口补 --help/--dry-run、新建 requirements.txt
 
 ### G 层修改确认
 
 - ✅ 已确认（2026-08-15）：G21 待办必登记 + 冷启动引导段 + 引擎特定声明章节
   - 确认方式：用户对话回复「保留」
+- ✅ 已确认（2026-08-15）：T 层挂载 3 个未路由规则（personal隔离规范 / skill调度注册表 / mcp注册表）+ 补管理 skill 与 agent 命名约定说明
+  - 确认方式：用户对话回复「全部修复」+「提交」
 
 ## [0.1.2] - 2026-08-15
 

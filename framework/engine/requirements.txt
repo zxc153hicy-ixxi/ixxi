@@ -1,0 +1,11 @@
+# ixxi 引擎脚本依赖（framework/engine/scripts/*.py）
+# 安装：pip install -r framework/engine/requirements.txt
+#
+# 说明：
+#   - 缺包时各脚本均有优雅降级（try/except + 安装提示），不阻断其他能力；
+#   - mineru / marker-pdf 体积大且需模型下载，按需安装（batch-mineru.py / batch-ocr.py 惰性导入）。
+
+pyyaml>=6.0        # check-scene-domain.py / check-frontmatter.py 等 YAML 解析（import yaml）
+markitdown>=0.1.0  # batch-convert.py / auto-import.py 文档转 Markdown（import markitdown）
+mineru             # batch-mineru.py MinerU PDF 解析（import mineru.cli.common）
+marker-pdf         # batch-ocr.py marker OCR（import marker）

@@ -8,7 +8,7 @@ CLAUDE_MD="$KB_ROOT/CLAUDE.md"
 DESIGN_DIR="$(git rev-parse --show-toplevel)/../知识库方案"
 
 # 1. 读 CLAUDE.md 版本号
-CLAUDE_VER=$(head -1 "$CLAUDE_MD" | grep -oP 'V\d+\.\d+\.\d+' | head -1)
+CLAUDE_VER=$(head -1 "$CLAUDE_MD" | grep -oE 'V[0-9]+\.[0-9]+\.[0-9]+' | head -1)
 
 if [ -z "$CLAUDE_VER" ]; then
   echo "❌ 无法从 CLAUDE.md 读取版本号"
@@ -16,14 +16,23 @@ if [ -z "$CLAUDE_VER" ]; then
 fi
 
 # 2. 找最新的设计方案目录
-LATEST_DIR=$(ls -d "$DESIGN_DIR"/V*-模块化 2>/dev/null | sort -V | tail -1)
+# sort -V 非 POSIX（macOS/BSD 无），改 python 取版本号最大的目录（保留完整路径）
+LATEST_DIR=$(ls -d "$DESIGN_DIR"/V*-模块化 2>/dev/null | python -c "
+import sys, re
+lines = [l for l in sys.stdin.read().splitlines() if re.search(r'V[0-9]+(\.[0-9]+)*', l)]
+if lines:
+    def vkey(l):
+        m = re.search(r'V([0-9]+(\.[0-9]+)*)', l)
+        return tuple(int(x) for x in m.group(1).split('.'))
+    print(max(lines, key=vkey))
+" 2>/dev/null)
 
 if [ -z "$LATEST_DIR" ]; then
   echo "❌ 未找到设计方案目录"
   exit 1
 fi
 
-DESIGN_VER=$(basename "$LATEST_DIR" | grep -oP 'V\d+\.\d+\.\d+' | head -1)
+DESIGN_VER=$(basename "$LATEST_DIR" | grep -oE 'V[0-9]+\.[0-9]+\.[0-9]+' | head -1)
 
 # 3. 比对
 echo "=== 版本一致性检查 ==="

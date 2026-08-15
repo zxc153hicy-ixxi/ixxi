@@ -11,10 +11,16 @@ set -e
 KB_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 
 # CHANGELOG 最新版本：## [x.y.z]
-CHANGELOG_VER=$(grep -oP '^## \[\d+\.\d+\.\d+\]' "$KB_ROOT/CHANGELOG.md" 2>/dev/null | head -1 | grep -oP '\d+\.\d+\.\d+')
+CHANGELOG_VER=$(grep -oE '^## \[[0-9]+\.[0-9]+\.[0-9]+\]' "$KB_ROOT/CHANGELOG.md" 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
 
 # git tag 最新 semver（vX.Y.Z 三段式，排除 -pre / baseline 等非发布 tag）
-TAG_VER=$(git -C "$KB_ROOT" tag -l 2>/dev/null | grep -oP '^v\d+\.\d+\.\d+$' | sed 's/^v//' | sort -V | tail -1)
+# sort -V 非 POSIX（macOS/BSD 无），改 python 取版本号最大者
+TAG_VER=$(git -C "$KB_ROOT" tag -l 2>/dev/null | grep -oE '^v[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^v//' | python -c "
+import sys
+vers = [l for l in sys.stdin.read().splitlines() if l]
+if vers:
+    print(max(vers, key=lambda v: tuple(int(x) for x in v.split('.'))))
+" 2>/dev/null)
 
 # 两者都缺失 → 版本机制未建立，跳过
 if [ -z "$CHANGELOG_VER" ] && [ -z "$TAG_VER" ]; then

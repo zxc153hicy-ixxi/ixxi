@@ -294,6 +294,11 @@ class TestSyncClaudeSkills(unittest.TestCase):
         self.dst = Path(self.tmp.name) / ".claude" / "skills"
         self.src.mkdir(parents=True)
         self.dst.mkdir(parents=True)
+        # 空 _external 与 personal 目录：collect 时不引入真实仓库 external/personal 技能
+        self.src_ext = self.src / "_external"
+        self.src_ext.mkdir()
+        self.personal = Path(self.tmp.name) / "personal" / "system" / "skills"
+        self.personal.mkdir(parents=True)
         a = self.src / "skill-a" / "SKILL.md"
         a.parent.mkdir()
         a.write_text("---\nname: kb-query\ndescription: 检索\n---\n正文\n", encoding="utf-8")
@@ -304,10 +309,13 @@ class TestSyncClaudeSkills(unittest.TestCase):
         self.a, self.b = a, b
 
     def _patch(self):
-        old = (sync_claude.SRC, sync_claude.DST)
+        old = (sync_claude.SRC, sync_claude.SRC_EXT, sync_claude.SRC_PERSONAL, sync_claude.DST)
         sync_claude.SRC, sync_claude.DST = self.src, self.dst
+        sync_claude.SRC_EXT, sync_claude.SRC_PERSONAL = self.src_ext, self.personal
         self.addCleanup(setattr, sync_claude, "SRC", old[0])
-        self.addCleanup(setattr, sync_claude, "DST", old[1])
+        self.addCleanup(setattr, sync_claude, "SRC_EXT", old[1])
+        self.addCleanup(setattr, sync_claude, "SRC_PERSONAL", old[2])
+        self.addCleanup(setattr, sync_claude, "DST", old[3])
 
     def test_skill_name_from_frontmatter(self):
         self.assertEqual(sync_claude.skill_name(self.a), "kb-query")
@@ -358,6 +366,9 @@ class TestSyncHermes(unittest.TestCase):
         self.mgmt = self.root / "core" / "skills"
         self.ext = self.root / "core" / "skills" / "_external"
         self.out = self.root / "ops" / "hermes" / "Hermes-命令索引.md"
+        # 空 personal 目录：collect 时不引入真实仓库 personal/system/skills
+        self.personal = self.root / "personal" / "system" / "skills"
+        self.personal.mkdir(parents=True)
         sk = self.mgmt / "kb-query" / "SKILL.md"
         sk.parent.mkdir(parents=True)
         sk.write_text(
@@ -373,13 +384,16 @@ class TestSyncHermes(unittest.TestCase):
         (self.ext / "writing" / "SKILL.md").write_text("分类级 SKILL\n", encoding="utf-8")
 
     def _patch(self):
-        old = (sync_hermes.SRC_MGMT, sync_hermes.SRC_EXT, sync_hermes.REPO, sync_hermes.OUT)
+        old = (sync_hermes.SRC_MGMT, sync_hermes.SRC_EXT, sync_hermes.SRC_PERSONAL,
+               sync_hermes.REPO, sync_hermes.OUT)
         sync_hermes.SRC_MGMT, sync_hermes.SRC_EXT = self.mgmt, self.ext
+        sync_hermes.SRC_PERSONAL = self.personal
         sync_hermes.REPO, sync_hermes.OUT = self.root, self.out
         self.addCleanup(setattr, sync_hermes, "SRC_MGMT", old[0])
         self.addCleanup(setattr, sync_hermes, "SRC_EXT", old[1])
-        self.addCleanup(setattr, sync_hermes, "REPO", old[2])
-        self.addCleanup(setattr, sync_hermes, "OUT", old[3])
+        self.addCleanup(setattr, sync_hermes, "SRC_PERSONAL", old[2])
+        self.addCleanup(setattr, sync_hermes, "REPO", old[3])
+        self.addCleanup(setattr, sync_hermes, "OUT", old[4])
 
     def test_ref_scripts(self):
         scripts = sync_hermes.ref_scripts(self.sk)

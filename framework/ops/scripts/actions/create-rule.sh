@@ -8,8 +8,9 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/../_lib/git.sh"
 
 KB_ROOT=$(kb_root)
-RULES_DIR="$KB_ROOT/ops/rules"
-MAIN_INDEX="$KB_ROOT/index.md"
+# 实际布局：规则在 framework/ops/rules，主导航在 framework/index.md（仓库根无 index.md）
+RULES_DIR="$KB_ROOT/framework/ops/rules"
+MAIN_INDEX="$KB_ROOT/framework/index.md"
 
 main() {
     if [ $# -lt 1 ]; then
@@ -55,30 +56,30 @@ EOF
         git_rollback "写入模板文件失败: $filepath"
     fi
 
-    # E3: 注册到 index.md rules/ 区域
-    if grep -q "### rules/" "$MAIN_INDEX"; then
-        # 找到 rules/ 区块后第一个 ops/rules/ 引用的最后一个，在其后插入
+    # E3: 注册到 framework/index.md 的「规则」区块
+    if grep -q "^## 规则" "$MAIN_INDEX"; then
+        # 找到「## 规则」区块后最后一个 [[ops/rules/ 引用，在其后插入
         local section_line
-        section_line=$(grep -n '### rules/' "$MAIN_INDEX" | head -1 | cut -d: -f1)
-        # 往该区块后找最后一个 ops/rules/ 引用行
+        section_line=$(grep -n '^## 规则' "$MAIN_INDEX" | head -1 | cut -d: -f1)
+        # 往该区块后找最后一个 [[ops/rules/ 引用行
         local last_rule_line
         last_rule_line=$(tail -n +"$section_line" "$MAIN_INDEX" | grep -n '\[\[ops/rules/' | tail -1 | cut -d: -f1)
         if [ -n "$last_rule_line" ]; then
             local target_line=$((section_line + last_rule_line))
             sed -i "${target_line}a- [[ops/rules/${filename%.md}|$name]] —— 待补充" "$MAIN_INDEX"
         else
-            # 没有已有规则引用，在 ### rules/ 下一行插入
+            # 没有已有规则引用，在「## 规则」下一行插入
             sed -i "${section_line}a- [[ops/rules/${filename%.md}|$name]] —— 待补充" "$MAIN_INDEX"
         fi
     else
-        git_rollback "index.md 中未找到 rules/ 区块，请手动注册"
+        git_rollback "framework/index.md 中未找到「规则」区块，请手动注册"
     fi
 
     git_cleanup
 
     echo "📝 kb-do.sh create-rule $name"
-    echo "   创建: ops/rules/$filename"
-    echo "   注册: index.md rules/ 区块"
+    echo "   创建: framework/ops/rules/$filename"
+    echo "   注册: framework/index.md 「规则」区块"
 }
 
 main "$@"

@@ -10,9 +10,10 @@
 # 说明：
 #   - 恶意样例（malicious-samples/）是攻击面检测的"黄金对比例"，仅供步骤 4 显式引用；
 #     semgrep/bandit 通过路径作用域 / 排除参数跳过该夹具目录，避免污染真实扫描。
-#   - 该目录下的安全基线：bandit 当前在 auto-import.py 存在 1 处 High（subprocess shell=True）
-#     待清理；本流水线作为防线闸门会在修复前保持失败，属预期行为。
+#   - 安全基线：bandit 在 auto-import.py 的 High（subprocess shell=True）已修复——
+#     改为 shell=False，子进程不经 shell 解释，消除命令注入面；流水线应通过，失败视为真实回归。
 # 触发：main 分支 push / PR / 手动
+# 另外：流水线含单元测试 job（framework/engine/tests），见下方 unit-tests。
 # ============================================================
 name: "ixxi · 安全防线（Task 1.1）"
 
@@ -105,3 +106,20 @@ jobs:
             exit 1
           fi
           echo "✅ 恶意样例回归通过：5 类攻击面全部命中，scan-sensitive 非零退出（$rc）"
+
+  # —— 单元测试：framework/engine 功能回归 ——
+  unit-tests:
+    name: 单元测试（unittest）
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 配置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 运行单元测试
+        run: python -m unittest discover -s framework/engine/tests

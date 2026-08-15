@@ -11,7 +11,8 @@ if git diff --cached --name-only | grep -q "AGENT.md"; then
   recent_tag=$(git tag --sort=-creatordate | head -1)
   tag_time=0
   if [ -n "$recent_tag" ] && [ -f "$KB_ROOT/.git/refs/tags/$recent_tag" ]; then
-    tag_time=$(stat -c %Y "$KB_ROOT/.git/refs/tags/$recent_tag" 2>/dev/null || echo 0)
+    # stat -c 在 macOS/BSD 不同，本 hook 已依赖 python，用 python 取 mtime 保证跨平台
+    tag_time=$(python -c "import os,sys;print(int(os.stat(sys.argv[1]).st_mtime))" "$KB_ROOT/.git/refs/tags/$recent_tag" 2>/dev/null || echo 0)
   fi
   now=$(date +%s)
 
@@ -44,8 +45,14 @@ fi
 
 # 版本提醒（Warning，不阻断）—— 改 CHANGELOG 但没打对应 tag 时提醒（版本号防混乱第二层）
 if git diff --cached --name-only | grep -q "CHANGELOG.md"; then
-  CHANGELOG_VER=$(grep -oP '^## \[\d+\.\d+\.\d+\]' "$KB_ROOT/CHANGELOG.md" 2>/dev/null | head -1 | grep -oP '\d+\.\d+\.\d+')
-  TAG_VER=$(git -C "$KB_ROOT" tag -l 2>/dev/null | grep -oP '^v\d+\.\d+\.\d+$' | sed 's/^v//' | sort -V | tail -1)
+  CHANGELOG_VER=$(grep -oE '^## \[[0-9]+\.[0-9]+\.[0-9]+\]' "$KB_ROOT/CHANGELOG.md" 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+  # sort -V 非 POSIX（macOS/BSD 无），改 python 取版本号最大者
+  TAG_VER=$(git -C "$KB_ROOT" tag -l 2>/dev/null | grep -oE '^v[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^v//' | python -c "
+import sys
+vers = [l for l in sys.stdin.read().splitlines() if l]
+if vers:
+    print(max(vers, key=lambda v: tuple(int(x) for x in v.split('.'))))
+" 2>/dev/null)
   if [ -n "$CHANGELOG_VER" ] && [ "$CHANGELOG_VER" != "$TAG_VER" ]; then
     echo ""
     echo "🟡 版本提醒：CHANGELOG 最新 $CHANGELOG_VER 尚无对应 tag（当前 tag 最新 ${TAG_VER:-无}）"

@@ -41,6 +41,9 @@ class SyncFlowBase(unittest.TestCase):
         self.root = Path(self.tmp.name)
         self.mgmt = self.root / "core" / "skills"
         self.mgmt.mkdir(parents=True)
+        # 空 personal 目录：collect 时不引入真实仓库 personal/system/skills
+        self.personal = self.root / "personal" / "system" / "skills"
+        self.personal.mkdir(parents=True)
         # 4 个管理技能（一个不带 frontmatter name → 目录名兜底）
         make_skill(self.mgmt, "kb-query", "调用 engine/scripts/check-inbox.py。\n")
         make_skill(self.mgmt, "kb-lint", "调用 engine/scripts/check-links.py。\n")
@@ -57,10 +60,14 @@ class TestSyncToClaudeFlow(SyncFlowBase):
         super().setUp()
         self.dst = self.root / ".claude" / "skills"
         self.dst.mkdir(parents=True)
-        self._old = (sync_claude.SRC, sync_claude.DST)
+        self._old = (sync_claude.SRC, sync_claude.SRC_EXT, sync_claude.SRC_PERSONAL, sync_claude.DST)
         sync_claude.SRC, sync_claude.DST = self.mgmt, self.dst
+        sync_claude.SRC_EXT = self.mgmt / "_external"  # 不存在 → 不收集外部技能
+        sync_claude.SRC_PERSONAL = self.personal
         self.addCleanup(setattr, sync_claude, "SRC", self._old[0])
-        self.addCleanup(setattr, sync_claude, "DST", self._old[1])
+        self.addCleanup(setattr, sync_claude, "SRC_EXT", self._old[1])
+        self.addCleanup(setattr, sync_claude, "SRC_PERSONAL", self._old[2])
+        self.addCleanup(setattr, sync_claude, "DST", self._old[3])
 
     def test_collect_gets_correct_skill_count(self):
         sources = sync_claude.collect_sources()
@@ -95,13 +102,16 @@ class TestSyncToHermesFlow(SyncFlowBase):
             "分类级 SKILL，不收集\n", encoding="utf-8")
         self.ext = self.mgmt / "_external"
         self.out = self.root / "ops" / "hermes" / "Hermes-命令索引.md"
-        self._old = (sync_hermes.SRC_MGMT, sync_hermes.SRC_EXT, sync_hermes.REPO, sync_hermes.OUT)
+        self._old = (sync_hermes.SRC_MGMT, sync_hermes.SRC_EXT, sync_hermes.SRC_PERSONAL,
+                     sync_hermes.REPO, sync_hermes.OUT)
         sync_hermes.SRC_MGMT, sync_hermes.SRC_EXT = self.mgmt, self.ext
+        sync_hermes.SRC_PERSONAL = self.personal
         sync_hermes.REPO, sync_hermes.OUT = self.root, self.out
         self.addCleanup(setattr, sync_hermes, "SRC_MGMT", self._old[0])
         self.addCleanup(setattr, sync_hermes, "SRC_EXT", self._old[1])
-        self.addCleanup(setattr, sync_hermes, "REPO", self._old[2])
-        self.addCleanup(setattr, sync_hermes, "OUT", self._old[3])
+        self.addCleanup(setattr, sync_hermes, "SRC_PERSONAL", self._old[2])
+        self.addCleanup(setattr, sync_hermes, "REPO", self._old[3])
+        self.addCleanup(setattr, sync_hermes, "OUT", self._old[4])
 
     def test_collect_includes_mgmt_and_external(self):
         sources = sync_hermes.collect_sources()
