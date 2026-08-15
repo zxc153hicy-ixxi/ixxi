@@ -32,8 +32,8 @@ ANCHOR_KEYS = {
 }
 
 SKIP_DIRS = {".git", "__pycache__", ".fix-backup", "node_modules"}
-# 锚点扫描排除：原始层 + 知识层 + 技能内容（人类写入区不应有计数锚点）
-ANCHOR_SKIP_PREFIXES = ("raw/", "knowledge/", ".agents/skills/", ".claude/skills/")
+# 锚点扫描排除：personal 私有层 + 原始层 + 知识层 + 技能内容（人类写入区不应有计数锚点）
+ANCHOR_SKIP_PREFIXES = ("personal/", "raw/", "knowledge/", ".agents/skills/", ".claude/skills/")
 
 ANCHOR_RE = re.compile(r"<!--\s*count:(\w+)=(\d+)\s*-->")
 
