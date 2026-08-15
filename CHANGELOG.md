@@ -11,7 +11,7 @@
 
 ### 新增
 
-- **版本号机制**：单一版本号 = git tag（semver 三段式），CHANGELOG 人机共读，`version-check.sh` 校验 CHANGELOG ↔ git tag 一致
+- **版本号机制**：单一版本号 = git tag（semver 三段式），CHANGELOG 人机共读，`version-check.sh` 校验 CHANGELOG ↔ git tag 一致；防混乱三层（规范 semver 递增规则 + pre-commit CHANGELOG↔tag 提醒 + 会话收尾兜底）
 - **能力可执行性验证**（不变量 I2/I3/I4）：`capability.json` 补 `tier`（full/reader-only）、`core/agents/supports.json` 声明各 agent 契约子集、`verify-capability.py` dry-run 验证「声明 == 实际」
 - **演化飞轮 + telemetry**（I8）：`record-usage.py` 采集使用、`stats --unused` 候选、`docs/evolution/` 四步闭环规则
 - **能力契约补全**：`lifecycle_class`（I9，critical 禁止自动归档）、`resources` 补齐、`gen-resources.py`/`gen-lifecycle.py`
