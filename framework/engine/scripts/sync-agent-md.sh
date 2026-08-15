@@ -3,8 +3,9 @@
 # 保留各目标文件的 MANUAL 区，仅覆盖 AUTO 区
 set -e
 
-REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-AGENT_MD="$REPO_ROOT/AGENT.md"
+FRAMEWORK="$(cd "$(dirname "$0")/../.." && pwd)"   # framework/
+REPO_ROOT="$(cd "$FRAMEWORK/.." && pwd)"           # 仓库根（适配层产物落这里，各 Agent 只扫仓库根）
+AGENT_MD="$FRAMEWORK/AGENT.md"
 
 if [ ! -f "$AGENT_MD" ]; then
   echo "❌ AGENT.md 不存在: $AGENT_MD"

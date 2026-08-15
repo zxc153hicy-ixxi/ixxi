@@ -36,8 +36,8 @@ REPO = Path(__file__).resolve().parent.parent.parent
 
 SRC_MGMT = REPO / "core/skills"
 SRC_EXT = REPO / "core/skills/_external"
-DST_CLAUDE = REPO / ".claude/skills"  # 管理 skill 一级平铺目标（sync-skills-to-claude.py 输出）
-DST_CODEX = REPO / ".agents/skills"   # Codex 镜像目标（sync-skills-to-codex.py 输出）
+DST_CLAUDE = REPO.parent / ".claude/skills"  # 管理 skill 一级平铺目标（sync-skills-to-claude.py 输出）
+DST_CODEX = REPO.parent / ".agents/skills"   # Codex 镜像目标（sync-skills-to-codex.py 输出）
 HERMES_IDX = REPO / "ops/hermes/Hermes-命令索引.md"
 REGISTRY = REPO / "ops/rules/skill调度注册表.md"
 

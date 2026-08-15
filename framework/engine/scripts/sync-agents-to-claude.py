@@ -18,7 +18,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent.parent
 SRC = REPO / "core/agents"
-DST = REPO / ".claude/agents"
+DST = REPO.parent / ".claude/agents"  # 仓库根 .claude/agents/（Claude Code 只扫仓库根）
 
 
 def md_to_agent(md_path: Path) -> tuple[str, str] | None:

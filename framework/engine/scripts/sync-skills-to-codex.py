@@ -19,7 +19,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent.parent
 SRC_MGMT = REPO / "core/skills"
 SRC_EXT = REPO / "core/skills/_external"
-TARGET_REPO = REPO / ".agents/skills"
+TARGET_REPO = REPO.parent / ".agents/skills"  # 仓库根 .agents/skills/（Codex 只扫仓库根）
 TARGET_USER = Path.home() / ".agents/skills"
 
 

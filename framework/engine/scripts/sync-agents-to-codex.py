@@ -12,7 +12,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent.parent
 SRC = REPO / "core/agents"
-DST = REPO / ".codex/agents"
+DST = REPO.parent / ".codex/agents"  # 仓库根 .codex/agents/（Codex 只扫仓库根）
 
 
 def md_to_toml(md_path: Path) -> tuple[str, str] | None:

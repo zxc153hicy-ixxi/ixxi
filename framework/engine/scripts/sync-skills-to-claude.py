@@ -22,7 +22,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent.parent
 SRC = REPO / "core/skills"
-DST = REPO / ".claude/skills"
+DST = REPO.parent / ".claude/skills"  # 仓库根 .claude/skills/（Claude Code 只扫仓库根，不是 framework/）
 
 
 def skill_name(sk_md: Path) -> str:
