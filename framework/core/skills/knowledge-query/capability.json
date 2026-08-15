@@ -11,5 +11,6 @@
   "provides": [
     "knowledge_retrieval"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

@@ -10,5 +10,6 @@
   "provides": [
     "template_export"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

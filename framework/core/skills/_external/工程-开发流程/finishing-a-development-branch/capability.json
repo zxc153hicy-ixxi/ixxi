@@ -9,5 +9,6 @@
   "provides": [
     "branch_finishing"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

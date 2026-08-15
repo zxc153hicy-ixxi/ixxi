@@ -8,5 +8,6 @@
   "provides": [
     "logline_generation"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

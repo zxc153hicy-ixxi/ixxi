@@ -8,5 +8,6 @@
   "provides": [
     "completion_verification"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

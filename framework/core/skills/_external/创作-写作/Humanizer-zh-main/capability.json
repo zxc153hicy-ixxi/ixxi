@@ -8,5 +8,6 @@
   "provides": [
     "text_humanization"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

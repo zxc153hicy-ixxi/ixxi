@@ -8,5 +8,6 @@
   "provides": [
     "scene_idea_generation"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

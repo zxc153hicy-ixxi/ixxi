@@ -8,5 +8,6 @@
   "provides": [
     "scene_framing"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

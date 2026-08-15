@@ -8,5 +8,6 @@
   "provides": [
     "character_abstraction"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

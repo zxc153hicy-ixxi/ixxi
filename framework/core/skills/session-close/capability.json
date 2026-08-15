@@ -10,5 +10,6 @@
   "provides": [
     "session_close"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

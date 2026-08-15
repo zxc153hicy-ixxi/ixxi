@@ -8,5 +8,6 @@
   "provides": [
     "workflow_guide"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

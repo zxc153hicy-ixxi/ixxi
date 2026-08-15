@@ -11,5 +11,6 @@
   "provides": [
     "deduplication"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

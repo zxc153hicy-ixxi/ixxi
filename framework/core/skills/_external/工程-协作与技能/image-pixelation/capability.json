@@ -9,5 +9,6 @@
   "provides": [
     "image_pixelation"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

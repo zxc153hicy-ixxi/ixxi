@@ -8,5 +8,6 @@
   "provides": [
     "code_review_requesting"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

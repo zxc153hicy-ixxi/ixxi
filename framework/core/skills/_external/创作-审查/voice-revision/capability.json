@@ -8,5 +8,6 @@
   "provides": [
     "voice_revision"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

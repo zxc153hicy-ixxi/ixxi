@@ -8,5 +8,6 @@
   "provides": [
     "fantasy_worldbuilding"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

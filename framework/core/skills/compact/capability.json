@@ -10,5 +10,6 @@
   "provides": [
     "compaction"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

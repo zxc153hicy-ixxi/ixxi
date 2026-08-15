@@ -8,5 +8,6 @@
   "provides": [
     "code_review_receiving"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

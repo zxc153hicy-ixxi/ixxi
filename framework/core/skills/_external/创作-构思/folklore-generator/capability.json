@@ -8,5 +8,6 @@
   "provides": [
     "folklore_generation"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

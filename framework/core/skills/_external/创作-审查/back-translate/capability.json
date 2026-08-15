@@ -8,5 +8,6 @@
   "provides": [
     "back_translation"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

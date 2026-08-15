@@ -8,5 +8,6 @@
   "provides": [
     "prd_writing"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

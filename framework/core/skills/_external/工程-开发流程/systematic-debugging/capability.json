@@ -8,5 +8,6 @@
   "provides": [
     "systematic_debugging"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

@@ -10,5 +10,6 @@
   "provides": [
     "curation"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

@@ -8,5 +8,6 @@
   "provides": [
     "mystery_conventions"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

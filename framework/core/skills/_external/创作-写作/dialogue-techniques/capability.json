@@ -8,5 +8,6 @@
   "provides": [
     "dialogue_techniques"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

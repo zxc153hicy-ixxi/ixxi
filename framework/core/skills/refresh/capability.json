@@ -10,5 +10,6 @@
   "provides": [
     "refresh"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

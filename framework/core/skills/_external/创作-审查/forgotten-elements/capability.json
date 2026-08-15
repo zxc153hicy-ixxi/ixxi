@@ -8,5 +8,6 @@
   "provides": [
     "forgotten_elements_check"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

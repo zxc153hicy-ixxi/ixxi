@@ -9,5 +9,6 @@
   "provides": [
     "file_planning"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

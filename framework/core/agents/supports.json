@@ -1,0 +1,21 @@
+{
+  "_meta": {
+    "description": "每个 Agent 声明其支持的底层契约子集（不变量 I3）+ 能力档位（P0-8）。校验「声明 == 实际」（I4）时，capability.requires 必须 ⊆ 对应 agent.supports。",
+    "created": "2026-08-15",
+    "schema_version": "1.0.0"
+  },
+  "agents": {
+    "claude": {
+      "tier": "full",
+      "supports": ["read_instruction", "filesystem_read", "filesystem_write", "execute_script", "subagent", "event_hook"]
+    },
+    "codex": {
+      "tier": "full",
+      "supports": ["read_instruction", "filesystem_read", "filesystem_write", "execute_script", "subagent"]
+    },
+    "hermes": {
+      "tier": "full",
+      "supports": ["read_instruction", "filesystem_read", "filesystem_write", "execute_script"]
+    }
+  }
+}

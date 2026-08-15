@@ -8,5 +8,6 @@
   "provides": [
     "scene_audit"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

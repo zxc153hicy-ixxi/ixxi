@@ -9,5 +9,6 @@
   "provides": [
     "parallel_dispatch"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

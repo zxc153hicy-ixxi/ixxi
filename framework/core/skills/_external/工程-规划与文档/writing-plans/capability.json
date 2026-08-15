@@ -9,5 +9,6 @@
   "provides": [
     "plan_writing"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

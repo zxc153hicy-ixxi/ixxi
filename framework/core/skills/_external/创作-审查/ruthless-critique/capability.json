@@ -8,5 +8,6 @@
   "provides": [
     "ruthless_critique"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

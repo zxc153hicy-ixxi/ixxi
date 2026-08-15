@@ -8,5 +8,6 @@
   "provides": [
     "superpowers"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

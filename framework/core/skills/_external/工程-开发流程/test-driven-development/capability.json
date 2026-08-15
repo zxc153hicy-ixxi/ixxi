@@ -9,5 +9,6 @@
   "provides": [
     "tdd"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

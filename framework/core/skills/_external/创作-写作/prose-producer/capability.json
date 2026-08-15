@@ -8,5 +8,6 @@
   "provides": [
     "prose_production"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

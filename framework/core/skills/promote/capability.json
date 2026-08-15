@@ -10,5 +10,6 @@
   "provides": [
     "promotion"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

@@ -9,5 +9,6 @@
   "provides": [
     "conflict_resolution"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

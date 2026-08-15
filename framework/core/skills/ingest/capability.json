@@ -11,5 +11,6 @@
   "provides": [
     "ingestion"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

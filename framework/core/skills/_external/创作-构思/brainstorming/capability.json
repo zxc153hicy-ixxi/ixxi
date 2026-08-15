@@ -8,5 +8,6 @@
   "provides": [
     "design_brainstorming"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

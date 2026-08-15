@@ -8,5 +8,6 @@
   "provides": [
     "story_collaboration"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

@@ -8,5 +8,6 @@
   "provides": [
     "requirement_detection"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

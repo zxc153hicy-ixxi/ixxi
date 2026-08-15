@@ -9,5 +9,6 @@
   "provides": [
     "subagent_development"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

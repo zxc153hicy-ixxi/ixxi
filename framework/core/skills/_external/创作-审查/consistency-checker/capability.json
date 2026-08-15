@@ -8,5 +8,6 @@
   "provides": [
     "consistency_check"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

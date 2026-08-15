@@ -8,5 +8,6 @@
   "provides": [
     "skill_writing"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

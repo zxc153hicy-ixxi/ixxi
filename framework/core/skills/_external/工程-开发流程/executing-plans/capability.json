@@ -8,5 +8,6 @@
   "provides": [
     "plan_execution"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

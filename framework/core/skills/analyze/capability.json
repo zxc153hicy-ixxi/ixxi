@@ -9,5 +9,6 @@
   "provides": [
     "feasibility_analysis"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

@@ -9,5 +9,6 @@
   "provides": [
     "git_worktree"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

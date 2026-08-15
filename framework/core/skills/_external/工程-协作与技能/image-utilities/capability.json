@@ -9,5 +9,6 @@
   "provides": [
     "image_utilities"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

@@ -10,5 +10,6 @@
   "provides": [
     "enrichment"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

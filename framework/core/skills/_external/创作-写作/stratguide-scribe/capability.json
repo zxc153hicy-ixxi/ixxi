@@ -8,5 +8,6 @@
   "provides": [
     "strategy_guide_writing"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

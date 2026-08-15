@@ -8,5 +8,6 @@
   "provides": [
     "getting_started"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

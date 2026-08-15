@@ -8,5 +8,6 @@
   "provides": [
     "fiction_abstraction"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

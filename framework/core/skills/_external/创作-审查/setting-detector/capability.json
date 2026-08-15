@@ -8,5 +8,6 @@
   "provides": [
     "setting_detection"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

@@ -8,5 +8,6 @@
   "provides": [
     "ecosystem_bridge"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

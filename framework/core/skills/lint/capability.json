@@ -10,5 +10,6 @@
   "provides": [
     "lint_check"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

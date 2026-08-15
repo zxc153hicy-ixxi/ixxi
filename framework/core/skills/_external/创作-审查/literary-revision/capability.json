@@ -8,5 +8,6 @@
   "provides": [
     "literary_revision"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

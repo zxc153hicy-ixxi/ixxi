@@ -8,5 +8,6 @@
   "provides": [
     "character_analysis"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

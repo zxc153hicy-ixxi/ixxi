@@ -10,5 +10,6 @@
   "provides": [
     "audit"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "full"
 }

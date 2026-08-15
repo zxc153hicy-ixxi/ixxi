@@ -8,5 +8,6 @@
   "provides": [
     "scene_structure"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }

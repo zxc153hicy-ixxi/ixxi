@@ -8,5 +8,6 @@
   "provides": [
     "fiction_black_book"
   ],
-  "resources": []
+  "resources": [],
+  "tier": "reader-only"
 }
