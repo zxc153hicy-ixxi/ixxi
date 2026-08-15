@@ -24,6 +24,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent.parent
 SRC_MGMT = REPO / "core/skills"
 SRC_EXT = REPO / "core/skills/_external"
+SRC_PERSONAL = REPO.parent / "personal/system/skills"
 OUT = REPO / "ops/hermes/Hermes-命令索引.md"
 
 # 脚本引用：engine/scripts/*.py|*.sh、engine/templates/*.sh、ops/scripts/*.sh
@@ -82,6 +83,15 @@ def collect_sources() -> list[tuple[str, Path]]:
                 if sub.is_dir() and (sub / "SKILL.md").exists():
                     skills[skill_name(sub / "SKILL.md")] = sub
 
+    # personal 技能（personal/system/skills 分类/技能，覆盖同名，personal 优先）
+    if SRC_PERSONAL.exists():
+        for cat in sorted(SRC_PERSONAL.iterdir()):
+            if not cat.is_dir():
+                continue
+            for sub in sorted(cat.iterdir()):
+                if sub.is_dir() and (sub / "SKILL.md").exists():
+                    skills[skill_name(sub / "SKILL.md")] = sub
+
     return sorted(skills.items())
 
 
@@ -130,7 +140,7 @@ def render_table(rows: list[tuple[str, str, Path, list[str], list[str]]]) -> str
     lines = ["| skill | 触发场景 | SKILL.md 路径 | 引用脚本 | 引用规则 |",
              "|------|------|------|------|------|"]
     for name, desc, sk_md, scripts, rules in rows:
-        rel = sk_md.relative_to(REPO).as_posix()
+        rel = sk_md.relative_to(REPO.parent).as_posix()
         lines.append(f"| {cell(name)} | {cell(desc)} | {cell(rel)} | "
                      f"{cell(' '.join(scripts))} | {cell(' '.join(rules))} |")
     return "\n".join(lines)

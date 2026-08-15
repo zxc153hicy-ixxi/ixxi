@@ -22,6 +22,8 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent.parent
 SRC = REPO / "core/skills"
+SRC_EXT = REPO / "core/skills/_external"
+SRC_PERSONAL = REPO.parent / "personal/system/skills"
 DST = REPO.parent / ".claude/skills"  # 仓库根 .claude/skills/（Claude Code 只扫仓库根，不是 framework/）
 
 
@@ -38,12 +40,29 @@ def skill_name(sk_md: Path) -> str:
 
 
 def collect_sources() -> dict[str, Path]:
-    """返回 {技能名: 技能目录路径}，16 个管理技能"""
+    """返回 {技能名: 技能目录路径}，管理 + 框架外部 + personal（后者覆盖同名）"""
     skills = {}
+    # 管理技能（core/skills 一级）
     if SRC.exists():
         for d in sorted(SRC.iterdir()):
             if d.is_dir() and (d / "SKILL.md").exists():
                 skills[skill_name(d / "SKILL.md")] = d
+    # framework 外部技能（core/skills/_external 分类/技能）
+    if SRC_EXT.exists():
+        for cat in sorted(SRC_EXT.iterdir()):
+            if not cat.is_dir():
+                continue
+            for sub in sorted(cat.iterdir()):
+                if sub.is_dir() and (sub / "SKILL.md").exists():
+                    skills[skill_name(sub / "SKILL.md")] = sub
+    # personal 技能（personal/system/skills 分类/技能，覆盖同名，personal 优先）
+    if SRC_PERSONAL.exists():
+        for cat in sorted(SRC_PERSONAL.iterdir()):
+            if not cat.is_dir():
+                continue
+            for sub in sorted(cat.iterdir()):
+                if sub.is_dir() and (sub / "SKILL.md").exists():
+                    skills[skill_name(sub / "SKILL.md")] = sub
     return skills
 
 
@@ -67,7 +86,7 @@ def sync(sources: dict[str, Path], prune: bool) -> None:
     if prune:
         wanted = {name for name in sources}
         for d in DST.iterdir():
-            if d.is_dir() and d.name.startswith("kb-") and d.name not in wanted:
+            if d.is_dir() and not d.name.startswith(".") and d.name not in wanted:
                 shutil.rmtree(d)
                 print(f"  [prune] 删除孤儿: {d.name}")
 
@@ -78,7 +97,7 @@ def sync(sources: dict[str, Path], prune: bool) -> None:
         shutil.copytree(src, dst)
         synced += 1
         print(f"  ✅ {name}")
-    print(f"共平铺 {synced} 个管理技能 -> .claude/skills/")
+    print(f"共平铺 {synced} 个技能 -> .claude/skills/")
 
 
 def main():

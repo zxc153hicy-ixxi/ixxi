@@ -19,6 +19,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent.parent
 SRC_MGMT = REPO / "core/skills"
 SRC_EXT = REPO / "core/skills/_external"
+SRC_PERSONAL = REPO.parent / "personal/system/skills"
 TARGET_REPO = REPO.parent / ".agents/skills"  # 仓库根 .agents/skills/（Codex 只扫仓库根）
 TARGET_USER = Path.home() / ".agents/skills"
 
@@ -48,6 +49,15 @@ def collect_sources() -> list[tuple[str, Path]]:
     # 外部技能（子目录，跳过分类级 SKILL.md）
     if SRC_EXT.exists():
         for cat in sorted(SRC_EXT.iterdir()):
+            if not cat.is_dir():
+                continue
+            for sub in sorted(cat.iterdir()):
+                if sub.is_dir() and (sub / "SKILL.md").exists():
+                    skills[skill_name(sub / "SKILL.md")] = sub
+
+    # personal 技能（personal/system/skills 分类/技能，覆盖同名，personal 优先）
+    if SRC_PERSONAL.exists():
+        for cat in sorted(SRC_PERSONAL.iterdir()):
             if not cat.is_dir():
                 continue
             for sub in sorted(cat.iterdir()):

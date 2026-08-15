@@ -36,6 +36,7 @@ REPO = Path(__file__).resolve().parent.parent.parent
 
 SRC_MGMT = REPO / "core/skills"
 SRC_EXT = REPO / "core/skills/_external"
+SRC_PERSONAL = REPO.parent / "personal/system/skills"
 DST_CLAUDE = REPO.parent / ".claude/skills"  # 管理 skill 一级平铺目标（sync-skills-to-claude.py 输出）
 DST_CODEX = REPO.parent / ".agents/skills"   # Codex 镜像目标（sync-skills-to-codex.py 输出）
 HERMES_IDX = REPO / "ops/hermes/Hermes-命令索引.md"
@@ -69,6 +70,14 @@ def collect_sources() -> list[tuple[str, Path, bool]]:
                 skills[skill_name(d / "SKILL.md")] = (d, True)
     if SRC_EXT.exists():
         for cat in sorted(SRC_EXT.iterdir()):
+            if not cat.is_dir():
+                continue
+            for sub in sorted(cat.iterdir()):
+                if sub.is_dir() and (sub / "SKILL.md").exists():
+                    skills[skill_name(sub / "SKILL.md")] = (sub, False)
+    # personal 技能（覆盖同名，personal 优先，is_mgmt=False 领域）
+    if SRC_PERSONAL.exists():
+        for cat in sorted(SRC_PERSONAL.iterdir()):
             if not cat.is_dir():
                 continue
             for sub in sorted(cat.iterdir()):
