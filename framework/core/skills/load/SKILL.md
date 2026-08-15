@@ -7,7 +7,7 @@ description: Use when the user says "加载 ixxi" "加载框架" "开始用 ixxi
 
 ## Overview
 把 ixxi 框架加载进来，让你进入「ixxi 模式」：知道 ixxi 是什么、能干嘛、怎么用。首次加载会弹一段新手引导，之后不再重复。
-技术说明：读 AGENT.md 契约 → 检查 onboarding.json（first_load 首次弹引导）→ 汇报版本/能力/下一步。
+技术说明：定位 ixxi（IXXI_HOME/当前目录）→ 检查适配层（未 init 先引导 init）→ 读 AGENT.md 契约 → 检查 onboarding.json → 汇报。
 
 ## Quick Reference
 
@@ -15,9 +15,11 @@ description: Use when the user says "加载 ixxi" "加载框架" "开始用 ixxi
 
 | 步骤 | 动作 |
 |:---:|------|
-| 1 | 读 `framework/AGENT.md`，加载行为契约（G/T/R 三层规则） |
-| 2 | 读 `core/onboarding.json`：`first_load.fired = false` → 展示引导提示 → 标记 `fired = true` |
-| 3 | 汇报当前状态（见下方格式） |
+| 1 | 定位 ixxi：读环境变量 `IXXI_HOME`；未设置则假设当前目录是 ixxi 仓库（含 `framework/`） |
+| 2 | 检查适配层：`framework/.claude/skills/` 或仓库根 `.claude/skills/` 有 kb-* 吗？没有 → 引导「先运行 `bash ixxi init`」 |
+| 3 | 读 `framework/AGENT.md`，加载行为契约（G/T/R 三层规则） |
+| 4 | 读 `core/onboarding.json`：`first_load.fired = false` → 展示引导提示 → 标记 `fired = true` |
+| 5 | 汇报当前状态（见下方格式） |
 
 ### 汇报格式
 

@@ -63,6 +63,17 @@ ixxi/
 └── .github/                # CI + CLA + issue/PR 模板
 ```
 
+## 两种使用方式
+
+拿到 ixxi 后，两种方式二选一：
+
+| 方式 | 适合谁 | 怎么做 |
+|---|---|---|
+| **A 轻量** | 只在 ixxi 目录里用 | `cd ixxi` 后打开 Agent，它会读到引导文件（CLAUDE.md / AGENTS.md / HERMES.md），按提示跑 `bash ixxi init` 即可 |
+| **B 全局** | 想在**任意目录**说「加载 ixxi」 | 跑 `bash install.sh`，把启动器装到全局 + 设 IXXI_HOME |
+
+两种方式之后都一样：初始化 → 说「加载 ixxi」→ 首次弹引导 → 开始用。
+
 ## 快速上手
 
 - **5 分钟上手**：从 clone 到跑通第一个 ingest，见 [GETTING-STARTED.md](GETTING-STARTED.md)。
