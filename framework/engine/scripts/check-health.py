@@ -86,7 +86,7 @@ def run_checks(repo: Path) -> tuple[int, int, list[dict]]:
 
 def count_anti_patterns(repo: Path) -> int:
     """统计反模式总数"""
-    ap_dir = repo / "ops" / "anti-patterns"
+    ap_dir = repo.parent / "personal" / "system" / "anti-patterns"
     if not ap_dir.exists():
         return 0
     return len([f for f in ap_dir.glob("*.md") if f.name != "反模式索引.md"])
@@ -100,7 +100,7 @@ def count_anti_touches(repo: Path, age_days: int) -> int:
 
     cutoff = date.today() - timedelta(days=age_days)
     touched = set()
-    anti_names = {f.stem for f in (repo / "ops" / "anti-patterns").glob("*.md")
+    anti_names = {f.stem for f in (repo.parent / "personal" / "system" / "anti-patterns").glob("*.md")
                   if f.name != "反模式索引.md"}
 
     try:

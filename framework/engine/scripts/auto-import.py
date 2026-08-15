@@ -2,11 +2,11 @@
 """auto-import.py -- 资料一键导入：压缩包解压 → 预扫描 → 转换 → 归档
 
 用法:
-  python engine/scripts/auto-import.py <文件>              # 单文件导入
-  python engine/scripts/auto-import.py --batch <目录>       # 批量导入
-  python engine/scripts/auto-import.py --json <文件>        # JSON 输出（供 LLM 解析）
-  python engine/scripts/auto-import.py --dry-run <文件>     # 预演（只扫描不转换）
-  python engine/scripts/auto-import.py --dry-run --json <文件>
+  python framework/engine/scripts/auto-import.py <文件>              # 单文件导入
+  python framework/engine/scripts/auto-import.py --batch <目录>       # 批量导入
+  python framework/engine/scripts/auto-import.py --json <文件>        # JSON 输出（供 LLM 解析）
+  python framework/engine/scripts/auto-import.py --dry-run <文件>     # 预演（只扫描不转换）
+  python framework/engine/scripts/auto-import.py --dry-run --json <文件>
 """
 
 import argparse
@@ -75,8 +75,8 @@ def get_repo_root() -> Path:
 
 
 def get_inbox_dirs(repo_root: Path) -> dict[str, Path]:
-    """获取 .inbox/ 子目录路径，不存在则创建"""
-    inbox = repo_root / ".inbox"
+    """获取 personal/data/inbox/ 子目录路径，不存在则创建"""
+    inbox = repo_root.parent / "personal" / "data" / "inbox"
     dirs = {
         "sources": inbox / "sources",
         "converted": inbox / "converted",
@@ -261,10 +261,10 @@ def check_zip_bomb(archive_path: Path) -> tuple[bool, Optional[str]]:
 # ============================================================================
 
 def load_prescan_rules() -> tuple[dict, str, str, callable]:
-    """动态加载 .claudian/prescan.py，返回 (RULES, MARKER_EXE, MINERU_EXE, scan_pdf)"""
+    """动态加载 framework/engine/scripts/prescan.py，返回 (RULES, MARKER_EXE, MINERU_EXE, scan_pdf)"""
     import importlib.util
     repo_root = get_repo_root()
-    prescan_path = repo_root / ".claudian" / "prescan.py"
+    prescan_path = repo_root / "engine" / "scripts" / "prescan.py"
     if not prescan_path.exists():
         sys.stderr.write(f"[错误] prescan.py 未找到: {prescan_path}\n")
         sys.exit(1)
@@ -317,7 +317,7 @@ def classify_file(filepath: Path, RULES: dict, scan_pdf_func: callable) -> dict:
             "label": f"视频 ({ext})",
             "tool_name": "video2text (faster-whisper large-v3)",
             "est": f"~{filepath.stat().st_size / 1024 / 1024:.0f}MB, GPU≈0.6x实时, CPU≈0.2x实时",
-            "cmd": f"python engine/tools/video2text.py \"{filepath}\"",
+            "cmd": f"python personal/system/scripts/video2text.py \"{filepath}\"",
             "pages": 0,
             "output_stem": safe_stem(filepath),
             "output_path": f"{safe_stem(filepath)}_transcript.txt",
@@ -465,7 +465,7 @@ def process_single(
             "tool": info["tool_name"],
             "est": info["est"],
             "note": info.get("note", ""),
-            "action": "视频转录耗时较长，请手动执行: python engine/tools/video2text.py <文件>",
+            "action": "视频转录耗时较长，请手动执行: python personal/system/scripts/video2text.py <文件>",
         }
 
     info = classify_file(filepath, RULES, scan_pdf_func)
@@ -590,7 +590,7 @@ def process_archive(
             "type": "archive",
             "archive_format": archive_format,
             "file": str(filepath),
-            "action": "解压到 .inbox/_extracted/ 后逐个转换",
+            "action": "解压到 personal/data/inbox/_extracted/ 后逐个转换",
         }
 
     # --- 安全检查 ---
@@ -786,7 +786,7 @@ def print_batch_summary(batch_result: dict) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="资料一键导入：压缩包解压 → 预扫描 → 转换 → 归档到 .inbox/",
+        description="资料一键导入：压缩包解压 → 预扫描 → 转换 → 归档到 personal/data/inbox/",
     )
     parser.add_argument(
         "target",

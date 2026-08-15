@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""check-inbox.py -- .inbox/ 健康检查 + raw/inbox 入库比对
+"""check-inbox.py -- personal/data/inbox/ 健康检查 + 入库比对
 
 用法:
-  python engine/scripts/check-inbox.py --repo <知识库根目录>
-  python engine/scripts/check-inbox.py --repo . --mode health     # .inbox/ 健康（默认）
-  python engine/scripts/check-inbox.py --repo . --mode ingest     # raw/inbox → knowledge/ 比对
-  python engine/scripts/check-inbox.py --repo . --mode all        # 全部
-  python engine/scripts/check-inbox.py --repo . --json
-  python engine/scripts/check-inbox.py --repo . --mode ingest --detailed
+  python framework/engine/scripts/check-inbox.py --repo <知识库根目录>
+  python framework/engine/scripts/check-inbox.py --repo . --mode health     # personal/data/inbox/ 健康（默认）
+  python framework/engine/scripts/check-inbox.py --repo . --mode ingest     # personal/data/inbox → personal/knowledge/ 比对
+  python framework/engine/scripts/check-inbox.py --repo . --mode all        # 全部
+  python framework/engine/scripts/check-inbox.py --repo . --json
+  python framework/engine/scripts/check-inbox.py --repo . --mode ingest --detailed
 
 合并: check-inbox.py (health) + check-inbox-ingest.py (ingest)
 """
@@ -41,7 +41,7 @@ def _normalize(name: str) -> str:
 # ── mode: health ──
 
 def check_health(repo: Path, max_age: int) -> tuple[list, list, int]:
-    inbox = repo / ".inbox"
+    inbox = repo.parent / "personal" / "data" / "inbox"
     if not inbox.exists():
         return [], [], 0
 
@@ -67,8 +67,8 @@ def check_health(repo: Path, max_age: int) -> tuple[list, list, int]:
 # ── mode: ingest ──
 
 def check_ingest(repo: Path) -> tuple[list, list, list]:
-    inbox = repo / "raw" / "inbox"
-    knowledge = repo / "knowledge" / "learning"
+    inbox = repo.parent / "personal" / "data" / "inbox"
+    knowledge = repo.parent / "personal" / "knowledge" / "learning"
 
     sources = []
     if inbox.exists():
@@ -105,7 +105,7 @@ def check_ingest(repo: Path) -> tuple[list, list, list]:
         if matched:
             uncertain.append((src, matched))
         else:
-            missing.append((src, "knowledge/ 中无匹配 .md"))
+            missing.append((src, "personal/knowledge/ 中无匹配 .md"))
 
     return ingested, missing, uncertain
 
@@ -127,14 +127,14 @@ def main(mode: str = "all", repo_path: str = None, json_out: bool = False,
                 score -= 3
             if tmp:
                 score -= 2
-            all_results["health"] = {"label": ".inbox/ 健康", "stale_count": len(stale),
+            all_results["health"] = {"label": "personal/data/inbox/ 健康", "stale_count": len(stale),
                                       "tmp_count": len(tmp), "total_size_mb": round(total_size / 1048576, 1),
                                       "stale": stale, "tmp": tmp, "score": score}
         elif m == "ingest":
             ingested, missing, uncertain = check_ingest(repo)
             total = len(ingested) + len(missing) + len(uncertain)
             rate = round(len(ingested) / total * 100, 1) if total else 0
-            all_results["ingest"] = {"label": "raw/inbox → knowledge/ 入库",
+            all_results["ingest"] = {"label": "personal/data/inbox → personal/knowledge/ 入库",
                                       "total": total, "ingested": len(ingested),
                                       "missing": len(missing), "uncertain": len(uncertain),
                                       "rate": rate,
@@ -175,7 +175,7 @@ def main(mode: str = "all", repo_path: str = None, json_out: bool = False,
                     by_dir = defaultdict(list)
                     for src, reason in data["missing_list"]:
                         try:
-                            d = str(src.parent.relative_to(repo / "raw" / "inbox"))
+                            d = str(src.parent.relative_to(repo.parent / "personal" / "data" / "inbox"))
                         except ValueError:
                             d = "(根目录)"
                         by_dir[d].append(src.name)
@@ -198,7 +198,7 @@ def main(mode: str = "all", repo_path: str = None, json_out: bool = False,
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=".inbox/ 健康 + 入库比对")
+    parser = argparse.ArgumentParser(description="personal/data/inbox/ 健康 + 入库比对")
     parser.add_argument("--repo", type=str, default=None)
     parser.add_argument("--mode", type=str, default="all",
                         choices=["all", "health", "ingest"])

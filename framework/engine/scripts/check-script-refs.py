@@ -2,8 +2,8 @@
 """check-script-refs.py -- 检查脚本中的路径引用是否存在 (S4)
 
 用法:
-  python engine/scripts/check-script-refs.py --repo <知识库根目录>
-  python engine/scripts/check-script-refs.py --repo . --json
+  python framework/engine/scripts/check-script-refs.py --repo <知识库根目录>
+  python framework/engine/scripts/check-script-refs.py --repo . --json
 """
 
 import argparse
@@ -18,8 +18,10 @@ except Exception:
     pass
 
 SKIP_DIRS = {"__pycache__", ".git", "node_modules", ".fix-backup"}
-# 已知顶层目录（wiki/ 残留由 check-residue.py 统一处理，不在此列）
-TOP_DIRS = ("engine/", "ops/", "knowledge/", "raw/", ".claude/", ".inbox/")
+# 已知顶层目录（旧库的 engine/、ops/、knowledge/、raw/、.claude/、.inbox/ 已按
+# 双层结构迁移到 framework/ 与 personal/，wiki/ 残留由 check-residue.py 统一处理，不在此列）
+TOP_DIRS = ("framework/engine/", "framework/ops/", "personal/knowledge/",
+            "personal/data/", "framework/core/", "personal/data/inbox/")
 
 
 def _is_placeholder(p: str) -> bool:
@@ -45,6 +47,7 @@ def find_path_refs(content: str, script_name: str, repo: Path) -> list[dict]:
         # 带引号的 repo 相对路径
         re.compile(r'["\']([a-zA-Z0-9_/.][a-zA-Z0-9_/.\-]{2,})["\']'),
         # 带前缀的脚本引用：engine/scripts/xxx.py 或 ops/scripts/xxx.sh
+        # （repo 定位 framework/ 时，framework/engine/scripts/xxx.py 中的 engine/scripts 子串同样命中）
         re.compile(r'\b((?:engine/scripts|ops/scripts)/[A-Za-z0-9_.\-]+\.(?:py|sh))\b'),
         # 裸 check 脚本名（可能省略 engine/scripts/ 前缀）
         re.compile(r'\b(check-[a-z0-9_.\-]+\.py)\b'),
@@ -72,7 +75,10 @@ def find_path_refs(content: str, script_name: str, repo: Path) -> list[dict]:
                 continue
             seen.add(p)
 
-            target = repo / p.rstrip("/")
+            # repo 定位 framework/ 时，framework/ 与 personal/ 前缀引用相对仓库根（repo 的父目录）解析；
+            # repo 已定位仓库根时直接在其下解析
+            root = repo if (repo / "framework").is_dir() else repo.parent
+            target = root / p.rstrip("/")
             if not target.exists():
                 issues.append({"script": script_name, "ref": p,
                                "line": content[:m.start()].count("\n") + 1})

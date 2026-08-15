@@ -1,27 +1,27 @@
 #!/usr/bin/env python3
-"""入库完成后清理 .inbox/ 临时文件，删除前比对 knowledge/ 确认已入库"""
+"""入库完成后清理 personal/data/inbox/ 临时文件，删除前比对 personal/knowledge/ 确认已入库"""
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent.parent
-INBOX = REPO / ".inbox"
-KNOWLEDGE = REPO / "knowledge"
+INBOX = REPO.parent / "personal" / "data" / "inbox"
+KNOWLEDGE = REPO.parent / "personal" / "knowledge"
 
-missing = []   # .inbox 里有但 knowledge/ 里找不到的
+missing = []   # personal/data/inbox 里有但 personal/knowledge/ 里找不到的
 orphan = []    # 可以安全删的
 
-# 1. 检查 .inbox/converted/ 中的 md 是否已搬进 knowledge/
+# 1. 检查 personal/data/inbox/converted/ 中的 md 是否已搬进 personal/knowledge/
 converted_dir = INBOX / "converted"
 if converted_dir.exists():
     for md in converted_dir.rglob("*.md"):
         stem = md.stem
-        # 在 knowledge/ 中按文件名搜索
+        # 在 personal/knowledge/ 中按文件名搜索
         found = list(KNOWLEDGE.rglob(f"{stem}.md"))
         if found:
             orphan.append(md)
         else:
-            missing.append(("converted", md, "knowledge/ 中未找到同名文件"))
+            missing.append(("converted", md, "personal/knowledge/ 中未找到同名文件"))
 
-# 2. 检查 .inbox/sources/ 中的原始文件是否有对应 knowledge/ 内容
+# 2. 检查 personal/data/inbox/sources/ 中的原始文件是否有对应 personal/knowledge/ 内容
 sources_dir = INBOX / "sources"
 if sources_dir.exists():
     for f in sources_dir.rglob("*"):
@@ -31,7 +31,7 @@ if sources_dir.exists():
             if found:
                 orphan.append(f)
             else:
-                missing.append(("sources", f, "knowledge/ 中未找到对应 md"))
+                missing.append(("sources", f, "personal/knowledge/ 中未找到对应 md"))
 
 # 3. 输出比对结果
 print("=" * 50)
@@ -62,4 +62,4 @@ for d in ["sources", "converted", "_extracted", "_failed"]:
                 subdir.rmdir()
 
 if not missing and not orphan:
-    print("\n.inbox/ 无可清理文件。")
+    print("\npersonal/data/inbox/ 无可清理文件。")

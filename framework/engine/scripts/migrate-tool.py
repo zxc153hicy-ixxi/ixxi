@@ -14,12 +14,12 @@ MVP 骨架三子命令：
 零第三方依赖：仅标准库 argparse / shutil / pathlib / datetime / json。
 
 用法示例：
-  python engine/scripts/migrate-tool.py backup
-  python engine/scripts/migrate-tool.py backup --personal /path/to/personal
-  python engine/scripts/migrate-tool.py migrate --dry-run
-  python engine/scripts/migrate-tool.py migrate            # 骨架：逐条执行（留桩，不动文件）
-  python engine/scripts/migrate-tool.py rollback --to 2026-08-14_143000 -y
-  python engine/scripts/migrate-tool.py rollback           # 列出可用备份
+  python framework/engine/scripts/migrate-tool.py backup
+  python framework/engine/scripts/migrate-tool.py backup --personal /path/to/personal
+  python framework/engine/scripts/migrate-tool.py migrate --dry-run
+  python framework/engine/scripts/migrate-tool.py migrate            # 骨架：逐条执行（留桩，不动文件）
+  python framework/engine/scripts/migrate-tool.py rollback --to 2026-08-14_143000 -y
+  python framework/engine/scripts/migrate-tool.py rollback           # 列出可用备份
 """
 
 import argparse
@@ -118,9 +118,9 @@ def _list_backups(personal: Path) -> list[Path]:
 
 # ── 迁移步骤定义（骨架，对齐 docs/guides/demo到真实迁移指南.md）─────────
 def _est_step1(personal: Path) -> tuple[int, str]:
-    inbox = personal / "raw" / "inbox"
+    inbox = personal / "data" / "inbox"
     n = _count_files(inbox)
-    return n, "数据替换：真实资料放入 raw/inbox 替换演示数据"
+    return n, "数据替换：真实资料放入 personal/data/inbox 替换演示数据"
 
 
 def _est_step2(personal: Path) -> tuple[int, str]:

@@ -1,15 +1,15 @@
 #!/bin/bash
-# fix-inbox-clean.sh -- 清理 .inbox/ 过期文件和残留 .tmp
+# fix-inbox-clean.sh -- 清理 personal/data/inbox/ 过期文件和残留 .tmp
 #
 # 用法:
-#   bash engine/scripts/fix-inbox-clean.sh --dry-run    # 预览
-#   bash engine/scripts/fix-inbox-clean.sh --execute     # 执行清理
-#   bash engine/scripts/fix-inbox-clean.sh --max-age 7   # 自定义过期天数
+#   bash framework/engine/scripts/fix-inbox-clean.sh --dry-run    # 预览
+#   bash framework/engine/scripts/fix-inbox-clean.sh --execute     # 执行清理
+#   bash framework/engine/scripts/fix-inbox-clean.sh --max-age 7   # 自定义过期天数
 
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-INBOX_DIR="$REPO_ROOT/.inbox"
+REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+INBOX_DIR="$REPO_ROOT/personal/data/inbox"
 MAX_AGE=7
 DRY_RUN=true
 EXECUTE=false
@@ -25,11 +25,11 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [ ! -d "$INBOX_DIR" ]; then
-  echo "✅ .inbox/ 不存在，无需清理"
+  echo "✅ personal/data/inbox/ 不存在，无需清理"
   exit 0
 fi
 
-echo "=== .inbox/ 清理 ==="
+echo "=== personal/data/inbox/ 清理 ==="
 echo "目录: $INBOX_DIR"
 echo "过期阈值: ${MAX_AGE} 天"
 echo "模式: $([ "$DRY_RUN" = true ] && echo '预览' || echo '执行')"

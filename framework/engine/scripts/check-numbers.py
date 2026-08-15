@@ -5,8 +5,8 @@
 本脚本作为护栏A：每次 /check 自动运行，发现不一致立即告警。
 
 用法:
-  python engine/scripts/check-numbers.py --repo <知识库根目录>
-  python engine/scripts/check-numbers.py --repo . --json
+  python framework/engine/scripts/check-numbers.py --repo <知识库根目录>
+  python framework/engine/scripts/check-numbers.py --repo . --json
 """
 
 import argparse
@@ -32,8 +32,8 @@ def count_md(dir_path: Path) -> int:
 
 
 def count_sessions(repo: Path) -> int:
-    """统计 raw/sessions 下日期命名的会话文件（排除 ixxi-agent-* 文档与索引页）"""
-    sdir = repo / "raw" / "sessions"
+    """统计 personal/data/sessions 下日期命名的会话文件（排除 ixxi-agent-* 文档与索引页）"""
+    sdir = repo.parent / "personal" / "data" / "sessions"
     if not sdir.exists():
         return 0
     return len([f for f in sdir.glob("*.md")
@@ -66,8 +66,8 @@ def check_numbers(repo: Path) -> dict:
         "g_count": 0,          # G1-GN 中的 N
         "t_tags": 0,           # T层标签行数
         "rules": count_md(repo / "ops" / "rules"),
-        "patterns": count_md(repo / "ops" / "patterns"),
-        "anti_patterns": count_md(repo / "ops" / "anti-patterns"),
+        "patterns": count_md(repo.parent / "personal" / "system" / "patterns"),
+        "anti_patterns": count_md(repo.parent / "personal" / "system" / "anti-patterns"),
         "sessions": count_sessions(repo),
         "scripts_engine": count_dir_files(repo / "engine" / "scripts", "*.py"),
     }
