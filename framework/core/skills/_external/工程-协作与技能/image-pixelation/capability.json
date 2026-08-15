@@ -10,5 +10,6 @@
     "image_pixelation"
   ],
   "resources": [],
-  "tier": "full"
+  "tier": "full",
+  "lifecycle_class": "normal"
 }

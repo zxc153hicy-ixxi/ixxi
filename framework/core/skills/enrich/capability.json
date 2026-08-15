@@ -10,6 +10,9 @@
   "provides": [
     "enrichment"
   ],
-  "resources": [],
-  "tier": "full"
+  "resources": [
+    "engine/config/tag-taxonomy.yaml"
+  ],
+  "tier": "full",
+  "lifecycle_class": "normal"
 }

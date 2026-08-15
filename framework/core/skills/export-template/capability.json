@@ -10,6 +10,9 @@
   "provides": [
     "template_export"
   ],
-  "resources": [],
-  "tier": "full"
+  "resources": [
+    "engine/templates/export-template.sh"
+  ],
+  "tier": "full",
+  "lifecycle_class": "normal"
 }

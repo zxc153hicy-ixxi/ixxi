@@ -9,5 +9,6 @@
     "plan_execution"
   ],
   "resources": [],
-  "tier": "reader-only"
+  "tier": "reader-only",
+  "lifecycle_class": "normal"
 }

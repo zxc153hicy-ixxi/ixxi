@@ -27,6 +27,7 @@
 
 退出码：存在任何失败 → 1，全部通过 → 0。
 """
+import json
 import sys, re
 sys.stdout.reconfigure(encoding="utf-8")
 from pathlib import Path
@@ -137,16 +138,25 @@ def check_p4(name: str, idx_text: str | None) -> tuple[bool, str]:
 
 
 def check_p5(src: Path) -> tuple[bool, str]:
-    """引用资源存在：engine/scripts、ops/scripts、ops/rules 下的相对路径。"""
-    try:
-        text = (src / "SKILL.md").read_text(encoding="utf-8")
-    except Exception as e:
-        return False, f"SKILL.md 读取失败: {e}"
+    """引用资源存在：优先读 capability.json resources，兜底从 SKILL.md 提取。"""
     refs = set()
-    for m in REF_RE.finditer(text):
-        p = m.group(0).strip().strip("`").strip("[]").split("#", 1)[0]
-        if p:
-            refs.add(p)
+    cap = src / "capability.json"
+    if cap.exists():
+        try:
+            data = json.loads(cap.read_text(encoding="utf-8"))
+            refs = set(data.get("resources", []))
+        except Exception:
+            refs = set()
+    if not refs:
+        # 兜底：从 SKILL.md 提取（resources 未补齐时的兼容路径）
+        try:
+            text = (src / "SKILL.md").read_text(encoding="utf-8")
+        except Exception as e:
+            return False, f"SKILL.md 读取失败: {e}"
+        for m in REF_RE.finditer(text):
+            p = m.group(0).strip().strip("`").strip("[]").split("#", 1)[0]
+            if p:
+                refs.add(p)
     missing = []
     for rel in sorted(refs):
         if not (REPO / rel).exists():

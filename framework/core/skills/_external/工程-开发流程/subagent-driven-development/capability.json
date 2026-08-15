@@ -10,5 +10,6 @@
     "subagent_development"
   ],
   "resources": [],
-  "tier": "reader-only"
+  "tier": "reader-only",
+  "lifecycle_class": "normal"
 }

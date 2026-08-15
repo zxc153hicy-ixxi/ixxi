@@ -9,5 +9,6 @@
     "style_detection"
   ],
   "resources": [],
-  "tier": "reader-only"
+  "tier": "reader-only",
+  "lifecycle_class": "normal"
 }

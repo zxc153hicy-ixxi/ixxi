@@ -10,5 +10,6 @@
     "branch_finishing"
   ],
   "resources": [],
-  "tier": "full"
+  "tier": "full",
+  "lifecycle_class": "normal"
 }

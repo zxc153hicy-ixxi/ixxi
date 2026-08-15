@@ -9,5 +9,6 @@
     "strategy_guide_writing"
   ],
   "resources": [],
-  "tier": "reader-only"
+  "tier": "reader-only",
+  "lifecycle_class": "normal"
 }

@@ -11,6 +11,9 @@
   "provides": [
     "knowledge_retrieval"
   ],
-  "resources": [],
-  "tier": "full"
+  "resources": [
+    "engine/config/tag-taxonomy.yaml"
+  ],
+  "tier": "full",
+  "lifecycle_class": "critical"
 }
