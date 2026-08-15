@@ -174,12 +174,17 @@ esac
 
 # ── 4. 激活 hooks ──────────────────────────────────
 if [ "$enable_hooks" = "y" ]; then
-  if [ -f "$FRAMEWORK/core/hooks/git/pre-commit" ]; then
-    cp "$FRAMEWORK/core/hooks/git/pre-commit" "$REPO_ROOT/.git/hooks/pre-commit" 2>/dev/null && \
-      chmod +x "$REPO_ROOT/.git/hooks/pre-commit" 2>/dev/null
-    echo "✓ git pre-commit 护栏已激活（core/hooks/git/pre-commit）"
-  else
-    echo "⚠ 未找到 pre-commit 钩子，跳过（core/hooks/git/pre-commit）"
+  activated=0
+  for hook in "$FRAMEWORK"/core/hooks/git/*; do
+    [ -f "$hook" ] || continue
+    name=$(basename "$hook")
+    cp "$hook" "$REPO_ROOT/.git/hooks/$name" 2>/dev/null && \
+      chmod +x "$REPO_ROOT/.git/hooks/$name" 2>/dev/null
+    echo "✓ git $name 护栏已激活（core/hooks/git/$name）"
+    activated=$((activated+1))
+  done
+  if [ "$activated" -eq 0 ]; then
+    echo "⚠ 未找到 git 钩子，跳过（core/hooks/git/）"
   fi
 fi
 

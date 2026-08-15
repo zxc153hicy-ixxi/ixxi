@@ -13,7 +13,7 @@
 - 若将来对全仓库跑 `scan-sensitive.py`，请在本目录之外排除本路径
   （例如把 `engine/scripts/malicious-samples` 加入扫描器的教学目录跳过清单）。
 
-## 清单（5 类攻击面）
+## 清单（6 类攻击面）
 
 | 序号 | 文件 | 攻击面类别 | 触发规则 |
 |:--:|------|------|------|
@@ -22,10 +22,11 @@
 | 3 | `sample-03-path-traversal.py` | 路径穿越 | 相对上级目录序列与文件读写同现 |
 | 4 | `sample-04-git-hooks-injection.py` | Git 钩子注入 | 钩子目录路径与写打开操作同现/相邻 |
 | 5 | `sample-05-dependency-poisoning.sh` | 依赖投毒 | 依赖源指向非官方地址 |
+| 6 | `sample-06-obfuscation.py` | 混淆代码 | exec/eval 含 hex 转义 / chr 拼接 / `__import__` 拼接 |
 
 ## 回归验证命令
 
 ```bash
 python framework/engine/scripts/scan-sensitive.py --repo framework/engine/scripts/malicious-samples
-# 期望：5 类攻击面全部命中，退出码非零（1）
+# 期望：6 类攻击面全部命中，退出码非零（1）
 ```

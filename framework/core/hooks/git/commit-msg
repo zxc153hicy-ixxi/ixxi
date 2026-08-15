@@ -1,0 +1,21 @@
+#!/bin/bash
+# commit-msg hook: DCO 签名检查——所有提交必须带 Signed-off-by
+set -e
+
+MSG_FILE="$1"
+if [ ! -f "$MSG_FILE" ]; then
+  echo "⚠️  未找到 commit message 文件，跳过 DCO 检查"
+  exit 0
+fi
+
+if grep -q '^Signed-off-by:' "$MSG_FILE"; then
+  exit 0
+fi
+
+echo ""
+echo "❌ DCO 签名缺失"
+echo "   所有提交必须带 Signed-off-by（DCO 1.1）。"
+echo "   请用 git commit -s 重新提交，或手动在 message 末尾加："
+echo "       Signed-off-by: 你的名字 <你的邮箱>"
+echo "   条款见 CONTRIBUTING.md §2.3"
+exit 1

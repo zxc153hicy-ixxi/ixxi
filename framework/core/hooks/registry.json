@@ -51,7 +51,13 @@
       "trigger": "pre-commit",
       "auto": true,
       "script": "git/pre-commit",
-      "description": "G层修改验证tag+log，版本一致性检查"
+      "description": "G层修改验证tag+log"
+    },
+    "commit-msg": {
+      "trigger": "commit-msg",
+      "auto": true,
+      "script": "git/commit-msg",
+      "description": "DCO 签名检查——所有提交必须带 Signed-off-by"
     }
   }
 }

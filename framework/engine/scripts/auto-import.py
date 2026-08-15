@@ -13,6 +13,7 @@ import argparse
 import json
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -394,8 +395,8 @@ def run_conversion(command: str, cwd: str = None) -> tuple[bool, str, str]:
     """执行转换命令，返回 (成功, stdout, stderr)"""
     try:
         result = subprocess.run(
-            command,
-            shell=True,
+            shlex.split(command),
+            shell=False,
             capture_output=True,
             text=True,
             timeout=CONVERSION_TIMEOUT,
