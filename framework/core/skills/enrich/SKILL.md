@@ -1,6 +1,6 @@
 ---
 name: kb-enrich
-description: Use when the user says "enrich" "富化" "补全标签" "补充元数据" "打标签". Reads article content and supplements frontmatter fields (tags, summary, pt_phase) based on engine/config/tag-taxonomy.yaml.
+description: Use when the user says "enrich" "富化" "补全标签" "补充元数据" "打标签". Reads article content and supplements frontmatter fields (tags, summary, pt_phase) based on framework/engine/config/tag-taxonomy.yaml.
 version: 1.0.0
 ---
 
@@ -25,7 +25,7 @@ version: 1.0.0
 
 ### 1. 读取配置
 
-读 `engine/config/tag-taxonomy.yaml`，获取当前标签体系。三个关键数据源：
+读 `framework/engine/config/tag-taxonomy.yaml`，获取当前标签体系。三个关键数据源：
 - `domains.<key>.subdomains` —— 领域子标签枚举
 - `domains.<key>.phases` —— 渗透测试阶段标签（仅网络安全等攻防领域有）
 - 全局 `_content_types` + 领域级 `content_types` —— 内容类型标签
@@ -44,7 +44,7 @@ version: 1.0.0
 1. 取目录名作为 `label` 和 `path_key`
 2. 扫描目录下所有文章的标题和前 200 行正文，提取高频关键词作为 `subdomains`（≤10 个）
 3. 使用全局 `_content_types`
-4. 将生成的 domain section 追加到 `engine/config/tag-taxonomy.yaml`
+4. 将生成的 domain section 追加到 `framework/engine/config/tag-taxonomy.yaml`
 5. 一行告知用户「🆕 已自动注册新领域：<label>（<N> 个子标签）」
 6. 继续执行 enrich 流程
 
@@ -102,7 +102,7 @@ enrich 完成后自动执行。逻辑：
 
 ```
 /enrich 单篇输出：
-  文件: knowledge/learning/网络安全/xxx.md
+  文件: personal/knowledge/learning/网络安全/xxx.md
   tags: [学习资料] → [Web安全, 渗透测试, 书籍]
   summary: 原文件名 → 系统讲解 SQL 注入原理与防御方案
   pt_phase: +[漏洞利用]
@@ -121,7 +121,7 @@ enrich 完成后自动执行。逻辑：
 
 ## 硬闸门自检（不可跳过）
 
-- 标签必须来自 `engine/config/tag-taxonomy.yaml`，禁止自造领域/子标签（域外目录走新领域引导）
+- 标签必须来自 `framework/engine/config/tag-taxonomy.yaml`，禁止自造领域/子标签（域外目录走新领域引导）
 - 不删除已有 frontmatter 字段（status/created/updated 等）
 - 领域无 phases → 不生成 pt_phase
 - frontmatter 损坏 → 报错退出，禁止修正文
@@ -129,7 +129,7 @@ enrich 完成后自动执行。逻辑：
 
 ### 漏网扫描（--scan-missed）
 
-扫描 `knowledge/learning/` 全目录，找出所有 tags 含 `[学习资料]` 的文章：
+扫描 `personal/knowledge/learning/` 全目录，找出所有 tags 含 `[学习资料]` 的文章：
 
 - `tags: [学习资料]` + 无 `auto_enriched` → 入库时被跳过的漏网之鱼，自动执行 enrich
 - `auto_enriched: true` → 已自动富化但未人工审核，列出清单提示用户审核

@@ -23,7 +23,7 @@ description: Use when /conflict is triggered, a contradiction is detected during
 |:---:|------|------|
 | 1 | 新取代旧 | 旧条目 deprecated |
 | 2 | 新是例外 | 旧保留 active，追加例外段落 |
-| 3 | 新不纳入 | 保留 raw 记录，log 记录 |
+| 3 | 新不纳入 | 保留 personal/data/ 记录，log 记录 |
 | 4 | 分场景生效 | 双方 active，限定 scene |
 | 5 | 拿不准 | 进入五维可行性分析 |
 
@@ -55,4 +55,4 @@ description: Use when /conflict is triggered, a contradiction is detected during
 - 裁决后必须校验：新条目兼容性 + deprecated 悬空引用
 
 ## 降级
-SKILL 加载失败时，直接读取：`ops/rules/矛盾消解流程.md`
+SKILL 加载失败时，直接读取：`framework/ops/rules/矛盾消解流程.md`

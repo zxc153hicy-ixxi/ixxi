@@ -28,4 +28,4 @@ description: Use when executing /promote or the user says "promote" "升级" "�
 - 纯机械操作 → 否决晋升，改用脚本/技术强制
 
 ## 降级
-直接检查 ops/rules/ 触发记录
+直接检查 framework/ops/rules/ 触发记录

@@ -57,4 +57,4 @@ description: Use when executing /lint, /lint --full, /lint --verbose or when the
 - 自动修复项（YAML 格式）修复后必须回显修复结果
 
 ## 降级
-SKILL 加载失败时，直接读取：`ops/rules/Lint检查流程.md`
+SKILL 加载失败时，直接读取：`framework/ops/rules/Lint检查流程.md`

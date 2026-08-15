@@ -20,4 +20,4 @@ description: Use when executing /refresh or the user says "refresh" "刷新" "�
 - 《刷新建议》：逐条列出过期页面 + 与新知识的差异
 
 ## 降级
-直接读取 Lint #12 定义（`ops/rules/核心操作流程.md`）
+直接读取 Lint #12 定义（`framework/ops/rules/核心操作流程.md`）

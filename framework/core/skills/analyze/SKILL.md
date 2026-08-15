@@ -52,4 +52,4 @@ description: Use when executing /analyze or when the user says "评估" "可行�
 - 例外：用户说「不用打分，直接说结论」→ 跳过评分矩阵，但仍列关键风险
 
 ## 降级
-SKILL 加载失败时，直接读取：`ops/rules/可行性分析流程.md`
+SKILL 加载失败时，直接读取：`framework/ops/rules/可行性分析流程.md`

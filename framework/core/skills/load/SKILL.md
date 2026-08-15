@@ -29,7 +29,7 @@ description: Use when the user says "加载 ixxi" "加载框架" "开始用 ixxi
    能力：{N} 个（管理 {管理数} + 外部 {外部数}，实测 core/skills）
    待办：{N} 项（待环境 {X} / 待真实使用 {Y} / 后置 {Z} / 约定 {W}），详见 docs/maintenance/未落地清单.md
    ⚡ 现在可做 {M} 项（触发条件满足）：{列出满足的项}    ← 仅当有满足时才输出这行
-   下一步：把资料放进 personal/raw/inbox/ 说「入库」，或说「体检」看健康度
+   下一步：把资料放进 personal/data/inbox/ 说「入库」，或说「体检」看健康度
 ```
 
 ## 硬闸门

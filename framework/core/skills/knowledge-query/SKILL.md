@@ -1,6 +1,6 @@
 ---
 name: kb-query
-description: 知识库精准问答。触发条件：用户提出领域问题（技术/安全/架构/网络等），且本地 knowledge/ 下有相关文章。流程：关键词→标签过滤→渐进阅读→消化整合→硬闸门→反馈提示。
+description: 知识库精准问答。触发条件：用户提出领域问题（技术/安全/架构/网络等），且本地 personal/knowledge/ 下有相关文章。流程：关键词→标签过滤→渐进阅读→消化整合→硬闸门→反馈提示。
 version: 1.1.0
 ---
 
@@ -14,19 +14,19 @@ version: 1.1.0
 
 ### 1. 解析问题 → 匹配领域
 
-从用户问题中提取 2-5 个关键词，匹配 `engine/config/tag-taxonomy.yaml`：
+从用户问题中提取 2-5 个关键词，匹配 `framework/engine/config/tag-taxonomy.yaml`：
 - 如果关键词命中某个 domain 的 subdomains → 锁定该领域
 - 如果命中多个 domain → 列出候选让用户确认
 - 如果无匹配 → 降级为全局搜索（标注降级原因）
 
-**同义词扩展**：如果 tags 过滤后零命中，查 `engine/config/tag-taxonomy.yaml` 中的 `_synonyms` 映射表，用同义词重新检索。
+**同义词扩展**：如果 tags 过滤后零命中，查 `framework/engine/config/tag-taxonomy.yaml` 中的 `_synonyms` 映射表，用同义词重新检索。
 
 ### 2. 标签过滤 → 精准检索
 
 用确定的 subdomain 标签 grep 过滤文章，结合内容关键词二次过滤：
 
 ```
-grep -rl "tags:.*<subdomain>" knowledge/learning/<domain>/ --include="*.md" | xargs grep -li "<content_keyword>"
+grep -rl "tags:.*<subdomain>" personal/knowledge/learning/<domain>/ --include="*.md" | xargs grep -li "<content_keyword>"
 ```
 
 同时利用交叉引用链：从已有高度相关文章底部的 `## 相关文章` 顺藤摸瓜。
@@ -79,7 +79,7 @@ grep -rl "tags:.*<subdomain>" knowledge/learning/<domain>/ --include="*.md" | xa
 
 ### 6.1 检索记录（强制，不可跳过）
 
-每次完成回答后，**立即**追加一条记录到 `raw/sessions/kb-query-log.jsonl`：
+每次完成回答后，**立即**追加一条记录到 `personal/data/sessions/kb-query-log.jsonl`：
 
 ```json
 {"date": "<YYYY-MM-DD>", "query": "<关键词>", "domain": "<领域>", "level": "L1/L2/L3", "hits": N, "read": M, "synonyms_used": false, "feedback": "pending"}
@@ -137,7 +137,7 @@ grep -rl "tags:.*<subdomain>" knowledge/learning/<domain>/ --include="*.md" | xa
 是否写入？
 ```
 
-用户确认后：写入 ops/patterns/ 或 ops/anti-patterns/ → 更新索引。涉及 G 层 → 走 G 层修改流程。
+用户确认后：写入 personal/system/patterns/ 或 personal/system/anti-patterns/ → 更新索引。涉及 G 层 → 走 G 层修改流程。
 
 ## 边界条件
 
@@ -150,7 +150,7 @@ grep -rl "tags:.*<subdomain>" knowledge/learning/<domain>/ --include="*.md" | xa
 
 ## 检索质量追踪
 
-记录位置：`raw/sessions/kb-query-log.jsonl`（Step 6.1 强制写入）。
+记录位置：`personal/data/sessions/kb-query-log.jsonl`（Step 6.1 强制写入）。
 
 用途：
 - L1 命中率：衡量 taxonomy 标签覆盖质量

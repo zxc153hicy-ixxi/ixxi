@@ -21,7 +21,7 @@ description: Use when /lint detects skill-ification candidates or the user says 
 **接受跟踪**：用户确认加载 → 写入 `skill_accepted: true` + `skill_first_offered`。拒绝 → `skill_accepted: false`。下次同操作检测到 `true` → 走高置信度静默。
 
 ### 计数器自动更新
-每次执行可封装操作后，自动更新 `raw/sessions/skill-usage.json`：
+每次执行可封装操作后，自动更新 `personal/data/sessions/skill-usage.json`：
 - `count++`
 - `last_seen` = 今天
 - `first_seen` = 今天（如果为 null）
@@ -54,11 +54,11 @@ description: Use when /lint detects skill-ification candidates or the user says 
 
 ### 归档流程
 - 触发：超期未使用 或 原规则文件已更新
-- 动作：移至 `.claude/skills/_archived/`，路由自动回退规则文件
+- 动作：移至 `framework/core/skills/_archived/`，路由自动回退规则文件
 - 回退保护：归档导致 skill 数骤降 → 自动回落冷启动参数
 
 ### Skill 调度
-技能调度已收敛为跨 agent 单一事实源：见 [[ops/rules/skill调度注册表]]。curator 不再维护 skill 映射表——内部 kb-* 按注册表表 A 调度，外部 skill 由各 Agent 原生 skill 列表路由。
+技能调度已收敛为跨 agent 单一事实源：见 [[framework/ops/rules/skill调度注册表]]。curator 不再维护 skill 映射表——内部 kb-* 按注册表表 A 调度，外部 skill 由各 Agent 原生 skill 列表路由。
 
 ## 硬闸门
 - skill 生成必须用户确认（G12）
@@ -70,4 +70,4 @@ ingest / lint / audit / compact / conflict / session-close / dedup / health / pr
 （stats / verify 已归档——纯机械操作用脚本更可靠）
 
 ## 降级
-SKILL 加载失败时，直接读取：`ops/rules/技能化流程.md`
+SKILL 加载失败时，直接读取：`framework/ops/rules/技能化流程.md`

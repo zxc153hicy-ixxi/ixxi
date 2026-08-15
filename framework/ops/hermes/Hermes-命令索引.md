@@ -18,14 +18,14 @@ summary: 由 engine/scripts/sync-skills-to-hermes.py 从权威源（core/skills 
 | kb-conflict | Use when /conflict is triggered, a contradiction is detected during Ingest, or the user says "矛盾" "冲突" "裁决" "规则打架". | framework/core/skills/conflict/SKILL.md | — | 矛盾消解流程 |
 | kb-curator | Use when /lint detects skill-ification candidates or the user says "技能化" "封装" "curator" "管家". | framework/core/skills/curator/SKILL.md | — | skill调度注册表 技能化流程 |
 | kb-dedup | Use when executing /dedup or the user says "去重" "重复" "查重". | framework/core/skills/dedup/SKILL.md | — | Lint检查流程 核心操作流程 |
-| kb-enrich | Use when the user says "enrich" "富化" "补全标签" "补充元数据" "打标签". Reads article content and supplements frontmatter fields (tags, summary, pt_phase) based on engine/config/tag-taxonomy.yaml. | framework/core/skills/enrich/SKILL.md | — | — |
+| kb-enrich | Use when the user says "enrich" "富化" "补全标签" "补充元数据" "打标签". Reads article content and supplements frontmatter fields (tags, summary, pt_phase) based on framework/engine/config/tag-taxonomy.yaml. | framework/core/skills/enrich/SKILL.md | — | — |
 | kb-export-template | Use when executing /export-template or when the user says "导出" "打包" "备份" "迁移". | framework/core/skills/export-template/SKILL.md | export-template.sh | 系统操作菜单 |
 | kb-health | Use when executing /health or the user says "health" "健康" "打分" "怎么样". | framework/core/skills/health/SKILL.md | — | — |
 | kb-ingest | Use when executing /ingest or when the user says "ingest" "入库" "提炼" "整理" "收录". | framework/core/skills/ingest/SKILL.md | — | Ingest完整流程 |
 | kb-lint | Use when executing /lint, /lint --full, /lint --verbose or when the user says "lint" "体检" "健康度" "检查" "有没有毛病". | framework/core/skills/lint/SKILL.md | — | Lint检查流程 |
 | kb-load | Use when the user says "加载 ixxi" "加载框架" "开始用 ixxi" "load ixxi". | framework/core/skills/load/SKILL.md | — | — |
 | kb-promote | Use when executing /promote or the user says "promote" "升级" "升层" "晋升". | framework/core/skills/promote/SKILL.md | — | — |
-| kb-query | 知识库精准问答。触发条件：用户提出领域问题（技术/安全/架构/网络等），且本地 knowledge/ 下有相关文章。流程：关键词→标签过滤→渐进阅读→消化整合→硬闸门→反馈提示。 | framework/core/skills/knowledge-query/SKILL.md | — | — |
+| kb-query | 知识库精准问答。触发条件：用户提出领域问题（技术/安全/架构/网络等），且本地 personal/knowledge/ 下有相关文章。流程：关键词→标签过滤→渐进阅读→消化整合→硬闸门→反馈提示。 | framework/core/skills/knowledge-query/SKILL.md | — | — |
 | kb-refresh | Use when executing /refresh or the user says "refresh" "刷新" "过时" "更新". | framework/core/skills/refresh/SKILL.md | — | 核心操作流程 |
 | kb-session-close | Use when session is ending or the user says "结束" "关闭" "再见" "不记了" "今天就这样". | framework/core/skills/session-close/SKILL.md | — | 反馈闭环流程 会话收尾检查 |
 

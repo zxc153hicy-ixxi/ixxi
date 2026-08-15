@@ -35,4 +35,4 @@ description: Use when CLAUDE.md exceeds 180 lines or the user says "compact" "�
 - <100 行触发过度精简检测
 
 ## 降级
-SKILL 加载失败时，直接读取：`knowledge/archive/知识库管理/rules/_评分锚定标准.md` + CLAUDE.md 行数管控段
+SKILL 加载失败时，直接读取：`personal/knowledge/archive/知识库管理/rules/_评分锚定标准.md` + CLAUDE.md 行数管控段
