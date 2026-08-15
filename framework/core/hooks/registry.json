@@ -15,7 +15,8 @@
       "trigger": "pre-commit",
       "auto": false,
       "script": "gate/version-check.sh",
-      "description": "commit前检查版本一致性"
+      "status": "suspended",
+      "description": "版本一致性检查（已停用：ixxi 版本机制未建立，检查对象 CLAUDE.md/设计方案-V*.md 不存在会无条件误阻断；待后置 #6 建立版本号机制后重写接入）"
     },
     "deprecate-move": {
       "trigger": "PostToolUse:Edit",
