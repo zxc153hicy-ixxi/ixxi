@@ -104,6 +104,7 @@ LLM 严禁跳过此流程直接编辑契约文件。**即使用户直接指令�
 
 **计数器义务**：每次执行可封装操作后，自动更新 `raw/sessions/skill-usage.json`（count++/last_seen/first_seen）。skill 被用户接受后写入 `skill_accepted: true`。此为非破坏性自动操作。
 
+**冷启动引导**：若仓库根适配层（`.claude/skills/`、`.agents/skills/`、`.codex/`）未生成（clone 后首次），引导用户先运行 `bash ixxi init` 初始化；已初始化则直接开始使用。
 **入门引导**：检查 `core/onboarding.json`，首次触发时展示对应提示，展示后标记 `fired: true`。每个提示只展示一次。
 
 ## R层 规则文件
