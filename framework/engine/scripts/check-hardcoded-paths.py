@@ -62,7 +62,9 @@ def main():
             continue
         rel = str(f.relative_to(repo))
         rel_norm = rel.replace("\\", "/")
-        if any(rel_norm.startswith(p) for p in SKIP_PATH_PREFIXES):
+        # 兼容两种 repo：framework/（脚本默认）或仓库根（pre-commit 传 --repo 仓库根，rel 带 framework/ 前缀）
+        rel_short = rel_norm[len("framework/"):] if rel_norm.startswith("framework/") else rel_norm
+        if any(rel_short.startswith(p) for p in SKIP_PATH_PREFIXES):
             continue
         if rel_norm in SKIP_INDIVIDUAL_FILES:
             continue
