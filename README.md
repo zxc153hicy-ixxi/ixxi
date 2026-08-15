@@ -52,7 +52,7 @@
 ixxi/
 ├── ixxi                    # init 一键脚本（把 framework 变成你的实例）
 ├── framework/              # 开源通用层（机制，git 版本化）
-│   ├── core/               #   能力源：skills（15 管理 + 57 外部）+ agents + hooks
+│   ├── core/               #   能力源：skills（16 管理 + 57 外部）+ agents + hooks
 │   ├── engine/             #   引擎脚本：check / sync / fix / migrate / scan
 │   ├── ops/                #   规则 + framework-patterns（通用教训）+ hermes 命令索引
 │   ├── knowledge/          #   framework-designs（框架设计）

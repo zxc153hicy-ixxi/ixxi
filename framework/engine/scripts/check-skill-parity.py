@@ -5,7 +5,7 @@
 每个 skill 统一按 skill 名作 key：优先取 SKILL.md frontmatter 的 name，失败用父目录名。
 
 权威源（不修改）：
-  core/skills/<技能>/                 # 15 个管理技能
+  core/skills/<技能>/                 # 16 个管理技能
   core/skills/_external/<分类>/<技能>/   # 领域技能（跳过无 SKILL.md 的资源目录）
 
 六项断言：

@@ -2,7 +2,7 @@
 """sync-skills-to-codex.py — 知识库 skills → Codex 适配层受控同步
 
 权威源（不修改）：
-  core/skills/<技能>/          # 15 个管理技能
+  core/skills/<技能>/          # 16 个管理技能
   core/skills/_external/<分类>/<技能>/  # 57 个领域技能（跳过分类级重复 SKILL.md）
 
 目标（受控复制，每次运行镜像更新）：
@@ -86,7 +86,7 @@ def sync_to(target: Path, sources: list[tuple[str, Path]], prune: bool):
             synced.append(name)
 
         print(f"  -> {target}  (技能 {len(synced)} 个)")
-        # 生成 README（说明产物性质 + 计数口径，对齐 72 = 管理 15 / 外部 57）
+        # 生成 README（说明产物性质 + 计数口径，对齐 73 = 管理 16 / 外部 57）
         write_readme(target, len(synced), sum(1 for _, s in sources if "_external" in s.parts))
     except Exception:
         # 回滚：还原备份

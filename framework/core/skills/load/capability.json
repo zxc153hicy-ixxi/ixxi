@@ -1,0 +1,16 @@
+{
+  "id": "kb-load",
+  "version": "1.0.0",
+  "kind": "skill",
+  "requires": [
+    "read_instruction",
+    "filesystem_read",
+    "filesystem_write"
+  ],
+  "provides": [
+    "framework_loading"
+  ],
+  "resources": [],
+  "tier": "full",
+  "lifecycle_class": "critical"
+}

@@ -13,12 +13,13 @@ updated: 2026-08-15
 > **置信度列**：高 = 关键词命中即静默加载；中 = 命中需提示确认；低 = 模糊匹配列清单（衔接 curator 加载行为，curator 再按「精确命令/历史 accepted」动态上调）。
 > **维护**：新增/修改 skill 后①更新本表②跑 `sync-skills-to-claude.py`（Claude 平铺）③跑 `sync-skills-to-codex.py`（Codex 平铺）④跑 `sync-skills-to-hermes.py`（Hermes 命令索引）。
 
-## 表 A · 内部管理 skill（15 条，跨 agent 核心）
+## 表 A · 内部管理 skill（16 条，跨 agent 核心）
 
 > 三 agent 均通过原生机制加载：Claude=Skill 注入、Codex=.agents/skills/ 发现、Hermes=SKILL.md 直读 + 命令索引执行。
 
 | skill | 触发场景 | 关键词 | 置信度 | Claude | Hermes | Codex | 规则文件 |
 |---|---|---|---|---|---|---|---|
+| kb-load | 加载框架/进入 ixxi 模式 | 加载 ixxi、加载框架、开始用 ixxi、load ixxi | 高 | Skill: kb-load | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：读 AGENT.md + onboarding 首次引导 | Skill: kb-load | [[README]] |
 | kb-ingest | 入库/提炼资料 | ingest、入库、提炼、整理、收录 | 高 | Skill: kb-ingest | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：check-inbox.py --mode health + scan-sensitive.py + 10步流水线 | Skill: kb-ingest | [[ops/rules/Ingest完整流程]] |
 | kb-lint | 体检/健康度检查 | lint、体检、健康度、检查、有没有毛病 | 高 | Skill: kb-lint | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：check_*.py --repo . 全量 55 项 | Skill: kb-lint | [[ops/rules/知识库检查体系]] |
 | kb-audit | 全量审计/查漏 | audit、审计、回溯、遗漏、查漏 | 中 | Skill: kb-audit | 直读 SKILL.md+命令索引（见 ops/hermes/Hermes-命令索引.md）：全量审计（已并入 /check） | Skill: kb-audit | [[ops/rules/全量审计流程]] |

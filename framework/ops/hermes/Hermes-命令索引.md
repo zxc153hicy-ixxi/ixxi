@@ -8,7 +8,7 @@ summary: 由 engine/scripts/sync-skills-to-hermes.py 从权威源（core/skills 
 
 本文件由 engine/scripts/sync-skills-to-hermes.py 生成，替代手维护翻译表；Hermes 原生直读 SKILL.md，命令索引只承担语法查找。
 
-## 管理 skill（15）
+## 管理 skill（16）
 
 | skill | 触发场景 | SKILL.md 路径 | 引用脚本 | 引用规则 |
 |------|------|------|------|------|
@@ -23,6 +23,7 @@ summary: 由 engine/scripts/sync-skills-to-hermes.py 从权威源（core/skills 
 | kb-health | Use when executing /health or the user says "health" "健康" "打分" "怎么样". | core/skills/health/SKILL.md | — | — |
 | kb-ingest | Use when executing /ingest or when the user says "ingest" "入库" "提炼" "整理" "收录". | core/skills/ingest/SKILL.md | — | Ingest完整流程 |
 | kb-lint | Use when executing /lint, /lint --full, /lint --verbose or when the user says "lint" "体检" "健康度" "检查" "有没有毛病". | core/skills/lint/SKILL.md | — | Lint检查流程 |
+| kb-load | Use when the user says "加载 ixxi" "加载框架" "开始用 ixxi" "load ixxi". | core/skills/load/SKILL.md | — | — |
 | kb-promote | Use when executing /promote or the user says "promote" "升级" "升层" "晋升". | core/skills/promote/SKILL.md | — | — |
 | kb-query | 知识库精准问答。触发条件：用户提出领域问题（技术/安全/架构/网络等），且本地 knowledge/ 下有相关文章。流程：关键词→标签过滤→渐进阅读→消化整合→硬闸门→反馈提示。 | core/skills/knowledge-query/SKILL.md | — | — |
 | kb-refresh | Use when executing /refresh or the user says "refresh" "刷新" "过时" "更新". | core/skills/refresh/SKILL.md | — | 核心操作流程 |

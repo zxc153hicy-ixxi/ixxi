@@ -2,7 +2,7 @@
 """sync-skills-to-claude.py — 知识库管理 skills → Claude Code 适配层平铺
 
 权威源（不修改）：
-  core/skills/<技能>/          # 15 个管理技能
+  core/skills/<技能>/          # 16 个管理技能
 
 目标（受控复制，一级平铺供 Claude Code 发现）：
   .claude/skills/kb-<name>/          # Claude Code 只扫一级 .claude/skills/<name>/SKILL.md
@@ -38,7 +38,7 @@ def skill_name(sk_md: Path) -> str:
 
 
 def collect_sources() -> dict[str, Path]:
-    """返回 {技能名: 技能目录路径}，15 个管理技能"""
+    """返回 {技能名: 技能目录路径}，16 个管理技能"""
     skills = {}
     if SRC.exists():
         for d in sorted(SRC.iterdir()):
