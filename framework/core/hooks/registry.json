@@ -12,11 +12,10 @@
       "description": "会话结束时自动检测阶段切换"
     },
     "version-check": {
-      "trigger": "pre-commit",
+      "trigger": "manual",
       "auto": false,
       "script": "gate/version-check.sh",
-      "status": "suspended",
-      "description": "版本一致性检查（已停用：ixxi 版本机制未建立，检查对象 CLAUDE.md/设计方案-V*.md 不存在会无条件误阻断；待后置 #6 建立版本号机制后重写接入）"
+      "description": "发布（打 tag）时校验 CHANGELOG 最新版本 ↔ git tag 最新 semver 一致"
     },
     "deprecate-move": {
       "trigger": "PostToolUse:Edit",

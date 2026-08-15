@@ -21,10 +21,10 @@ if git diff --cached --name-only | grep -q "AGENT.md"; then
     ERRORS=$((ERRORS+1))
   fi
   
-  # Check log.md also staged
-  if ! git diff --cached --name-only | grep -q "log.md"; then
-    echo "❌ G层修改未同步log.md"
-    echo "   请先追加log记录"
+  # Check CHANGELOG.md also staged
+  if ! git diff --cached --name-only | grep -q "CHANGELOG.md"; then
+    echo "❌ G层修改未同步CHANGELOG.md"
+    echo "   请先追加版本记录"
     ERRORS=$((ERRORS+1))
   fi
   
