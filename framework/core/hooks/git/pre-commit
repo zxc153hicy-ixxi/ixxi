@@ -1,5 +1,5 @@
 #!/bin/bash
-KB_ROOT="$(cd "$(dirname "$0")/../../../.." && pwd)"
+KB_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 set -e
 # Pre-commit hook: AGENT.md 变更→验证 tag+log
 # 非交互模式——检查不通过直接阻断
@@ -38,15 +38,13 @@ if git diff --cached --name-only | grep -q "AGENT.md"; then
   echo "✅ G层修改验证: tag+log已就位"
 fi
 
-# 版本一致性检查（每次 commit 都跑）
-bash "$KB_ROOT"/framework/core/hooks/gate/version-check.sh
-if [ $? -ne 0 ]; then
-  echo "   请同步设计方案版本号后重新 commit"
-  exit 1
-fi
+# 版本一致性检查 —— ixxi 版本号机制未建立（git tag 待补打、AGENT.md 无 V 版本号），
+# version-check.sh 检查的老库文件（CLAUDE.md / 设计方案-V*.md）在 ixxi 不存在，会无条件误阻断。
+# 待 ixxi 版本机制建立（未落地清单 #3 补 tag + 后置 #6 版本号/兼容矩阵）后重新接入。
+# bash "$KB_ROOT"/framework/core/hooks/gate/version-check.sh
 
 # kb-* 平铺校验（Warning）—— 防止 Claude 内部 skill 一级入口回归丢失
-KB_SKILL_MISSING=$(python "$KB_ROOT/engine/scripts/sync-skills-to-claude.py" --check 2>/dev/null | grep -c "❌" || true)
+KB_SKILL_MISSING=$(python "$KB_ROOT/framework/engine/scripts/sync-skills-to-claude.py" --check 2>/dev/null | grep -c "❌" || true)
 if [ "$KB_SKILL_MISSING" -gt 0 ]; then
   echo ""
   echo "🟡 kb-* 平铺校验：Claude 内部 skill 一级入口缺失"
@@ -56,7 +54,7 @@ fi
 # ===== 机制2：检查前置（分档阻断）=====
 
 # 计数漂移检查（全量，阻断）—— 机制1
-COUNTS=$(python "$KB_ROOT/engine/scripts/check-counts.py" --repo "$KB_ROOT" --json 2>/dev/null || true)
+COUNTS=$(python "$KB_ROOT/framework/engine/scripts/check-counts.py" --repo "$KB_ROOT" --json 2>/dev/null || true)
 COUNTS_STATUS=$(echo "$COUNTS" | python -c "import sys,json; print(json.load(sys.stdin).get('status','pass'))" 2>/dev/null || echo "error")
 if [ "$COUNTS_STATUS" = "fail" ]; then
   echo ""
@@ -72,7 +70,7 @@ for m in d.get('mismatches',[]):
 fi
 
 # 脚本引用失效检查（全量，阻断）—— 机制2
-SCRIPTREFS=$(python "$KB_ROOT/engine/scripts/check-script-refs.py" --repo "$KB_ROOT" --json 2>/dev/null || true)
+SCRIPTREFS=$(python "$KB_ROOT/framework/engine/scripts/check-script-refs.py" --repo "$KB_ROOT" --json 2>/dev/null || true)
 SCRIPTREFS_STATUS=$(echo "$SCRIPTREFS" | python -c "import sys,json; print(json.load(sys.stdin).get('status','pass'))" 2>/dev/null || echo "error")
 if [ "$SCRIPTREFS_STATUS" = "fail" ]; then
   echo ""
@@ -90,16 +88,16 @@ fi
 # 断链检查（增量，Warning）—— 只查本次变更文件
 CHANGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.md$' | tr '\n' ' ')
 if [ -n "$CHANGED_FILES" ]; then
-  BROKEN_STATUS=$(python "$KB_ROOT/engine/scripts/check-links.py" --repo "$KB_ROOT" --mode broken --files $CHANGED_FILES --json 2>/dev/null | python -c "import sys,json; print(json.load(sys.stdin).get('status','pass'))" 2>/dev/null || echo "error")
+  BROKEN_STATUS=$(python "$KB_ROOT/framework/engine/scripts/check-links.py" --repo "$KB_ROOT" --mode broken --files $CHANGED_FILES --json 2>/dev/null | python -c "import sys,json; print(json.load(sys.stdin).get('status','pass'))" 2>/dev/null || echo "error")
   if [ "$BROKEN_STATUS" = "fail" ]; then
     echo ""
     echo "🟡 断链警告（增量）：本次变更文件中有断链，建议修复（本次未阻断）"
-    python "$KB_ROOT/engine/scripts/check-links.py" --repo "$KB_ROOT" --mode broken --files $CHANGED_FILES 2>/dev/null | grep '❌' | head -5
+    python "$KB_ROOT/framework/engine/scripts/check-links.py" --repo "$KB_ROOT" --mode broken --files $CHANGED_FILES 2>/dev/null | grep '❌' | head -5
   fi
 fi
 
 # 护栏F: 硬编码路径检测（Warning 模式，暂不阻断）
-HARDCODED=$(python "$KB_ROOT/engine/scripts/check-hardcoded-paths.py" --repo "$KB_ROOT" --json 2>/dev/null || true)
+HARDCODED=$(python "$KB_ROOT/framework/engine/scripts/check-hardcoded-paths.py" --repo "$KB_ROOT" --json 2>/dev/null || true)
 HARDCODED_STATUS=$(echo "$HARDCODED" | python -c "import sys,json; print(json.load(sys.stdin).get('status','pass'))" 2>/dev/null || echo "error")
 if [ "$HARDCODED_STATUS" = "fail" ]; then
   echo ""
