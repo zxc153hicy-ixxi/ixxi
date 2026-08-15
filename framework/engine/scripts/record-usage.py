@@ -8,8 +8,8 @@
   python framework/engine/scripts/record-usage.py --list            # 列出当前遥测
   python framework/engine/scripts/record-usage.py <skill-name> --reset  # 重置该 skill
 
-遥测文件：personal/raw/sessions/skill-usage.json 优先（实例层），
-          否则 raw/sessions/skill-usage.json。
+遥测文件：personal/data/sessions/skill-usage.json 优先（实例层），
+          否则 personal/data/sessions/skill-usage.json。
 """
 import json
 import sys
@@ -23,15 +23,8 @@ REPO_ROOT = FRAMEWORK.parent  # 仓库根
 
 
 def telemetry_path() -> Path:
-    """遥测文件位置：personal 实例层优先，其次仓库根 raw/。"""
-    personal = REPO_ROOT / "personal" / "raw" / "sessions" / "skill-usage.json"
-    root = REPO_ROOT / "raw" / "sessions" / "skill-usage.json"
-    if personal.exists():
-        return personal
-    if root.exists():
-        return root
-    # 都不存在 → 默认写入 personal 实例层（遥测属于个人数据，不进 framework）
-    return personal
+    """遥测文件位置：personal 实例层（遥测属于个人数据，不进 framework）。"""
+    return REPO_ROOT / "personal" / "data" / "sessions" / "skill-usage.json"
 
 
 def load(path: Path) -> dict:

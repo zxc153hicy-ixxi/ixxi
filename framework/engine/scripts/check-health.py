@@ -94,7 +94,7 @@ def count_anti_patterns(repo: Path) -> int:
 
 def count_anti_touches(repo: Path, age_days: int) -> int:
     """统计最近 N 天内触碰的反模式数（从 log.md 中提取）"""
-    logf = repo / "log.md"
+    logf = repo.parent / "personal" / "data" / "log.md"
     if not logf.exists():
         return 0
 

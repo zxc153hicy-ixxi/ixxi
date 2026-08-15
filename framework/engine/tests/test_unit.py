@@ -244,8 +244,8 @@ class TestStatsUnusedMain(unittest.TestCase):
         td = tempfile.TemporaryDirectory()
         self.addCleanup(td.cleanup)
         root = Path(td.name)
-        (root / "raw" / "sessions").mkdir(parents=True)
-        (root / "raw" / "sessions" / "skill-usage.json").write_text(
+        (root / "personal" / "data" / "sessions").mkdir(parents=True)
+        (root / "personal" / "data" / "sessions" / "skill-usage.json").write_text(
             json.dumps(data), encoding="utf-8")
 
         old_repo, old_fw, old_argv = stats.REPO_ROOT, stats.FRAMEWORK, sys.argv

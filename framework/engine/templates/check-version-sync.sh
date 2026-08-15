@@ -3,9 +3,9 @@
 set -e
 # 纯机械操作，无歧义，不需要 LLM 判断
 
-KB_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+KB_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 CLAUDE_MD="$KB_ROOT/CLAUDE.md"
-DESIGN_DIR="$(git rev-parse --show-toplevel)/../知识库方案"
+DESIGN_DIR="$KB_ROOT/personal/knowledge/projects/知识库管理/designs"
 
 # 1. 读 CLAUDE.md 版本号
 CLAUDE_VER=$(head -1 "$CLAUDE_MD" | grep -oE 'V[0-9]+\.[0-9]+\.[0-9]+' | head -1)

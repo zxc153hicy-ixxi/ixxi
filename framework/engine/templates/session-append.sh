@@ -1,10 +1,10 @@
 #!/bin/bash
-KB_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+KB_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 set -e
 # 会话追加——边聊边记，每完成一个重要操作即追加到当日会话文件
 # 用法: session-append.sh "标题" "内容描述"
 
-SESSION_DIR="$KB_ROOT/raw/sessions"
+SESSION_DIR="$KB_ROOT/personal/data/sessions"
 TODAY=$(date +%Y-%m-%d)
 TITLE="${1:-未命名操作}"
 CONTENT="${2:-无描述}"

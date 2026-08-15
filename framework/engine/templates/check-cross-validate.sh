@@ -1,14 +1,14 @@
 #!/bin/bash
-KB_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+KB_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 set -e
-# CLAUDE.md ↔ log.md 交叉校验
+# CLAUDE.md ↔ personal/data/log.md 交叉校验
 # 检查：G层修改记录 vs git tag 数量、版本号连续性
 
 echo "=== 交叉校验 ==="
 
 # Count G-layer modifications in log
-log_g=$(grep -c "G层修改" "$KB_ROOT/log.md" 2>/dev/null)
-echo "log.md G层修改: $log_g 次"
+log_g=$(grep -c "G层修改" "$KB_ROOT/personal/data/log.md" 2>/dev/null)
+echo "personal/data/log.md G层修改: $log_g 次"
 
 # Count git tags  
 cd "$KB_ROOT"
@@ -16,12 +16,12 @@ tag_g=$(git tag | grep -c "pre-")
 echo "git tag(防误操作): $tag_g 个"
 
 # Check version continuity in log
-versions=$(grep "G层修改.*V[0-9]" log.md | grep -o "V[0-9]\.[0-9]*→V[0-9]\.[0-9]*" | tail -1)
+versions=$(grep "G层修改.*V[0-9]" personal/data/log.md | grep -o "V[0-9]\.[0-9]*→V[0-9]\.[0-9]*" | tail -1)
 echo "最近G层版本跳转: $versions"
 
 # Check CLAUDE.md version matches last log entry
 kb_ver=$(head -1 CLAUDE.md | grep -o "V[0-9]\.[0-9]*")
-last_log_ver=$(grep "G层修改" log.md | tail -1 | grep -o "V[0-9]\.[0-9]*→V[0-9]\.[0-9]*" | grep -o "V[0-9]\.[0-9]*$" 2>/dev/null)
+last_log_ver=$(grep "G层修改" personal/data/log.md | tail -1 | grep -o "V[0-9]\.[0-9]*→V[0-9]\.[0-9]*" | grep -o "V[0-9]\.[0-9]*$" 2>/dev/null)
 
 echo ""
 echo "CLAUDE.md: $kb_ver"

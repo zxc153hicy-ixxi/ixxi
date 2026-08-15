@@ -18,9 +18,9 @@ updated: 2026-07-20
 ```
 
 **LLM 执行协议**：
-- **单个文件** → `python engine/scripts/auto-import.py <文件>`（自动 prescan + 转换 + 归档到 .inbox/，压缩包自动解压）
-- **批量目录** → `python engine/scripts/batch-convert.py <源目录> <目标目录>`（递归转换 .docx/.pdf/.epub/.pptx/.ppt）
-- **旧 .doc 文件** → `python engine/scripts/batch-doc-convert.py`（antiword 转换）
+- **单个文件** → `python framework/engine/scripts/auto-import.py <文件>`（自动 prescan + 转换 + 归档到 personal/data/inbox/，压缩包自动解压）
+- **批量目录** → `python framework/engine/scripts/batch-convert.py <源目录> <目标目录>`（递归转换 .docx/.pdf/.epub/.pptx/.ppt）
+- **旧 .doc 文件** → `python framework/engine/scripts/batch-doc-convert.py`（antiword 转换）
 
 回显结果。仅在以下情况暂停确认：
 - 依赖缺失（Calibre/LibreOffice/Marker/MinerU 未安装）
@@ -208,12 +208,12 @@ marker pdf_folder/ --output_dir output/
 
 ```bash
 # 中文扫描件 OCR（MinerU）
-python engine/scripts/batch-mineru.py --dry-run    # 预览 0KB 文件
-python engine/scripts/batch-mineru.py               # 执行转换
+python framework/engine/scripts/batch-mineru.py --dry-run    # 预览 0KB 文件
+python framework/engine/scripts/batch-mineru.py               # 执行转换
 
 # 英文扫描件 OCR（marker）
-python engine/scripts/batch-ocr.py --dry-run
-python engine/scripts/batch-ocr.py
+python framework/engine/scripts/batch-ocr.py --dry-run
+python framework/engine/scripts/batch-ocr.py
 ```
 
 两个脚本均内置 `TARGET_TO_SOURCE` 映射表（0KB .md 子目录 → 源 PDF 目录），新增映射需编辑脚本。
@@ -222,8 +222,8 @@ python engine/scripts/batch-ocr.py
 
 1. 用对应工具转成 .md
 2. 检查表格和图片是否正常
-3. 运行 `python engine/scripts/auto-import.py <文件>` 自动完成转换+归档（源文件→`.inbox/sources/`，.md→`.inbox/converted/`）
-4. **OCR 兜底检查**：扫描 `.inbox/converted/` 中 0KB 的 .md → 按语言选工具回源 OCR（见上方 OCR 兜底表）
+3. 运行 `python framework/engine/scripts/auto-import.py <文件>` 自动完成转换+归档（源文件→`personal/data/inbox/sources/`，.md→`personal/data/inbox/converted/`）
+4. **OCR 兜底检查**：扫描 `personal/data/inbox/converted/` 中 0KB 的 .md → 按语言选工具回源 OCR（见上方 OCR 兜底表）
 5. `/ingest` 入库
 
 ## 关联

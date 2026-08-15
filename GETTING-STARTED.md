@@ -35,7 +35,7 @@ bash ixxi init
 
 ```bash
 # 把演示笔记放进你的个人入库区
-cp framework/samples/demo-note.md personal/raw/inbox/
+cp framework/samples/demo-note.md personal/data/inbox/
 ```
 
 然后在 Claude Code 里说 **「入库」** 或 **「ingest」**，触发 kb-ingest。
@@ -47,8 +47,8 @@ cp framework/samples/demo-note.md personal/raw/inbox/
 ## 第 4 步：换成你的真实数据
 
 ```bash
-rm personal/raw/inbox/demo-note.md          # 清掉演示数据
-cp 你的资料.md personal/raw/inbox/          # 放你的真实资料
+rm personal/data/inbox/demo-note.md          # 清掉演示数据
+cp 你的资料.md personal/data/inbox/          # 放你的真实资料
 ```
 
 再说「入库」。你的资料格式/主题/体量都和 demo 不同，遇到问题按 kb-ingest 的失败处理走。

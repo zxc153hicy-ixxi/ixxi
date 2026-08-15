@@ -1,8 +1,8 @@
 #!/bin/bash
-KB_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+KB_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 set -e
 # 检查 session-notes.md 状态
-SN="$KB_ROOT/session-notes.md"
+SN="$KB_ROOT/personal/data/session-notes.md"
 if [ -f "$SN" ]; then
   size=$(wc -c < "$SN")
   if [ "$size" -gt 1 ]; then

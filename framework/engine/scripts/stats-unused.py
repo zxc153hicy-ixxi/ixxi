@@ -4,7 +4,7 @@
 未触发报告 v1 最小化交付（不可延后 v2——否则演化闭环空转）。
 
 数据源（优先级从高到低）：
-  1. 遥测文件 raw/sessions/skill-usage.json（实例层，skill → {count, first_seen, last_seen, ...}）
+  1. 遥测文件 personal/data/sessions/skill-usage.json（实例层，skill → {count, first_seen, last_seen, ...}）
   2. core/skills/<技能>/capability.json 的 last_used / triggered 字段（未建立遥测时的兜底）
 
 无遥测数据时不崩溃：输出「暂无遥测数据，使用后由 kb-curator 记录触发」后正常退出（退出码 0）。
@@ -30,10 +30,9 @@ ARCHIVE_DAYS = 90  # 设计阈值：五阶段生命周期 + 90 天归档
 
 
 def find_telemetry() -> Path | None:
-    """定位遥测文件 raw/sessions/skill-usage.json（实例层可能在仓库根或 personal/ 下）。"""
+    """定位遥测文件 personal/data/sessions/skill-usage.json（实例层可能在仓库根或 personal/ 下）。"""
     candidates = [
-        REPO_ROOT / "raw" / "sessions" / "skill-usage.json",
-        REPO_ROOT / "personal" / "raw" / "sessions" / "skill-usage.json",
+        REPO_ROOT / "personal" / "data" / "sessions" / "skill-usage.json",
     ]
     for p in candidates:
         if p.is_file():

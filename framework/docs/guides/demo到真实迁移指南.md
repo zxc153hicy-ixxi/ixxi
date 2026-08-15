@@ -15,7 +15,7 @@ summary: demo→真实使用迁移指南——数据替换、场景注册、skil
 
 ```bash
 # 把演示数据放进你的个人 raw 输入区
-cp framework/samples/demo-note.md personal/raw/inbox/
+cp framework/samples/demo-note.md personal/data/inbox/
 
 # 按 kb-ingest 流程入库（入库 → 体检 → 检索）
 #   入库：framework/core/skills/ingest/SKILL.md
@@ -31,17 +31,17 @@ cp framework/samples/demo-note.md personal/raw/inbox/
 
 ```bash
 # 清掉演示数据
-rm personal/raw/inbox/demo-note.md
+rm personal/data/inbox/demo-note.md
 
 # 放进你的真实资料（任意格式：md / txt / 截图 / 笔记导出）
-cp ~/你的资料.md personal/raw/inbox/
+cp ~/你的资料.md personal/data/inbox/
 ```
 
 然后重跑 kb-ingest。这一步验证「demo 跑通 ≠ 你的数据跑通」——你的资料格式、主题、体量都不同，遇到问题按 kb-ingest 的失败处理（步骤表「失败处理」列）走。
 
 ## 第二步：场景注册（注册第一个个人场景）
 
-打开 `personal/scene-registry.md`，登记你的第一个场景：
+打开 `personal/data/scene-registry.md`，登记你的第一个场景：
 
 ```markdown
 | 编号 | 场景名 | 状态 | 场景描述 | 主要目录 | 创建时间 |
@@ -64,9 +64,9 @@ description: 我的每日回顾流程——整理当天笔记、更新待办
 # 每日回顾
 
 ## 流程
-1. 读今天的 raw/sessions/ 会话记录
+1. 读今天的 personal/data/sessions/ 会话记录
 2. 提炼 3 条以内的新知识点，跑 kb-ingest 入库
-3. 更新 personal/queue.md 待办
+3. 更新 personal/data/queue.md 待办
 4. 跑 kb-lint 体检
 ```
 

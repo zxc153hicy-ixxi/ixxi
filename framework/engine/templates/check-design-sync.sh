@@ -1,10 +1,10 @@
 #!/bin/bash
-KB_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+KB_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 set -e
 # 检查 CLAUDE.md 版本号 vs 设计方案版本号是否一致
 
 KB_VER=$(head -1 "$KB_ROOT/CLAUDE.md" | grep -o "V[0-9]\.[0-9]*")
-DESIGN_DIR="$(git rev-parse --show-toplevel)/../知识库方案"
+DESIGN_DIR="$KB_ROOT/personal/knowledge/projects/知识库管理/designs"
 # sort -V 非 POSIX（macOS/BSD 无），改 python 取版本号最大者
 DESIGN_VER=$(ls -d "$DESIGN_DIR"/V*-模块化 2>/dev/null | python -c "
 import sys, re

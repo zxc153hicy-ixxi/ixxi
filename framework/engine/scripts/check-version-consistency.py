@@ -35,7 +35,7 @@ def extract_agent_version(repo: Path) -> tuple[str | None, str]:
 
 def extract_log_version(repo: Path) -> tuple[str | None, str]:
     """从 log.md 最新版本记录提取"""
-    logf = repo / "log.md"
+    logf = repo.parent / "personal" / "data" / "log.md"
     if not logf.exists():
         return None, "log.md 不存在"
     try:

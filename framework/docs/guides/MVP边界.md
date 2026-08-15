@@ -27,7 +27,7 @@ ixxi 不做 agent 本体（Claude/Codex 等），不做重型 harness 底层，�
 
 | capability | 权威源 | 作用 |
 |------|------|------|
-| kb-ingest | `core/skills/ingest/` | 入库（raw → 提炼 → knowledge/） |
+| kb-ingest | `core/skills/ingest/` | 入库（personal/data/inbox → 提炼 → personal/knowledge/） |
 | kb-lint | `core/skills/lint/` | 体检（健康度 / 完整性检查） |
 | kb-query | `core/skills/knowledge-query/` | 检索（知识优先回答） |
 
@@ -51,9 +51,9 @@ ixxi 不做 agent 本体（Claude/Codex 等），不做重型 harness 底层，�
 |------|------|
 | 命令 | `ixxi stats --unused [--days N]`（默认 30 天） |
 | 输出 | N 天未触发的 capability 清单：skill 名 + 最后触发时间 + 建议（保留 / 归档候选） |
-| 数据源 | 遥测 `raw/sessions/skill-usage.json`（优先）；`core/skills/**/capability.json` 的 last_used/triggered 字段（兜底）；无遥测 → 提示「暂无遥测数据，使用后由 kb-curator 记录触发」 |
+| 数据源 | 遥测 `personal/data/sessions/skill-usage.json`（优先）；`core/skills/**/capability.json` 的 last_used/triggered 字段（兜底）；无遥测 → 提示「暂无遥测数据，使用后由 kb-curator 记录触发」 |
 | 判据 | 遥测是演化决策信号（usage ≠ value），价值判断保留人工裁决 |
-| 实现 | `engine/scripts/stats-unused.py`（Python 标准库，零第三方依赖） |
+| 实现 | `framework/engine/scripts/stats-unused.py`（Python 标准库，零第三方依赖） |
 
 ## 不纳入 v1（明确不做）
 

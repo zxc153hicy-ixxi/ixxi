@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-KB_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+KB_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 # 测试文件自动清理
 # 读取 .test-manifest → 删除所有标记文件 → 清空清单
 MANIFEST="$KB_ROOT/.test-manifest"

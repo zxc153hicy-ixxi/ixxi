@@ -9,22 +9,22 @@ per_chain:
   知识库方案: 1
 
 # 扫描路径（递归扫描 .md 文件）
+# ixxi 结构：实例知识内容在 personal/knowledge/，原始输入在 personal/data/inbox/
 scan_paths:
-  - knowledge/
-  - raw/inbox/
-  - .inbox/
+  - personal/knowledge/
+  - personal/data/inbox/
 
 # 排除路径（不扫描）
 exclude_paths:
-  - raw/sessions/
-  - raw/feedback/
-  - engine/
-  - .claude/
+  - personal/data/sessions/
+  - personal/data/feedback/
+  - framework/engine/
+  - framework/core/
   - .git/
-  - .inbox/sources/
-  - .inbox/_extracted/
-  - .inbox/_processed/
-  - .inbox/_failed/
+  - personal/data/inbox/sources/
+  - personal/data/inbox/_extracted/
+  - personal/data/inbox/_processed/
+  - personal/data/inbox/_failed/
 
 # 永不被清理的 version_of 值
 no_clean:

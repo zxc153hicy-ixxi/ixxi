@@ -1,5 +1,5 @@
 #!/bin/bash
-KB_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+KB_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 set -e
 # 检查模板是否过期（CLAUDE.md修改时间 vs 模板最后导出时间）
 
@@ -20,7 +20,7 @@ if [ "$KB_TIME" -gt "$TPL_TIME" ]; then
   diff_sec=$((KB_TIME - TPL_TIME))
   diff_min=$((diff_sec / 60))
   echo "❌ 模板过期——CLAUDE.md 在 ${diff_min} 分钟前修改，模板未同步"
-  echo "   需要执行: bash engine/templates/export-template.sh"
+  echo "   需要执行: bash framework/engine/templates/export-template.sh"
   exit 1
 else
   echo "✅ 模板是最新的"

@@ -30,7 +30,7 @@ created: 2026-08-14
 
 ### 场景名与描述
 
-**知识库日常管理**。作者长期使用知识库沉淀笔记，每日把零散记录（会议笔记、临时想法、工具用法）丢进 raw/inbox/，周期性跑 ingest 入库 + lint 体检。核心诉求是「内容能进来、库别烂」。
+**知识库日常管理**。作者长期使用知识库沉淀笔记，每日把零散记录（会议笔记、临时想法、工具用法）丢进 personal/data/inbox/，周期性跑 ingest 入库 + lint 体检。核心诉求是「内容能进来、库别烂」。
 
 ### 使用的 capability
 
@@ -39,9 +39,9 @@ created: 2026-08-14
 
 ### 使用过程（模拟）
 
-1. 把当天 3 条零散笔记丢进 `raw/inbox/`（会议要点、一条工具用法、一条临时想法）。
+1. 把当天 3 条零散笔记丢进 `personal/data/inbox/`（会议要点、一条工具用法、一条临时想法）。
 2. 执行 `/ingest`。步骤 0 预检发现队列非空，触发敏感扫描（扫到一条含测试 token 的笔记 → 标注 [敏感] 脱敏后继续）。
-3. 步骤 1-3 逐条提炼：2 条置信度 high 直接写入 `knowledge/`；1 条 medium 走步骤 3.5 对话确认后激活。
+3. 步骤 1-3 逐条提炼：2 条置信度 high 直接写入 `personal/knowledge/`；1 条 medium 走步骤 3.5 对话确认后激活。
 4. 期间间隔了 40 天没跑 ingest，触发批量模式：`[批量模式: 第 1 批/共 2 批]`，每批 10 条。
 5. 跑 `/lint` 日常检查（7 项），输出健康度 82（≥70 健康），行动项 2 条：1 条 YAML 格式错误（自动修复）、1 条技能化候选。
 6. 每月跑一次 `/lint --full` 深度检查，核对页面矛盾、孤立页面、内容过时。
@@ -74,9 +74,9 @@ created: 2026-08-14
 
 ### 使用过程（模拟）
 
-1. 把一本 LLM 书籍的读书笔记（约 30 页 md）放进 `raw/inbox/`，跑 `/ingest` 提炼成 15 条 wiki 条目。
+1. 把一本 LLM 书籍的读书笔记（约 30 页 md）放进 `personal/data/inbox/`，跑 `/ingest` 提炼成 15 条 wiki 条目。
 2. 入库后发现全部文章 tags 还是泛化的 `[学习资料]`，执行 `/enrich --scan-missed` 批量补全。
-3. 步骤 2 确定领域时，`engine/config/tag-taxonomy.yaml` 里没有「大语言模型」这个 domain → 触发 enrich 的新领域引导，自动注册 domain，并从文章标题/正文提取 subdomains。
+3. 步骤 2 确定领域时，`framework/engine/config/tag-taxonomy.yaml` 里没有「大语言模型」这个 domain → 触发 enrich 的新领域引导，自动注册 domain，并从文章标题/正文提取 subdomains。
 4. 用 kb-query 提问「注意力机制和 Transformer 的关系」，跑 L1 检索。
 5. 回答末尾按 kb-query 反馈模板评价「部分准确」，走反馈处理情况 A（tags 不准）修正涉事文章 tags，并检查 taxonomy 是否缺 subdomain。
 
@@ -103,13 +103,13 @@ created: 2026-08-14
 ### 使用的 capability
 
 - `kb-ingest`（设定素材入库）
-- 场景注册（`personal/scene-registry.md` 登记「小说创作」场景）
+- 场景注册（`personal/data/scene-registry.md` 登记「小说创作」场景）
 
 ### 使用过程（模拟）
 
-1. 在 `personal/scene-registry.md` 追加一行：`| S3 | 小说创作 | active | 世界观设定/人物/章节大纲沉淀 | personal/knowledge/novel | 2026-08-14 |`。
+1. 在 `personal/data/scene-registry.md` 追加一行：`| S3 | 小说创作 | active | 世界观设定/人物/章节大纲沉淀 | personal/knowledge/novel | 2026-08-14 |`。
 2. 执行 `check-scene-domain` 校验该行的 domain 值。
-3. 把世界观设定稿、人物卡丢进 `raw/inbox/`，跑 `/ingest` 入库，按 scene「小说创作」+ type 分桶。
+3. 把世界观设定稿、人物卡丢进 `personal/data/inbox/`，跑 `/ingest` 入库，按 scene「小说创作」+ type 分桶。
 4. 定期把章节创作过程中的新增设定增量入库，并与已有设定比对一致性。
 5. 写新章节前用 kb-query 检索「某角色之前设定的能力边界」，防止设定漂移。
 
@@ -141,7 +141,7 @@ created: 2026-08-14
 
 ### 使用过程（模拟）
 
-1. 建求职场景目录 `personal/knowledge/career/`，把 JD、项目经历、刷题记录丢进 `raw/inbox/`，跑 `/ingest` 入库（`_content_types` 里有「面试题」类型，正好覆盖）。
+1. 建求职场景目录 `personal/knowledge/career/`，把 JD、项目经历、刷题记录丢进 `personal/data/inbox/`，跑 `/ingest` 入库（`_content_types` 里有「面试题」类型，正好覆盖）。
 2. 写个人 skill `my-interview-prep`（frontmatter `name` + `description` + 流程：读目标 JD → 拉取该项目/技术栈的已沉淀知识点 → kb-query 检索关联面试题 → 生成复习清单）。
 3. 跑 `sync-skills-to-claude.py` 让 skill 被加载。
 4. 面试前用 kb-query 提问「简述 JVM 内存模型」，走 L1/L2 检索。
@@ -169,20 +169,20 @@ created: 2026-08-14
 
 ### 使用的 capability
 
-- `ixxi stats --unused`（未触发报告，走 `engine/scripts/stats-unused.py`）
+- `ixxi stats --unused`（未触发报告，走 `framework/engine/scripts/stats-unused.py`）
 - `kb-curator`（归档流程，自动回落冷启动参数）
 
 ### 使用过程（模拟）
 
 1. 跑 `python framework/engine/scripts/stats-unused.py --days 90`。
 2. 输出显示若干 capability 在 90 天内未触发：`kb-dedup`（最后触发距今 96 天）、`kb-refresh`（从未触发）、`kb-conflict`（最后触发距今 88 天），建议「归档候选」；`kb-compact`（距今 35 天）建议「保留」。
-3. 对照 `raw/sessions/skill-usage.json` 遥测，交叉确认这些 capability 的触发记录确实为空。
+3. 对照 `personal/data/sessions/skill-usage.json` 遥测，交叉确认这些 capability 的触发记录确实为空。
 4. 逐个人工裁决：`kb-refresh` 归档（从未用过、判据是内容过时刷新，可由 lint 覆盖）；`kb-dedup` 保留（低频但重要保障，usage ≠ value）。
 5. 对归档项走 curator 归档流程：移至 `.claude/skills/_archived/`，确认归档后 skill 数未骤降、无需回落冷启动参数。
 
 ### 发现的问题（模拟）
 
-- **遥测缺失让演化决策悬空**。早期使用没有可靠写入 `raw/sessions/skill-usage.json`（curator 计数器依赖「每次执行可封装操作后自动更新」，但操作漏跑或不经过 curator 就无记录）→ `stats --unused` 提示「暂无遥测数据」，退化到 capability.json 的 `last_used` 兜底。
+- **遥测缺失让演化决策悬空**。早期使用没有可靠写入 `personal/data/sessions/skill-usage.json`（curator 计数器依赖「每次执行可封装操作后自动更新」，但操作漏跑或不经过 curator 就无记录）→ `stats --unused` 提示「暂无遥测数据」，退化到 capability.json 的 `last_used` 兜底。
 - **capability.json 的 `last_used`/`triggered` 字段常不更新**。`stats-unused.py` 的兜底逻辑依赖这些字段，但生成 capability.json 后很少有人回填 `last_used`，兜底信号不可靠 → 未触发报告在无遥测时基本是摆设。这是演化闭环空转的真实风险（MVP 边界文档里已标注「未触发报告不可延后 v2，否则演化闭环空转」，恰好印证）。
 - **「未触发 ≠ 无价值」的裁决容易被忽略**。报告输出「建议：归档候选」是机器建议，但 `kb-dedup` 这类低频高保障能力若被机械归档，后续会出问题。stats 脚本只输出一句话「最终保留/归档由人工裁决」，但缺少把裁决结果回写（如确认归档后写回 `_archived` 标记）的闭环。
 

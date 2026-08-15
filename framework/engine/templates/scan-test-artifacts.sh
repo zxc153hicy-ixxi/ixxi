@@ -1,5 +1,5 @@
 #!/bin/bash
-KB_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+KB_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 set -e
 # 测试文件扫描——找出可能的测试残留
 # 不自动删除，仅列清单

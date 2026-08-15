@@ -15,7 +15,7 @@
 
 ## 二、遥测采集（I8）
 
-- 遥测文件：`personal/raw/sessions/skill-usage.json`（实例层，私有，不进 framework）
+- 遥测文件：`personal/data/sessions/skill-usage.json`（实例层，私有，不进 framework）
 - 记录字段：`count` / `first_seen` / `last_seen`
 - 采集职责：kb-curator 在 skill 执行后调用 `record-usage.py`，LLM 不手工维护此文件
 - **纪律**：遥测只存 personal 本地，贡献包不含遥测（P1-6 隐私边界）

@@ -1,5 +1,5 @@
 #!/bin/bash
-KB_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+KB_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 set -e
 # ============================================================
 # 模板导出预检脚本 V2
@@ -34,18 +34,18 @@ echo "============================================"
 echo ""
 echo "--- 一、泄露检测（全目录覆盖）---"
 
-# 导出时进入模板的目录（只有这些可以有内容）
-TEMPLATE_DIRS="rules patterns anti-patterns hermes engine/templates"
+# 导出时进入模板的目录（framework/ops 子目录，只有这些可以有内容）
+TEMPLATE_DIRS="rules hermes scripts"
 
-# 导出时排除的个人数据目录
-SKIP_DIRS="knowledge/projects knowledge/learning knowledge/archive knowledge/notes knowledge/reference raw .inbox .claude .claudian .fix-backup .obsidian .git engine/config engine/scripts engine/tools docs Excalidraw queries scripts"
+# 导出时排除的目录（framework 非导出子目录 + 实例数据 personal/ 由 ixxi init 生成）
+SKIP_DIRS="personal framework-patterns templates framework/knowledge framework/samples framework/docs framework/engine/tests .claudian .fix-backup .obsidian .git Excalidraw queries scripts"
 
 # 导出时排除的个人文件
-SKIP_FILES="用户画像.md log.md"
+SKIP_FILES="personal/data/用户画像.md personal/data/log.md"
 
-# 1. 扫描全部 ops/ 子目录
-echo "ops/ 全覆盖:"
-for dir in $(find "$SOURCE/ops" -maxdepth 1 -type d 2>/dev/null | grep -v "^$SOURCE/ops$" | sort); do
+# 1. 扫描全部 framework/ops/ 子目录
+echo "framework/ops/ 全覆盖:"
+for dir in $(find "$SOURCE/framework/ops" -maxdepth 1 -type d 2>/dev/null | grep -v "^$SOURCE/framework/ops$" | sort); do
   name=$(basename "$dir")
   md_count=$(find "$dir" -name "*.md" -not -name "README.md" 2>/dev/null | wc -l)
 
@@ -54,11 +54,11 @@ for dir in $(find "$SOURCE/ops" -maxdepth 1 -type d 2>/dev/null | grep -v "^$SOU
   for s in $SKIP_DIRS; do [ "$name" = "$s" ] && is_skip=1; done
 
   if [ "$is_template" -eq 1 ]; then
-    check_pass "ops/$name/ — 系统文件，进入模板"
+    check_pass "framework/ops/$name/ — 系统文件，进入模板"
   elif [ "$is_skip" -eq 1 ]; then
-    check_pass "ops/$name/ — 导出时排除"
+    check_pass "framework/ops/$name/ — 导出时排除"
   else
-    check_fail "ops/$name/ — 未知目录！不在排除列表，可能泄露"
+    check_fail "framework/ops/$name/ — 未知目录！不在排除列表，可能泄露"
   fi
 done
 
@@ -71,21 +71,21 @@ for f in $SKIP_FILES; do
   fi
 done
 
-# 3. raw/ 全覆盖（.md + .docx + .txt + ... 全部计入）
+# 3. personal/ 实例数据全覆盖（.md + .docx + .txt + ... 全部计入）
 echo ""
-echo "raw/ 全覆盖:"
-RAW_DIRS="inbox sessions feedback/positive feedback/negative feedback/partial local web/articles web/papers web/references assets"
+echo "personal/ 实例数据全覆盖:"
+RAW_DIRS="data/inbox data/sessions data/feedback/positive data/feedback/negative data/feedback/partial data/memory raw system"
 for dir in $RAW_DIRS; do
-  all_count=$(find "$SOURCE/raw/$dir" -type f -not -name "README.md" 2>/dev/null | wc -l)
+  all_count=$(find "$SOURCE/personal/$dir" -type f -not -name "README.md" 2>/dev/null | wc -l)
   if [ "$all_count" -gt 0 ]; then
-    check_pass "raw/$dir/ — $all_count 文件，导出时排除"
+    check_pass "personal/$dir/ — $all_count 文件，导出时排除"
   else
-    check_pass "raw/$dir/ — 空"
+    check_pass "personal/$dir/ — 空"
   fi
 done
 
 # 4. 脚本自身
-check_pass "导出/预检脚本在 engine/templates/，不进入模板"
+check_pass "导出/预检脚本在 framework/engine/templates/，不进入模板"
 
 # ============================================================
 # 二、完整性检查
@@ -94,7 +94,7 @@ echo ""
 echo "--- 二、完整性检查 ---"
 
 echo "根文件:"
-for f in AGENT.md CLAUDE.md HERMES.md index.md queue.md activation.md session-notes.md README.md GETTING-STARTED.md; do
+for f in CLAUDE.md HERMES.md README.md GETTING-STARTED.md framework/AGENT.md framework/index.md framework/activation.md; do
   if [ -f "$SOURCE/$f" ]; then
     check_pass "$f"
   else
@@ -110,18 +110,20 @@ RULES=(
   "会话收尾检查.md" "系统操作菜单.md" "核心操作流程.md"
   "全量审计流程.md" "故障处置流程.md" "技能化流程.md"
   "命名规范.md" "复杂度分层.md" "文档转Markdown工具选型.md"
-  "中文翻译规范.md" "编码原则.md"
+  "编码原则.md" "可行性分析流程.md" "确定性动作强制规范.md"
+  "正反模式管理规范.md" "personal隔离规范.md" "skill调度注册表.md"
+  "代码审查规范.md" "mcp注册表.md"
   "知识库检查体系.md" "知识库修复体系.md" "多Agent适配方案.md"
-  "批量修复-设计文档.md" "批量修复-实施计划.md"
-  "修复与创建-设计文档.md" "修复与创建-实施计划.md"
 )
+# 注：中文翻译规范.md 已迁移到个人实例层 personal/system/rules/，
+# 批量修复/修复与创建设计文档已归档到 personal/knowledge/archive/，均不属 framework 规则检查范围
 # 以下已废弃，检查 archive/ 目录
 ARCHIVED_RULES=(
   "auto-save-conversation.md" "context-warning.md"
   "ui-version-management.md" "version-backup.md"
 )
 for rule in "${ARCHIVED_RULES[@]}"; do
-  if [ -f "$SOURCE/knowledge/archive/$rule" ]; then
+  if [ -f "$SOURCE/personal/knowledge/archive/$rule" ]; then
     check_pass "$rule (archived)"
   else
     check_pass "$rule (archived — 已移除，非阻断)"
@@ -131,7 +133,7 @@ done
 RULES2=(
 )
 for rule in "${RULES[@]}"; do
-  if [ -f "$SOURCE/ops/rules/$rule" ]; then
+  if [ -f "$SOURCE/framework/ops/rules/$rule" ]; then
     check_pass "$rule"
   else
     check_fail "$rule 缺失"
@@ -142,9 +144,9 @@ done
 # 三、YAML 格式校验
 # ============================================================
 echo ""
-echo "--- 三、YAML 格式校验 (ops/rules/) ---"
+echo "--- 三、YAML 格式校验 (framework/ops/rules/) ---"
 
-for f in "$SOURCE/ops/rules/"*.md; do
+for f in "$SOURCE/framework/ops/rules/"*.md; do
   name=$(basename "$f")
   # opening ---
   if ! head -1 "$f" | grep -q "^---$"; then
@@ -164,7 +166,7 @@ for f in "$SOURCE/ops/rules/"*.md; do
   done
 done
 
-echo "  总计: $(ls "$SOURCE/ops/rules/"*.md 2>/dev/null | wc -l) 规则文件"
+echo "  总计: $(ls "$SOURCE/framework/ops/rules/"*.md 2>/dev/null | wc -l) 规则文件"
 
 # ============================================================
 # 四、CLAUDE.md / AGENT.md 结构完整性
@@ -188,9 +190,9 @@ check_md_structure() {
   check_section "G层约束表"    "| G1 |"
   check_section "T层路由表"    "| \`#"
   check_section "规则优先级"    "规则优先级声明"
-  check_section "行数管控"      "≤180行"
+  check_section "行数管控"      "≤180"
   check_section "Ingest流程"    "Ingest完整流程"
-  check_section "Lint检查"      "18项检查"
+  check_section "Lint检查"      "Lint检查流程"
   check_section "健康度公式"    "健康度 ="
   check_section "关键耦合点"    "关键耦合点"
   check_section "安全"          "## 安全"
@@ -205,7 +207,7 @@ check_md_structure() {
 }
 
 check_md_structure "CLAUDE.md" "CLAUDE"
-check_md_structure "AGENT.md" "AGENT"
+check_md_structure "framework/AGENT.md" "AGENT"
 
 # ============================================================
 # 结果
