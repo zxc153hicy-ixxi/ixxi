@@ -19,7 +19,7 @@ try:
 except Exception:
     pass
 
-USAGE_FILE = "raw/sessions/pattern-usage.json"
+USAGE_FILE = "personal/data/sessions/pattern-usage.json"
 
 
 def main():
@@ -29,7 +29,7 @@ def main():
     args = parser.parse_args()
 
     repo = Path(args.repo).resolve() if args.repo else Path(__file__).resolve().parent.parent.parent
-    usage_path = repo / USAGE_FILE
+    usage_path = repo.parent / USAGE_FILE
 
     if not usage_path.exists():
         print(json.dumps({"status": "error", "detail": "pattern-usage.json 不存在"},
