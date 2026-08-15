@@ -5,7 +5,11 @@
 
 ## [Unreleased]
 
-（暂无）
+### 新增
+
+- **kb-load 加载入口**：说「加载 ixxi」触发，读契约 + 首次弹 onboarding 引导（是什么/作用/怎么用）+ 汇报版本/能力/待办
+- **冷启动引导**：仓库根 CLAUDE.md/AGENTS.md/HERMES.md 一行路标（clone 即有）+ install.sh 全局装（任意目录加载）
+- **待办追踪（甲+乙混合）**：未落地清单 = 唯一 backlog，登记约定 + 可选触发条件（`github_remote` 自动判断「现在可做」）+ kb-load 加载时汇报待办计数 + G21 待办必登记
 
 ## [0.1.2] - 2026-08-15
 
