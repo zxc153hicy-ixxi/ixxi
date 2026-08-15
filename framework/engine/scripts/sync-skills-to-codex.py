@@ -3,7 +3,7 @@
 
 权威源（不修改）：
   core/skills/<技能>/          # 15 个管理技能
-  core/skills/_external/<分类>/<技能>/  # 61 个领域技能（跳过 6 个分类级重复 SKILL.md）
+  core/skills/_external/<分类>/<技能>/  # 57 个领域技能（跳过分类级重复 SKILL.md）
 
 目标（受控复制，每次运行镜像更新）：
   1. 知识库根 .agents/skills/        # Codex 仓库级发现（git 版本化）
@@ -78,6 +78,22 @@ def sync_to(target: Path, sources: list[tuple[str, Path]], prune: bool):
         synced.append(name)
 
     print(f"  -> {target}  (技能 {len(synced)} 个)")
+    # 生成 README（说明产物性质 + 计数口径，对齐 72 = 管理 15 / 外部 57）
+    write_readme(target, len(synced), sum(1 for _, s in sources if "_external" in s.parts))
+
+
+def write_readme(target: Path, total: int, external: int):
+    mgmt = total - external
+    readme = target / "README.md"
+    readme.write_text(
+        f"# .agents/skills —— Codex 适配层（生成产物，别手改）\n\n"
+        f"本目录由 `sync-skills-to-codex.py` 从 `core/skills/` 自动生成，"
+        f"共 {total} 个技能（管理 {mgmt} / 外部 {external}）。\n\n"
+        f"- 权威源：`core/skills/`（改只改 core，别手改这里，会被下次 sync 覆盖）\n"
+        f"- 重新生成：`python framework/engine/scripts/sync-skills-to-codex.py`\n"
+        f"- 本目录被 .gitignore 排除，clone 后跑 sync 重新生成\n",
+        encoding="utf-8",
+    )
 
 
 def main():

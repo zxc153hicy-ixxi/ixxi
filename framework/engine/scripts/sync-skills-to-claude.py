@@ -95,4 +95,10 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print("IXXI-E311 | 适配层生成失败：sync core/skills → .claude/skills 出错", file=sys.stderr)
+        print(f"修复：检查 core/skills 结构完整后重试；原始错误：{e}", file=sys.stderr)
+        print("参考：engine/scripts/sync-skills-to-claude.py", file=sys.stderr)
+        sys.exit(1)

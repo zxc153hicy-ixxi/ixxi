@@ -240,4 +240,10 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Exception as e:
+        print("IXXI-E202 | 能力可达性校验执行失败（parity P1-P6 断言）", file=sys.stderr)
+        print(f"修复：检查 core/skills 与适配层是否完整，重跑 python framework/engine/scripts/check-skill-parity.py；原始错误：{e}", file=sys.stderr)
+        print("参考：engine/scripts/check-skill-parity.py", file=sys.stderr)
+        sys.exit(1)

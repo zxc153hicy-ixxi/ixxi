@@ -221,4 +221,10 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Exception as e:
+        print("IXXI-E201 | 体检项执行失败", file=sys.stderr)
+        print(f"修复：按输出定位失败项并修复后重新体检；原始错误：{e}", file=sys.stderr)
+        print("参考：ops/rules/Lint检查流程.md", file=sys.stderr)
+        sys.exit(1)

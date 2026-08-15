@@ -85,6 +85,17 @@ for i in d.get('issues',[]):
   exit 1
 fi
 
+# parity 校验（全量，阻断）—— 能力源↔适配层可达性断言 P1-P6（I2 能力不缩水，检查体系 C9）
+PARITY_OUT=$(python "$KB_ROOT/framework/engine/scripts/check-skill-parity.py" 2>/dev/null || true)
+PARITY_STATUS=$?
+if [ "$PARITY_STATUS" -ne 0 ]; then
+  echo ""
+  echo "❌ parity 校验失败（能力源↔适配层可达性断言 P1-P6）"
+  echo "$PARITY_OUT" | grep -E '✗|失败|结论' | tail -10
+  echo "   请跑 python framework/engine/scripts/check-skill-parity.py 查看明细，修复后重新 commit"
+  exit 1
+fi
+
 # 断链检查（增量，Warning）—— 只查本次变更文件
 CHANGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.md$' | tr '\n' ' ')
 if [ -n "$CHANGED_FILES" ]; then

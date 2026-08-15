@@ -119,6 +119,14 @@ enrich 完成后自动执行。逻辑：
 | frontmatter 格式损坏 | 报错退出，不修正文 |
 | 领域无 phases | 不生成 pt_phase |
 
+## 硬闸门自检（不可跳过）
+
+- 标签必须来自 `engine/config/tag-taxonomy.yaml`，禁止自造领域/子标签（域外目录走新领域引导）
+- 不删除已有 frontmatter 字段（status/created/updated 等）
+- 领域无 phases → 不生成 pt_phase
+- frontmatter 损坏 → 报错退出，禁止修正文
+- 例外：用户说「直接按内容打标签」→ 跳过 tag-taxonomy 校验，但仍不删已有字段、不生成非法 pt_phase
+
 ### 漏网扫描（--scan-missed）
 
 扫描 `knowledge/learning/` 全目录，找出所有 tags 含 `[学习资料]` 的文章：

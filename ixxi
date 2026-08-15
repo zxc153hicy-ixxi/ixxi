@@ -13,6 +13,21 @@ set -e
 REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
 FRAMEWORK="$REPO_ROOT/framework"
 
+# ── 子命令分派 ──────────────────────────────────
+case "${1:-init}" in
+  stats)
+    shift
+    exec python "$FRAMEWORK/engine/scripts/stats-unused.py" "$@"
+    ;;
+  init|"")
+    :  # 继续走 init 流程
+    ;;
+  *)
+    echo "用法: ./ixxi {init|stats [--unused] [--days N]}"
+    exit 1
+    ;;
+esac
+
 echo "╔══════════════════════════════════════╗"
 echo "║  ixxi init —— 变成你自己的实例        ║"
 echo "╚══════════════════════════════════════╝"
