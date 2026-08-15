@@ -21,10 +21,14 @@ if git diff --cached --name-only | grep -q "AGENT.md"; then
     ERRORS=$((ERRORS+1))
   fi
   
-  # Check CHANGELOG.md also staged
+  # Check CHANGELOG.md also staged AND contains 已确认 marker（G 层修改需用户确认证据）
   if ! git diff --cached --name-only | grep -q "CHANGELOG.md"; then
     echo "❌ G层修改未同步CHANGELOG.md"
     echo "   请先追加版本记录"
+    ERRORS=$((ERRORS+1))
+  elif ! git diff --cached CHANGELOG.md | grep -q "已确认"; then
+    echo "❌ G层修改的 CHANGELOG 缺「已确认」标记"
+    echo "   请先走警告模板+四项确认清单，用户确认后在 CHANGELOG 写「✅ 已确认」再 commit"
     ERRORS=$((ERRORS+1))
   fi
   
