@@ -38,10 +38,16 @@ if git diff --cached --name-only | grep -q "AGENT.md"; then
   echo "✅ G层修改验证: tag+log已就位"
 fi
 
-# 版本一致性检查 —— ixxi 版本号机制未建立（git tag 待补打、AGENT.md 无 V 版本号），
-# version-check.sh 检查的老库文件（CLAUDE.md / 设计方案-V*.md）在 ixxi 不存在，会无条件误阻断。
-# 待 ixxi 版本机制建立（未落地清单 #3 补 tag + 后置 #6 版本号/兼容矩阵）后重新接入。
-# bash "$KB_ROOT"/framework/core/hooks/gate/version-check.sh
+# 版本提醒（Warning，不阻断）—— 改 CHANGELOG 但没打对应 tag 时提醒（版本号防混乱第二层）
+if git diff --cached --name-only | grep -q "CHANGELOG.md"; then
+  CHANGELOG_VER=$(grep -oP '^## \[\d+\.\d+\.\d+\]' "$KB_ROOT/CHANGELOG.md" 2>/dev/null | head -1 | grep -oP '\d+\.\d+\.\d+')
+  TAG_VER=$(git -C "$KB_ROOT" tag -l 2>/dev/null | grep -oP '^v\d+\.\d+\.\d+$' | sed 's/^v//' | sort -V | tail -1)
+  if [ -n "$CHANGELOG_VER" ] && [ "$CHANGELOG_VER" != "$TAG_VER" ]; then
+    echo ""
+    echo "🟡 版本提醒：CHANGELOG 最新 $CHANGELOG_VER 尚无对应 tag（当前 tag 最新 ${TAG_VER:-无}）"
+    echo "   本次未阻断；发布时记得: git tag v$CHANGELOG_VER"
+  fi
+fi
 
 # kb-* 平铺校验（Warning）—— 防止 Claude 内部 skill 一级入口回归丢失
 KB_SKILL_MISSING=$(python "$KB_ROOT/framework/engine/scripts/sync-skills-to-claude.py" --check 2>/dev/null | grep -c "❌" || true)
