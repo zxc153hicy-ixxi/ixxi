@@ -48,11 +48,10 @@ def _collect_counts(repo: Path) -> dict:
     c = {}
 
     # 正/反模式：减索引页（精确排除，避免误伤"索引定期补全""写文件不更新索引"这类含"索引"字样的模式条目）
-    INDEX_PAGES = {"正模式索引", "反模式索引"}
-    patterns_dir = repo / "personal" / "system" / "patterns"
-    c["patterns"] = sum(1 for f in patterns_dir.glob("*.md") if f.stem not in INDEX_PAGES)
-    anti_dir = repo / "personal" / "system" / "anti-patterns"
-    c["antipatterns"] = sum(1 for f in anti_dir.glob("*.md") if f.stem not in INDEX_PAGES)
+    patterns_dirs = [repo / "framework" / "ops" / "framework-patterns", repo / "personal" / "system" / "patterns"]
+    c["patterns"] = sum(1 for d in patterns_dirs for f in d.glob("*.md") if not f.stem.endswith("索引"))
+    anti_dirs = [repo / "framework" / "ops" / "framework-anti-patterns", repo / "personal" / "system" / "anti-patterns"]
+    c["antipatterns"] = sum(1 for d in anti_dirs for f in d.glob("*.md") if not f.stem.endswith("索引"))
 
     # 会话：按日期命名（YYYY-MM-DD-）
     sess_dir = repo / "personal" / "data" / "sessions"
