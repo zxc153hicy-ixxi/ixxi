@@ -229,8 +229,8 @@ def main():
             continue
         if any(part in SKIP_DIRS for part in f.parts):
             continue
-        # 跳过 raw/ 目录
-        if "raw" in f.parts:
+        # 跳过 data/ 运行数据目录
+        if "data" in f.parts:
             continue
         # 仅扫描 knowledge/ 和 ops/ 根目录下的文件
         rel = f.relative_to(repo)

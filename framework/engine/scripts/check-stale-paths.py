@@ -24,7 +24,7 @@ SKIP_DIRS = {".git", "__pycache__", ".obsidian", ".fix-backup", "node_modules",
 # Known stale prefixes to detect (only truly deprecated paths)
 STALE_PREFIXES = ["wiki/", "$S/wiki"]
 # Files/dirs to skip (historical records, external content)
-SKIP_FILE_PATTERNS = ["log.md", "learning/", "archive/", "raw/", "checkpoints/",
+SKIP_FILE_PATTERNS = ["log.md", "learning/", "archive/", "checkpoints/",
                       "repair-checklist", "implementation-plan", "deep-review",
                       "修复", "实施计划", "designs/", "queries/", "审计报告",
                       "iterations/"]

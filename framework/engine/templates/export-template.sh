@@ -191,6 +191,6 @@ if [ "$WITH_CREATIVE" = true ]; then
 else
   echo "  ❌ 外部创作类 skills（--with-creative 开启）"
 fi
-echo "  ❌ 实例数据 (personal/：knowledge/ + raw/ + data/ + system/) —— 由 ixxi init 生成"
+echo "  ❌ 实例数据 (personal/：knowledge/ + data/ + system/) —— 由 ixxi init 生成"
 echo "  ❌ 个人配置 (personal/ 内实例配置)"
 echo "  ❌ 记忆文件 (personal/data/memory/)"

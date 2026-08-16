@@ -3,7 +3,7 @@ KB_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 set -e
 # 敏感信息扫描——在Ingest前运行
 # 检测：身份证/银行卡/手机号/邮箱/密码/API密钥/JWT/AWS Key
-# 扫描范围：个人实例层 personal/（原始输入 data/inbox + raw/ + 知识内容 knowledge/）
+# 扫描范围：个人实例层 personal/（原始输入 data/ + 知识内容 knowledge/）
 
 SOURCE="$KB_ROOT/personal"
 HITS=0

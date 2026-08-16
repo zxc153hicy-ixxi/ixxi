@@ -26,7 +26,6 @@ SKIP_PATH_PREFIXES = (
     "knowledge/reference/",     # 参考资料中的路径示例
     "knowledge/learning/",      # 导入学习资料可能含原始路径
     "engine/templates/",
-    "raw/",                     # 会话摘要记录操作路径
     "docs/",                    # 使用规范/维护手册中的路径示例（脱敏示例、检查标准）
     "ops/rules/",               # 规则定义中含检查标准示例路径（T1/C2自引用）
     "ops/queries/checkpoints/", # 检查报告记录发现的问题路径

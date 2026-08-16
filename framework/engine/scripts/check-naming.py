@@ -24,7 +24,7 @@ except Exception:
 
 GENERIC_NAMES = {"index.md", "readme.md", "设定.md", "大纲.md", "提示词.md"}
 SKIP_DIRS = {".git", "__pycache__", ".obsidian", ".fix-backup", "node_modules",
-             "images", "assets", ".inbox"}
+             "images", "assets"}
 MAX_GENERIC = 3  # 通用名上限
 
 
