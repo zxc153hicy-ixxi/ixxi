@@ -4,7 +4,7 @@
 > 格式参考 Keep a Changelog，版本号 semver，与 git tag 一一对应。
 > **G 层修改确认条目**：每次改 AGENT.md，须在「G 层修改确认」节写一条，含「确认方式」（用户在对话中如何确认，如「回复『确认修改』」），供事后核对确认真实发生过。
 
-## [Unreleased]
+## [0.2.0] - 2026-08-16
 
 ### 新增
 
@@ -15,7 +15,7 @@
 ### 修复
 
 - **适配层产物目录统一到仓库根**：5 个 sync 脚本 DST + sync-agent-md + .gitignore 同步改，Claude/Codex 各 Agent 冷启动能扫到 kb-*（原误放 framework/ 导致冷启动读不到）
-- **全量修复审计问题（30 项，2 P0 + 12 P1 + 16 P2）**：校验脚本崩溃（check-links 越界 ValueError + @句柄/非.md/双后缀假报错、check-open-source PII 硬编码自匹配 + ADAPTER_COUNT 恒假通过）、契约漂移（sync-agent-md MANUAL 提取误匹配反引号内标记、T 层挂 3 未路由规则、MANUAL 回填 G16.5 硬闸门句）、测试失败（fixture 补 SRC_PERSONAL/SRC_EXT monkeypatch）、正反模式双源（framework-patterns 删 66 重复留 3 独有）、sync 归类口径统一（管理16/外部62）、CI 补测试 job、跨平台 GNU-only 命令、入口补 --help/--dry-run、新建 requirements.txt
+- **全量修复审计问题（30 项，2 P0 + 12 P1 + 16 P2）**：校验脚本崩溃（check-links 越界 ValueError + @句柄/非.md/双后缀假报错、check-open-source PII 硬编码自匹配 + ADAPTER_COUNT 恒假通过）、契约漂移（sync-agent-md MANUAL 提取误匹配反引号内标记、T 层挂 3 未路由规则、MANUAL 回填 G16.5 硬闸门句）、测试失败（fixture 补 SRC_PERSONAL/SRC_EXT monkeypatch）、正反模式双源（framework-patterns 删 66 重复留 3 独有）、sync 归类口径统一（管理16/外部57）、CI 补测试 job、跨平台 GNU-only 命令、入口补 --help/--dry-run、新建 requirements.txt
 - **修复路径映射断层**：迁移只搬文件未改内部路径引用，导致契约 + skill + 正反模式仍用旧库 raw//ops//.inbox//.claude/kb/ 路径。统一映射：15 个 skill + 57 个正反模式 + 4 个配置文件 + 契约耦合点/计数器，旧库顶层目录映射到 framework/（通用）+ personal/{knowledge,system,data}（个人）
 
 ### G 层修改确认
