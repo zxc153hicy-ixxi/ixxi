@@ -1,5 +1,5 @@
 #!/bin/bash
-# check-open-source.sh — 开源前检查一键脚本（对应 docs/guides/开源检查流程.md）
+# check-open-source.sh — 开源前检查一键脚本（对应 personal/knowledge/projects/知识库管理/开源检查流程.md）
 # 用法：bash framework/engine/scripts/check-open-source.sh
 # 首次开源 / 每次 release / 有外部贡献者加入前跑一遍。
 

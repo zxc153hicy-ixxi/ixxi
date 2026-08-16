@@ -2,6 +2,7 @@
 tags: [命令索引, Hermes]
 status: active
 summary: 由 engine/scripts/sync-skills-to-hermes.py 从权威源（core/skills + core/skills/_external + personal/system/skills）生成；手改请改 SKILL.md
+updated: 2026-08-16
 ---
 
 # Hermes 命令索引

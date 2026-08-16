@@ -38,4 +38,3 @@ scope: framework
 ## 关联
 
 - framework/ops/rules/知识库运维规范 —— 运维规范（G9检查完整性、G10版本确认）
-- [[personal/knowledge/archive/知识库管理/rules/_G层修改警告模板]] —— G 层修改警告模板

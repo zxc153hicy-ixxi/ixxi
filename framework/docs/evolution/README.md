@@ -44,5 +44,3 @@
 ## 关联
 
 - [[../guides/MVP边界]] —— 演化闭环的 MVP 边界
-- [[../maintenance/维护者手册]] —— 目录地图 + 改什么跑什么
-- [[../guides/dogfooding案例]] —— 待真实使用项的依据

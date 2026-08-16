@@ -57,6 +57,11 @@ echo ""
 # ── Q2: 数据放哪 ──────────────────────────────────
 read -r -p "Q2. 个人数据目录名 [默认 personal]: " personal_dir
 personal_dir="${personal_dir:-personal}"
+# 消毒：拒绝路径分隔符/glob 符/路径逃逸/空格（否则 tar 排除与 .gitignore 会失效或漂移）
+if printf '%s' "$personal_dir" | grep -qE '[/\\*?\[\]]|\.\.| '; then
+  echo "❌ 目录名含非法字符（/ \\ .. * ? [ ] 空格），请改用字母数字、中文、连字符或下划线"
+  exit 1
+fi
 PERSONAL="$REPO_ROOT/$personal_dir"
 echo "  → $personal_dir/"
 echo ""
@@ -168,26 +173,39 @@ if ! grep -qxF "$personal_dir/" "$REPO_ROOT/.gitignore" 2>/dev/null; then
   echo "✓ $personal_dir/ 已加入 .gitignore（个人数据不入 git）"
 fi
 
+# 写私有路径清单（单一事实源，export-template.sh / check-template.sh 读它）
+printf '# ixxi 私有路径清单（单一事实源）——export / check-template 均读此文件\n# 一行一个路径（相对仓库根），# 开头为注释\n%s/\n' "$personal_dir" > "$FRAMEWORK/engine/config/private-paths.txt"
+echo "✓ $personal_dir/ 已写入 private-paths.txt（导出时排除）"
+
 # ── 3. 跑 sync 脚本（生成适配层）──────────────────
 cd "$FRAMEWORK"
+run_sync() {
+  local desc="$1"; shift
+  if python "$@" >/dev/null 2>&1; then
+    echo "✓ $desc"
+  else
+    echo "✗ 失败：$desc —— 请检查 python 环境与 framework/core/skills 完整性"
+    exit 1
+  fi
+}
 case "$AGENTS" in
   claude)
-    python engine/scripts/sync-skills-to-claude.py >/dev/null 2>&1 && echo "✓ Claude 适配层已生成（kb-* 平铺）"
-    python engine/scripts/sync-agents-to-claude.py >/dev/null 2>&1 && echo "✓ Claude subagent 已生成"
+    run_sync "Claude 适配层已生成（kb-* 平铺）" engine/scripts/sync-skills-to-claude.py
+    run_sync "Claude subagent 已生成" engine/scripts/sync-agents-to-claude.py
     ;;
   codex)
-    python engine/scripts/sync-skills-to-codex.py --target=repo >/dev/null 2>&1 && echo "✓ Codex 适配层已生成（.agents/skills）"
-    python engine/scripts/sync-agents-to-codex.py >/dev/null 2>&1 && echo "✓ Codex agent 已生成"
+    run_sync "Codex 适配层已生成（.agents/skills）" engine/scripts/sync-skills-to-codex.py --target=repo
+    run_sync "Codex agent 已生成" engine/scripts/sync-agents-to-codex.py
     ;;
   hermes)
-    python engine/scripts/sync-skills-to-hermes.py >/dev/null 2>&1 && echo "✓ Hermes 命令索引已生成"
+    run_sync "Hermes 命令索引已生成" engine/scripts/sync-skills-to-hermes.py
     ;;
   all)
-    python engine/scripts/sync-skills-to-claude.py >/dev/null 2>&1 && echo "✓ Claude 适配层已生成"
-    python engine/scripts/sync-skills-to-codex.py --target=repo >/dev/null 2>&1 && echo "✓ Codex 适配层已生成"
-    python engine/scripts/sync-skills-to-hermes.py >/dev/null 2>&1 && echo "✓ Hermes 命令索引已生成"
-    python engine/scripts/sync-agents-to-claude.py >/dev/null 2>&1 && echo "✓ Claude subagent 已生成"
-    python engine/scripts/sync-agents-to-codex.py >/dev/null 2>&1 && echo "✓ Codex agent 已生成"
+    run_sync "Claude 适配层已生成" engine/scripts/sync-skills-to-claude.py
+    run_sync "Codex 适配层已生成" engine/scripts/sync-skills-to-codex.py --target=repo
+    run_sync "Hermes 命令索引已生成" engine/scripts/sync-skills-to-hermes.py
+    run_sync "Claude subagent 已生成" engine/scripts/sync-agents-to-claude.py
+    run_sync "Codex agent 已生成" engine/scripts/sync-agents-to-codex.py
     ;;
 esac
 

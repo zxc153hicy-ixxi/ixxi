@@ -33,5 +33,4 @@ scope: framework
 
 ## 关联
 - [[正模式索引]]
-- [[../anti-patterns/AI简历生成盲信不核实]] —— 对应反模式
-- [[2026-07-15-简历构建与真实性校准]] —— 本会话
+- AI简历生成盲信不核实（personal 反模式）—— 对应反模式，见 personal/system/anti-patterns/

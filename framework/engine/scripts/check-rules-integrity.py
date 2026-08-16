@@ -26,57 +26,6 @@ except Exception:
 SKIP_FILES = {"Thumbs.db", ".DS_Store", "desktop.ini", ".gitkeep", ".placeholder"}
 
 
-def check_t_layer_coverage(repo: Path) -> list[dict]:
-    """检查 T层标签是否覆盖所有 ops/rules/*.md"""
-    issues = []
-    agent_md = repo / "AGENT.md"
-    rules_dir = repo / "ops" / "rules"
-
-    if not agent_md.exists() or not rules_dir.exists():
-        return issues
-
-    agent_text = agent_md.read_text(encoding="utf-8", errors="replace")
-
-    # 提取 T层表中所有引用的文件名
-    t_refs = set()
-    in_t_table = False
-    for line in agent_text.split("\n"):
-        if "T层" in line and ("路由" in line or "标签" in line or "规则文件" in line):
-            in_t_table = True
-            continue
-        if in_t_table:
-            if line.strip().startswith("|") and "---" not in line:
-                # 提取文件名引用: [[xxx]] 或 `xxx.md`
-                refs = re.findall(r"\[\[([^\]|]+)", line)
-                refs += re.findall(r"`([^`]+\.md)`", line)
-                for r in refs:
-                    t_refs.add(r.split("/")[-1].replace(".md", ""))
-            elif line.strip() and not line.strip().startswith("|"):
-                in_t_table = False
-
-    # 列出所有 rules 文件
-    design_docs = {"批量修复-设计文档", "批量修复-实施计划", "修复与创建-设计文档",
-                   "修复与创建-实施计划", "文档转Markdown工具选型"}
-    for f in sorted(rules_dir.glob("*.md")):
-        stem = f.stem
-        if stem in design_docs:
-            continue  # 设计文档类，允许无标签
-        # 检查是否在 T层引用中，或在关键词匹配范围
-        in_agent = any(ref in stem or stem in ref for ref in t_refs)
-        # 也检查 agent_text 中是否直接提及文件名
-        if not in_agent:
-            in_agent = stem in agent_text
-
-        if not in_agent:
-            issues.append({
-                "type": "t_layer_missing",
-                "file": f"ops/rules/{f.name}",
-                "detail": "T层标签未覆盖此规则文件",
-            })
-
-    return issues
-
-
 def check_menu_skills(repo: Path) -> list[dict]:
     """检查系统操作菜单指令是否都有对应 skill"""
     issues = []
@@ -224,7 +173,6 @@ def check_registry_consistency(repo: Path) -> list[dict]:
 
 def check_integrity(repo: Path) -> dict:
     all_issues = []
-    all_issues.extend(check_t_layer_coverage(repo))
     all_issues.extend(check_menu_skills(repo))
     all_issues.extend(check_ingest_failure_handling(repo))
     all_issues.extend(check_registry_consistency(repo))

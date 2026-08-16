@@ -1,19 +1,23 @@
 #!/bin/bash
 KB_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 # ============================================================
-# 知识库模板导出脚本
-# 从当前知识库根目录导出系统骨架到 <根目录>-Template
-# 排除所有个人数据，生成可供第三方安装的干净模板
+# ixxi 模板导出脚本
+# 复制整个仓库根，剔除个人目录 + 版本库 + 适配层产物，生成可分享的框架模板。
+# 适配层（.claude/ .agents/ .codex/）是生成产物，由 ixxi init 的 sync 重新生成，不随模板导出。
+#
+# 私有目录清单 = framework/engine/config/private-paths.txt（单一事实源）
+# 由 ixxi init 的 Q2 生成；export 与 check-template 均读它。
 #
 # 用法:
-#   ./export-template.sh                默认导出（工程类 skill）
-#   ./export-template.sh --with-creative  附加导出创作类 skill
+#   ./export-template.sh                默认导出（工程类外部 skill）
+#   ./export-template.sh --with-creative  附加导出创作类外部 skill
 # ============================================================
 
-set -e
+set -eo pipefail
 
 SOURCE="$KB_ROOT"
 TARGET="$KB_ROOT-Template"
+PRIVATE_FILE="$SOURCE/framework/engine/config/private-paths.txt"
 WITH_CREATIVE=false
 
 # 参数解析
@@ -22,7 +26,7 @@ for arg in "$@"; do
     --with-creative) WITH_CREATIVE=true ;;
     --help|-h)
       echo "用法: $0 [--with-creative]"
-      echo "  (无参数)    默认导出：规则引擎 + 工程类外部 skill"
+      echo "  (无参数)         默认导出：整个仓库根（剔除 personal/ + 适配层）+ 工程类外部 skill"
       echo "  --with-creative  附加导出创作类外部 skill（构思/审查/写作）"
       exit 0
       ;;
@@ -30,21 +34,27 @@ for arg in "$@"; do
 done
 
 echo "============================================"
-echo "  知识库模板导出"
+echo "  ixxi 模板导出"
 echo "  源: $SOURCE"
 echo "  目标: $TARGET"
-echo "  创作类 skill: $([ "$WITH_CREATIVE" = true ] && echo '✅ 导出' || echo '❌ 跳过（--with-creative 开启）')"
+echo "  私有清单: $PRIVATE_FILE"
+echo "  创作类 skill: $([ "$WITH_CREATIVE" = true ] && echo '✅ 导出' || echo '❌ 跳过（--with-creative 未开启）')"
 echo "============================================"
 
 # 0. 预检——不通过不导出
 echo ""
 echo "执行预检..."
 bash "$SOURCE/framework/engine/templates/check-template.sh"
-if [ $? -ne 0 ]; then
-  echo ""
-  echo "❌ 预检未通过，导出已取消。请修复上述问题后重试。"
+echo ""
+
+# 0.5 敏感扫描——framework 通用层必须干净（personal 不在扫描范围，已排除）
+echo "敏感扫描（framework 通用层）..."
+if ! python "$SOURCE/framework/engine/scripts/scan-sensitive.py" --repo "$SOURCE/framework" >/dev/null 2>&1; then
+  echo "❌ 敏感扫描未通过，导出已阻断："
+  python "$SOURCE/framework/engine/scripts/scan-sensitive.py" --repo "$SOURCE/framework" || true
   exit 1
 fi
+echo "  ✅ 敏感扫描通过"
 echo ""
 
 # 1. 清空目标目录
@@ -52,116 +62,73 @@ if [ -d "$TARGET" ]; then
   echo "清空已有模板目录..."
   rm -rf "$TARGET"
 fi
+mkdir -p "$TARGET"
 
-# 2. 创建目录结构（ixxi 新结构）
-# 通用机制 = framework/（开源通用层，仅导出机制骨架）
-# 实例数据（raw/、.inbox/、knowledge/）= personal/（由 `ixxi init` 生成，不属于 framework 导出范围）
-echo "创建目录骨架..."
-mkdir -p "$TARGET"/framework/{ops/{rules,hermes,scripts},engine/{templates,config,scripts},core/skills/{_archived,_external},core/hooks,core/agents}
+# 2. 提取私有排除清单（非注释、非空行；先剥尾随空白/CR，再去尾部斜杠以匹配 tar）
+EXCLUDE_LIST="$(mktemp)"
+trap 'rm -f "$EXCLUDE_LIST"' EXIT
+grep -v '^[[:space:]]*#' "$PRIVATE_FILE" | grep -v '^[[:space:]]*$' | sed -e 's/[[:space:]]*$//' -e 's|/$||' > "$EXCLUDE_LIST"
+echo "私有排除清单（导出时排除）："
+sed 's/^/  - /' "$EXCLUDE_LIST"
 
-# 3. 复制根文件（framework 契约 + ixxi 初始化器 + 实例无关系统文件）
-echo "复制根文件..."
-for f in CLAUDE.md HERMES.md README.md GETTING-STARTED.md LICENSE ixxi install.sh .gitignore .gitattributes framework/AGENT.md framework/index.md framework/activation.md; do
-  if [ -f "$SOURCE/$f" ]; then
-    cp "$SOURCE/$f" "$TARGET/$f"
-    echo "  ✅ $f"
-  fi
-done
+# 3. 复制整个仓库根，剔除私有清单 + 版本库 + 适配层 + 运行垃圾 + 恶意样例
+echo ""
+echo "复制仓库根（剔除私有/版本库/适配层）..."
+tar -C "$SOURCE" -cf - \
+    --exclude-from="$EXCLUDE_LIST" \
+    --exclude='.git' \
+    --exclude='.claude' \
+    --exclude='.agents' \
+    --exclude='.codex' \
+    --exclude='__pycache__' \
+    --exclude='*.pyc' \
+    --exclude='ocr-sources.json' \
+    --exclude='.DS_Store' \
+    --exclude='malicious-samples' \
+    . \
+  | tar -C "$TARGET" -xf -
 
-# 4. 复制 framework/ops/rules/ 全部规则文件
-echo "复制规则文件..."
-cp "$SOURCE/framework/ops/rules/"*.md "$TARGET/framework/ops/rules/" 2>/dev/null || true
-echo "  ✅ $(ls "$TARGET/framework/ops/rules/"*.md 2>/dev/null | wc -l) 个规则文件"
-
-# 5. 复制 framework/ops/hermes/ 审查团设计+命令翻译表
-echo "复制 Hermes 审查团..."
-cp "$SOURCE/framework/ops/hermes/"*.md "$TARGET/framework/ops/hermes/" 2>/dev/null || true
-echo "  ✅ $(ls "$TARGET/framework/ops/hermes/"*.md 2>/dev/null | wc -l) 个 Hermes 文件"
-
-# 6. 复制 framework/engine/templates/ 下的模板文件（排除自身和运维检查脚本）
-echo "复制模板..."
-for f in "$SOURCE/framework/engine/templates/"*; do
-  name=$(basename "$f")
-  if [ "$name" != "export-template.sh" ] && [ "$name" != "check-template.sh" ] && [[ "$name" != check-* ]]; then
-    cp -r "$f" "$TARGET/framework/engine/templates/$name" 2>/dev/null && echo "  ✅ framework/engine/templates/$name"
-  fi
-done
-
-# 7. 复制 framework/engine/scripts/（排除 __pycache__ 和 ocr-sources.json）
-echo "复制检查脚本..."
-cp -r "$SOURCE/framework/engine/scripts/"* "$TARGET/framework/engine/scripts/" 2>/dev/null || true
-rm -rf "$TARGET/framework/engine/scripts/__pycache__" 2>/dev/null || true
-rm -f "$TARGET/framework/engine/scripts/ocr-sources.json" 2>/dev/null || true
-echo "  ✅ $(find "$TARGET/framework/engine/scripts" -type f | wc -l) 个脚本文件"
-
-# 8. 复制 framework/engine/config/
-echo "复制配置文件..."
-cp -r "$SOURCE/framework/engine/config/"* "$TARGET/framework/engine/config/" 2>/dev/null || true
-echo "  ✅ $(find "$TARGET/framework/engine/config" -type f | wc -l) 个配置文件"
-
-# 9. 复制 framework/ops/scripts/（原子操作脚本）
-echo "复制 ops/scripts..."
-cp -r "$SOURCE/framework/ops/scripts/"* "$TARGET/framework/ops/scripts/" 2>/dev/null || true
-echo "  ✅ $(find "$TARGET/framework/ops/scripts" -type f | wc -l) 个 ops 脚本文件"
-
-# 10. 复制 framework/core/skills/（内部操作 skill）
-echo "复制内部 skills..."
-cp -r "$SOURCE/framework/core/skills/"* "$TARGET/framework/core/skills/" 2>/dev/null || true
-echo "  ✅ $(find "$TARGET/framework/core/skills" -type f | wc -l) 个内部 skill 文件"
-
-# 11. 复制 framework/core/hooks/
-echo "复制 hooks..."
-cp -r "$SOURCE/framework/core/hooks/"* "$TARGET/framework/core/hooks/" 2>/dev/null || true
-echo "  ✅ $(find "$TARGET/framework/core/hooks" -type f | wc -l) 个 hook 文件"
-
-# 12. 复制 framework/core/agents/
-echo "复制 agents..."
-cp -r "$SOURCE/framework/core/agents/"* "$TARGET/framework/core/agents/" 2>/dev/null || true
-echo "  ✅ $(find "$TARGET/framework/core/agents" -type f | wc -l) 个 agent 文件"
-
-# 13. 复制 framework/core/skills/_external/（默认：仅工程类）
-echo "复制外部 skills..."
-# 工程类总是导出
-for dir in "$SOURCE/framework/core/skills/_external/工程-"*; do
-  if [ -d "$dir" ]; then
-    name=$(basename "$dir")
-    cp -r "$dir" "$TARGET/framework/core/skills/_external/$name"
-    echo "  ✅ 工程类: $name"
-  fi
-done
-# 创作类：仅 --with-creative 时导出
-if [ "$WITH_CREATIVE" = true ]; then
-  for dir in "$SOURCE/framework/core/skills/_external/创作-"*; do
-    if [ -d "$dir" ]; then
-      name=$(basename "$dir")
-      cp -r "$dir" "$TARGET/framework/core/skills/_external/$name"
-      echo "  ✅ 创作类: $name"
-    fi
-  done
-else
-  echo "  ⏭️  创作类 skill 已跳过（--with-creative 开启）"
+# 4. 创作类外部 skill 默认排除，--with-creative 才保留
+if [ "$WITH_CREATIVE" != true ]; then
+  rm -rf "$TARGET"/framework/core/skills/_external/创作-*
+  echo "  ⏭️  创作类 skill 已跳过（--with-creative 未开启）"
 fi
 
-# 14. 创建空目录占位文件（不覆盖已有 README.md）——仅 framework 通用机制
-echo "创建空目录占位..."
-for dir in framework/ops/rules framework/ops/hermes framework/ops/scripts framework/engine/templates framework/engine/config framework/engine/scripts framework/core/skills/_archived framework/core/skills/_external framework/core/hooks framework/core/agents; do
-  if [ ! -f "$TARGET/$dir/README.md" ]; then
-    echo "# $dir" > "$TARGET/$dir/README.md"
-    echo "  ✅ $dir/README.md"
+# 4.5 导出后复验——断言产物不含私有路径 + 适配层（统一兜底，覆盖 tar 跨平台差异）
+echo ""
+echo "导出后复验（断言无个人痕迹）..."
+LEAK=0
+while IFS= read -r line; do
+  [ -z "$line" ] && continue
+  if [ -e "$TARGET/$line" ]; then
+    echo "  ❌ 泄露：产物含私有路径 $line"
+    LEAK=1
+  fi
+done < "$EXCLUDE_LIST"
+for d in .claude .agents .codex; do
+  if [ -e "$TARGET/$d" ]; then
+    echo "  ❌ 泄露：产物含适配层 $d/"
+    LEAK=1
   fi
 done
+if [ "$LEAK" -ne 0 ]; then
+  echo "❌ 导出后复验失败，删除产物并中止"
+  rm -rf "$TARGET"
+  exit 1
+fi
+echo "  ✅ 无个人痕迹（私有路径 + 适配层均未落盘）"
 
-# 15. 实例数据空目录占位——不导出
-# 实例数据（raw/、.inbox/、knowledge/ 及 queue/log/用户画像）属于 personal/，
-# 由 `ixxi init` 生成（Q2 可选自定义 personal 目录名），不属于 framework 导出范围，
-# 因此这里不再创建 raw/、.inbox/、knowledge/ 占位目录。
-
-# 16. 初始化 git
+# 5. 初始化 git
+echo ""
 echo "初始化 git..."
 cd "$TARGET"
-git init
+git init -q
 git add -A
-git commit -m "知识库模板 · 系统骨架 · $(date +%Y-%m-%d)" 2>/dev/null || echo "  ⚠️  git commit 跳过（可能无变更）"
+if git diff --cached --quiet; then
+  echo "  ⚠️  无变更，跳过 git commit"
+else
+  git commit -q -m "ixxi 模板 · framework 骨架 · $(date +%Y-%m-%d)" 2>/dev/null || echo "  ⚠️  git commit 失败（检查 git user.name/email）"
+fi
 
 echo ""
 echo "============================================"
@@ -170,27 +137,15 @@ echo "  模板位置: $TARGET"
 echo "  文件数: $(find "$TARGET" -type f -not -path '*/.git/*' | wc -l)"
 echo "============================================"
 echo ""
-echo "使用方式（第三方）："
-echo "  1. git clone / copy 模板目录"
-echo "  2. 安装 Obsidian，打开该目录作为库"
-echo "  3. 配置 AI 工具读取 CLAUDE.md"
-echo "  4. 说「系统操作」查看可用指令"
-echo ""
 echo "导出范围说明："
-echo "  ✅ 规则引擎 (framework/ops/rules/ + framework/ops/hermes/)"
-echo "  ✅ 内部 skills (framework/core/skills/)"
-echo "  ✅ hooks + agents (framework/core/hooks/ + framework/core/agents/)"
-echo "  ✅ 原子操作 (framework/ops/scripts/)"
-echo "  ✅ 检查脚本 (framework/engine/scripts/)"
-echo "  ✅ 配置文件 (framework/engine/config/)"
-echo "  ✅ 模板脚本 (framework/engine/templates/)"
-echo "  ✅ 系统文件 (.gitignore + .gitattributes + LICENSE + ixxi/install.sh 初始化器)"
-echo "  ✅ 外部工程类 skills"
+echo "  ✅ 整个仓库根（framework/ + 契约 + 说明 + CI + LICENSE + ixxi/install.sh）"
+echo "  ✅ 私有清单 private-paths.txt（声明默认个人目录，第三方 init 覆盖）"
 if [ "$WITH_CREATIVE" = true ]; then
   echo "  ✅ 外部创作类 skills"
 else
-  echo "  ❌ 外部创作类 skills（--with-creative 开启）"
+  echo "  ❌ 外部创作类 skills（--with-creative 未开启）"
 fi
-echo "  ❌ 实例数据 (personal/：knowledge/ + data/ + system/) —— 由 ixxi init 生成"
-echo "  ❌ 个人配置 (personal/ 内实例配置)"
-echo "  ❌ 记忆文件 (personal/data/memory/)"
+echo "  ❌ 适配层（.claude/ .agents/ .codex/）—— 由 ixxi init 重新生成"
+echo "  ❌ 个人目录（见 private-paths.txt）—— 由 ixxi init 生成，绝不外流"
+echo ""
+echo "第三方使用：clone 后跑 bash ixxi init，生成 personal 骨架 + 适配层"

@@ -25,6 +25,7 @@ Task 1.4「personal 隔离」护栏（防个人数据泄露，智谱风险 3.5�
 1. **personal/ 永不进公开仓库**
    - 默认个人目录 `personal/`、init 自定义个人目录名均视为个人层。
    - 任何人不得将个人层文件 `git add -f` 强推、或手动挪进 framework 后提交。
+   - 私有目录清单单一事实源 = `framework/engine/config/private-paths.txt`（init 生成），export-template.sh 与 check-template.sh 均读它排除，与 `.gitignore`（第一道）、`check-personal-sync.py`（push 前置）组成三道护栏。
 
 2. **sync / push 前置检查（强制）**
    - 任何 git sync / push 操作前，必须先跑：

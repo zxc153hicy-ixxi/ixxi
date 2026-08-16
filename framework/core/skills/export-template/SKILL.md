@@ -6,7 +6,7 @@ description: Use when executing /export-template or when the user says "导出" 
 # kb-export-template
 
 ## Overview
-导出知识库骨架模板（规则引擎 + 检查脚本 + 内部 skills + hooks + agents），排除个人数据和敏感文件。
+导出知识库骨架模板（framework 通用层），排除个人数据。私有目录清单 `framework/engine/config/private-paths.txt`（`ixxi init` 生成，单一事实源），export 与预检均读它，个人目录绝不外流。
 
 ## Quick Reference
 执行脚本: `bash framework/engine/templates/export-template.sh`

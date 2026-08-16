@@ -6,6 +6,7 @@ scope: framework
 confidence: high
 summary: 设计/实现时默认只考虑一个 Agent（如 Claude），忽略框架「多 Agent 平等」核心原则，导致适配层/入口只覆盖单 Agent
 created: 2026-08-15
+updated: 2026-08-16
 ---
 
 # 默认单 Agent

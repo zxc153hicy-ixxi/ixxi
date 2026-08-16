@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-"""check-version-consistency.py -- AGENT.md / log.md / 设计方案 版本号三方交叉校验
+"""check-version-consistency.py -- CHANGELOG.md 最新版本 ↔ git tag 最新 semver 交叉校验
+
+版本号单一事实源 = git tag（见 CHANGELOG.md「版本号约定」），AGENT.md 不写版本号。
 
 用法:
-  python engine/scripts/check-version-consistency.py --repo <知识库根目录>
+  python engine/scripts/check-version-consistency.py --repo <framework 目录>
   python engine/scripts/check-version-consistency.py --repo . --json
 """
 
 import argparse
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -17,81 +20,80 @@ try:
 except Exception:
     pass
 
-VERSION_RE = re.compile(r"[Vv](\d+\.\d+\.\d+)")
+CHANGELOG_RE = re.compile(r"\[([0-9]+\.[0-9]+\.[0-9]+)\]")
+TAG_RE = re.compile(r"^v([0-9]+\.[0-9]+\.[0-9]+)$")
 
 
-def extract_agent_version(repo: Path) -> tuple[str | None, str]:
-    """从 AGENT.md 标题行提取版本号"""
-    agent = repo / "AGENT.md"
-    if not agent.exists():
-        return None, "AGENT.md 不存在"
+def extract_changelog_version(repo: Path) -> str | None:
+    """从仓库根 CHANGELOG.md 匹配第一个「## [x.y.z]」标题（跳过 [Unreleased]）"""
+    changelog = repo.parent / "CHANGELOG.md"
+    if not changelog.exists():
+        return None
     try:
-        text = agent.read_text(encoding="utf-8")
-    except Exception as e:
-        return None, f"读取失败: {e}"
-    m = VERSION_RE.search(text)
-    return (m.group(1), "") if m else (None, "AGENT.md 中未找到版本号")
+        text = changelog.read_text(encoding="utf-8")
+    except Exception:
+        return None
+    m = CHANGELOG_RE.search(text)
+    return m.group(1) if m else None
 
 
-def extract_log_version(repo: Path) -> tuple[str | None, str]:
-    """从 log.md 最新版本记录提取"""
-    logf = repo.parent / "personal" / "data" / "log.md"
-    if not logf.exists():
-        return None, "log.md 不存在"
-    try:
-        text = logf.read_text(encoding="utf-8")
-    except Exception as e:
-        return None, f"读取失败: {e}"
-
-    # 找所有版本号，取最后一个
-    versions = VERSION_RE.findall(text)
-    return (versions[0], "") if versions else (None, "log.md 中未找到版本记录")
+def get_latest_git_tag(repo: Path) -> str | None:
+    """在仓库根取最新 semver git tag（vX.Y.Z，排除 -pre / baseline 等非发布 tag）"""
+    result = subprocess.run(
+        ["git", "-C", str(repo.parent), "tag", "-l"],
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
+    )
+    if result.returncode != 0:
+        return None
+    versions = [m.group(1) for t in result.stdout.splitlines() if (m := TAG_RE.match(t.strip()))]
+    if not versions:
+        return None
+    return max(versions, key=lambda v: tuple(int(x) for x in v.split(".")))
 
 
 def main():
-    parser = argparse.ArgumentParser(description="版本号一致性检查")
+    parser = argparse.ArgumentParser(description="版本号一致性检查（CHANGELOG ↔ git tag）")
     parser.add_argument("--repo", type=str, default=None)
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
 
     repo = Path(args.repo).resolve() if args.repo else Path(__file__).resolve().parent.parent.parent
 
-    agent_ver, agent_err = extract_agent_version(repo)
-    log_ver, log_err = extract_log_version(repo)
+    changelog_ver = extract_changelog_version(repo)
+    tag_ver = get_latest_git_tag(repo)
 
     issues = []
-    versions = {"AGENT.md": agent_ver, "log.md": log_ver}
 
-    if agent_err:
-        issues.append(f"AGENT.md: {agent_err}")
-    if log_err:
-        issues.append(f"log.md: {log_err}")
-
-    if agent_ver and log_ver:
-        if agent_ver != log_ver:
-            issues.append(f"版本不一致: AGENT.md={agent_ver}, log.md={log_ver}")
-    elif agent_ver and not log_ver:
-        issues.append("log.md 缺少版本记录")
+    # 两者都缺失 → 版本机制未建立，跳过
+    if changelog_ver is None and tag_ver is None:
+        pass
+    elif changelog_ver is None:
+        issues.append(f"CHANGELOG.md 未找到版本号（## [x.y.z]），但存在 git tag v{tag_ver}")
+    elif tag_ver is None:
+        issues.append(f"git 无 semver tag（vX.Y.Z），但 CHANGELOG 最新版本 {changelog_ver}")
+    elif changelog_ver != tag_ver:
+        issues.append(f"版本不一致: CHANGELOG={changelog_ver}, git tag={tag_ver}")
 
     score = 10 if not issues else max(0, 10 - len(issues) * 3)
 
     if args.json:
         print(json.dumps({
             "status": "pass" if not issues else "fail",
-            "versions": versions,
+            "changelog": changelog_ver,
+            "git_tag": tag_ver,
             "issues": issues,
             "score": score,
         }, ensure_ascii=False, indent=2))
     else:
-        print(f"版本号一致性:")
-        print(f"  AGENT.md: {agent_ver or '❌ 未找到'}")
-        print(f"  log.md:    {log_ver or '❌ 未找到'}")
+        consistent = changelog_ver is not None and changelog_ver == tag_ver
+        print("版本一致性（CHANGELOG ↔ git tag）:")
+        print(f"  CHANGELOG 最新: {changelog_ver or '❌ 未找到'}")
+        print(f"  git tag 最新:   {tag_ver or '❌ 未找到'}")
+        print(f"  是否一致: {'✅ 是' if consistent else '❌ 否'}")
         if issues:
-            print(f"\n❌ 问题:")
+            print("\n❌ 问题:")
             for i in issues:
                 print(f"  - {i}")
-        else:
-            print("✅ 版本号一致")
 
     return 0 if not issues else 1
 

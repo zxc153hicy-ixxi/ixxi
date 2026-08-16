@@ -1,0 +1,4 @@
+# ixxi 私有路径清单（单一事实源）——export / check-template 均读此文件
+# 一行一个路径（相对仓库根），# 开头为注释
+# ixxi init 的 Q2 会覆盖此文件为自定义个人目录名
+personal/

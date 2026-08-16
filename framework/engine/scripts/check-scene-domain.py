@@ -27,8 +27,8 @@ SKIP_DIRS = {".git", "__pycache__", ".fix-backup", "node_modules", "assets", "me
 SKIP_PATH_PREFIXES = (
     "knowledge/archive/",
     "knowledge/projects/",  # 项目文件 scene 描述项目领域，非目录位置
-    "ops/patterns/",        # scene 描述模式所属领域，非文件位置
-    "ops/anti-patterns/",   # scene 描述反模式所属领域，非文件位置
+    "ops/framework-patterns/",      # scene 描述模式所属领域，非文件位置
+    "ops/framework-anti-patterns/", # scene 描述反模式所属领域，非文件位置
     "ops/hermes/",          # Hermes 专属内容
 )
 SCAN_DIRS = {"knowledge", "ops"}

@@ -24,7 +24,7 @@ except Exception:
 
 GENERIC_NAMES = {"index.md", "readme.md", "设定.md", "大纲.md", "提示词.md"}
 SKIP_DIRS = {".git", "__pycache__", ".obsidian", ".fix-backup", "node_modules",
-             "images", "assets"}
+             "images", "assets", "references"}
 MAX_GENERIC = 3  # 通用名上限
 
 
@@ -49,6 +49,10 @@ def main():
         if any(p in SKIP_DIRS for p in parts):
             continue
         if any(p.startswith(".") for p in parts):
+            continue
+        # 跳过 core/ 机制结构（skill/agent/hook 定义文件同名是设计使然，非知识内容冲突）
+        rel_parts = md_file.relative_to(repo).parts
+        if rel_parts and rel_parts[0] == "core":
             continue
 
         name_lower = md_file.name.lower()

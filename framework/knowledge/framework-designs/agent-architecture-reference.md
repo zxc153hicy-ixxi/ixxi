@@ -2,6 +2,7 @@
 tags: [架构, 参考]
 status: active
 summary: 通用 Agent 架构参考——双系统架构 + 三级决策制的技术思想（自 ixxi-agent 写作项目剥离，会话迭代与场景绑定已移除）
+updated: 2026-08-16
 ---
 
 # 通用 Agent 架构参考

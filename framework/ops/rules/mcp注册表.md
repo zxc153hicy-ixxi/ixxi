@@ -4,6 +4,7 @@ status: active
 confidence: high
 summary: MCP 调度注册表——任务 → 匹配 MCP server → 调用，与 skill 注册表并列（预留，当前无数据）
 created: 2026-08-15
+updated: 2026-08-16
 ---
 
 # MCP 调度注册表

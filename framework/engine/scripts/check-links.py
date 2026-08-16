@@ -311,21 +311,23 @@ def _check_registry_coverage(repo: Path, indexed: set) -> list[dict]:
     """
     issues = []
 
-    # 1. 检查脚本登记
+    # 1. 检查脚本登记（实例登记归 personal/activation.md；framework/activation.md 是模板骨架，不登记具体脚本）
     scripts_dir = repo / "engine" / "scripts"
-    activation_text = (repo / "activation.md").read_text(encoding="utf-8", errors="replace") if (repo / "activation.md").exists() else ""
-    for py_file in sorted(scripts_dir.glob("check-*.py")):
-        name = py_file.stem
-        if name not in activation_text:
-            issues.append({
-                "file": f"engine/scripts/{py_file.name}",
-                "type": "script_unregistered",
-                "detail": f"脚本未在 activation.md 登记",
-            })
+    activation_file = repo.parent / "personal" / "activation.md"
+    if activation_file.exists():
+        activation_text = activation_file.read_text(encoding="utf-8", errors="replace")
+        for py_file in sorted(scripts_dir.glob("check-*.py")):
+            name = py_file.stem
+            if name not in activation_text:
+                issues.append({
+                    "file": f"engine/scripts/{py_file.name}",
+                    "type": "script_unregistered",
+                    "detail": f"脚本未在 personal/activation.md 登记",
+                })
 
     # 2. 检查正模式登记
-    patterns_dir = repo / "ops" / "patterns"
-    patterns_index = repo / "ops" / "patterns" / "正模式索引.md"
+    patterns_dir = repo / "ops" / "framework-patterns"
+    patterns_index = repo / "ops" / "framework-patterns" / "正模式索引.md"
     if patterns_index.exists():
         pi_text = patterns_index.read_text(encoding="utf-8", errors="replace")
         for md_file in sorted(patterns_dir.glob("*.md")):
@@ -333,14 +335,14 @@ def _check_registry_coverage(repo: Path, indexed: set) -> list[dict]:
                 continue
             if md_file.stem not in pi_text:
                 issues.append({
-                    "file": f"ops/patterns/{md_file.name}",
+                    "file": f"ops/framework-patterns/{md_file.name}",
                     "type": "pattern_unregistered",
                     "detail": f"正模式未在索引页登记",
                 })
 
     # 3. 检查反模式登记
-    anti_dir = repo / "ops" / "anti-patterns"
-    anti_index = repo / "ops" / "anti-patterns" / "反模式索引.md"
+    anti_dir = repo / "ops" / "framework-anti-patterns"
+    anti_index = repo / "ops" / "framework-anti-patterns" / "反模式索引.md"
     if anti_index.exists():
         ai_text = anti_index.read_text(encoding="utf-8", errors="replace")
         for md_file in sorted(anti_dir.glob("*.md")):
@@ -348,7 +350,7 @@ def _check_registry_coverage(repo: Path, indexed: set) -> list[dict]:
                 continue
             if md_file.stem not in ai_text:
                 issues.append({
-                    "file": f"ops/anti-patterns/{md_file.name}",
+                    "file": f"ops/framework-anti-patterns/{md_file.name}",
                     "type": "antipattern_unregistered",
                     "detail": f"反模式未在索引页登记",
                 })

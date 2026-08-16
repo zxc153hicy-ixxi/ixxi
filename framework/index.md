@@ -12,7 +12,7 @@
 
 - [[ops/rules/系统操作菜单|操作菜单]] —— 所有可执行操作统一入口
 - ops/rules/ —— G/R/T 通用规则文件
-- [[ops/framework-patterns/|framework-patterns]] —— 可开源的通用工程教训（自正/反模式提炼）
+- [[ops/framework-patterns/正模式索引|framework-patterns]] —— 可开源的通用工程教训（自正/反模式提炼）
 
 ## 引擎
 

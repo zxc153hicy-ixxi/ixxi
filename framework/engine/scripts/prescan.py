@@ -3,6 +3,7 @@
 用法: python prescan.py <文件路径>
 支持: PDF / DOCX / DOC / PPTX / PPT / XLSX / EPUB / MOBI / AZW / AZW3 / HTML / PNG / JPG / MP3 / WAV
 """
+import shutil
 import sys
 import math
 from pathlib import Path
@@ -154,8 +155,8 @@ RULES = {
     },
 }
 
-MARKER_EXE = "C:/Users/29909/AppData/Roaming/Python/Python310/Scripts/marker_single.exe"
-MINERU_EXE = "C:/Users/29909/AppData/Roaming/Python/Python310/Scripts/mineru.exe"
+MARKER_EXE = shutil.which("marker_single") or "marker_single"
+MINERU_EXE = shutil.which("mineru") or "mineru"
 
 
 def scan_pdf(filepath: str) -> dict:
