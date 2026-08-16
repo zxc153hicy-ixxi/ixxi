@@ -6,8 +6,8 @@
   "hints": {
     "first_load": {
       "trigger": "首次加载 ixxi",
-      "fired": false,
-      "message": "🎉 你已经加载好 ixxi 了！\n\nixxi 是你的 AI 助手（Claude / Codex / Hermes）的「能力工具箱」：你在一个助手里攒下的做事方法（比如整理笔记、查资料、写东西），换到另一个助手还能接着用，不用重来。\n\n怎么用（直接说一句话就行）：\n1. 把资料放进 personal/raw/inbox/，说「入库」→ 整理进你的知识库\n2. 说「体检」→ 看看有没有小毛病\n3. 想查东西，说「这个怎么…」→ 检索你的知识\n\n想了解全部能力，说「系统操作」。细节看 GETTING-STARTED.md。"
+      "fired": true,
+      "message": "🎉 你已经加载好 ixxi 了！\n\nixxi 是你的 AI 助手（Claude / Codex / Hermes）的「能力工具箱」：你在一个助手里攒下的做事方法（比如整理笔记、查资料、写东西），换到另一个助手还能接着用，不用重来。\n\n怎么用（直接说一句话就行）：\n1. 把资料放进 personal/data/inbox/，说「入库」→ 整理进你的知识库\n2. 说「体检」→ 看看有没有小毛病\n3. 想查东西，说「这个怎么…」→ 检索你的知识\n\n想了解全部能力，说「系统操作」。细节看 GETTING-STARTED.md。"
     }
   }
 }

@@ -20,9 +20,9 @@ if [ -z "$CHANGED_FILE" ] || [ ! -f "$CHANGED_FILE" ]; then
   exit 0
 fi
 
-# 只检查 session 文件（raw/sessions/ 的 .md，排除索引页）
+# 只检查 session 文件（personal/data/sessions/ 的 .md，排除索引页）
 case "$CHANGED_FILE" in
-  *raw/sessions/*.md)
+  *personal/data/sessions/*.md)
     ;;
   *)
     exit 0

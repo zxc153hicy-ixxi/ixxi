@@ -22,11 +22,11 @@ if [ -z "$CHANGED_FILE" ] || [ ! -f "$CHANGED_FILE" ]; then
 fi
 
 # 检查文件是否在 ops/rules/ 或 ops/anti-patterns/ 下且含 deprecated
-if echo "$CHANGED_FILE" | grep -qE "ops/(rules|anti-patterns)/"; then
+if echo "$CHANGED_FILE" | grep -qE "(framework/ops/rules|personal/system/(rules|anti-patterns))/"; then
   if grep -q "status: deprecated" "$CHANGED_FILE" 2>/dev/null; then
     DIR=$(dirname "$CHANGED_FILE")
     echo ""
     echo "💡 检测到废弃文件仍留在活跃目录: $CHANGED_FILE"
-    echo "   建议移至: knowledge/archive/$(basename "$DIR")/"
+    echo "   建议移至: personal/knowledge/archive/$(basename "$DIR")/"
   fi
 fi

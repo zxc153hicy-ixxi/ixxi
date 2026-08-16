@@ -32,7 +32,7 @@ esac
 STEM=$(basename "$CHANGED_FILE" | sed 's/\.\(py\|sh\)$//')
 
 # 检查 activation.md 有没有登记（脚本完整清单在 activation.md，index.md 是精选导航不列所有脚本）
-if ! grep -q "$STEM" "$KB_ROOT/activation.md" 2>/dev/null; then
+if ! grep -q "$STEM" "$KB_ROOT/framework/activation.md" 2>/dev/null; then
   echo ""
   echo "⚠️ 脚本登记缺失：$CHANGED_FILE"
   echo "   activation.md 无「$STEM」条目，请补登记"

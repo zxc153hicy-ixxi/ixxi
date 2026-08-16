@@ -23,13 +23,13 @@ fi
 # 只检查正反模式文件（非索引页）
 STEM=$(basename "$CHANGED_FILE" .md)
 case "$CHANGED_FILE" in
-  *ops/patterns/*)
+  *system/patterns/*)
     [ "$STEM" = "正模式索引" ] && exit 0
-    KEY="patterns"; IDX="$KB_ROOT/ops/patterns/正模式索引.md"
+    KEY="patterns"; IDX="$KB_ROOT/personal/system/patterns/正模式索引.md"
     ;;
-  *ops/anti-patterns/*)
+  *system/anti-patterns/*)
     [ "$STEM" = "反模式索引" ] && exit 0
-    KEY="antipatterns"; IDX="$KB_ROOT/ops/anti-patterns/反模式索引.md"
+    KEY="antipatterns"; IDX="$KB_ROOT/personal/system/anti-patterns/反模式索引.md"
     ;;
   *)
     exit 0
@@ -39,7 +39,7 @@ esac
 MISSING=0
 
 # 检查 pattern-usage.json 有没有对应条目（grep key，避免 bash 传中文给 python 的编码问题）
-if ! grep -q "\"$STEM\":" "$KB_ROOT/raw/sessions/pattern-usage.json" 2>/dev/null; then
+if ! grep -q "\"$STEM\":" "$KB_ROOT/personal/data/sessions/pattern-usage.json" 2>/dev/null; then
   MISSING=1
   echo ""
   echo "⚠️ 正反模式登记缺失：$CHANGED_FILE"

@@ -32,7 +32,7 @@ esac
 STEM=$(basename "$CHANGED_FILE" .md)
 
 # 检查 index.md 有没有登记
-if ! grep -q "$STEM" "$KB_ROOT/index.md" 2>/dev/null; then
+if ! grep -q "$STEM" "$KB_ROOT/framework/index.md" 2>/dev/null; then
   echo ""
   echo "⚠️ 规则登记缺失：$CHANGED_FILE"
   echo "   index.md 无「$STEM」条目，请补登记"
