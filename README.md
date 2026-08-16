@@ -1,10 +1,8 @@
 # ixxi（曦曦）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-<!-- 更多 badge 占位：替换下方两行为真实仓库链接即可
-[![CI](https://img.shields.io/github/actions/workflow/status/<owner>/<repo>/ci.yml?branch=main)](https://github.com/<owner>/<repo>/actions)
-[![Version](https://img.shields.io/github/v/tag/<owner>/<repo>)](https://github.com/<owner>/<repo>/releases)
--->
+[![CI](https://img.shields.io/github/actions/workflow/status/zxc153hicy-ixxi/ixxi/ci.yml?branch=main)](https://github.com/zxc153hicy-ixxi/ixxi/actions)
+[![Version](https://img.shields.io/github/v/tag/zxc153hicy-ixxi/ixxi)](https://github.com/zxc153hicy-ixxi/ixxi/releases)
 
 > **一句话**：ixxi = 一个「Agent 能力可迁移、可验证、可演化的中间层」。
 
