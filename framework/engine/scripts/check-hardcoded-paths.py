@@ -21,6 +21,7 @@ SKIP_FILES = {"Thumbs.db", ".DS_Store", "desktop.ini", ".gitkeep", ".placeholder
 SKIP_DIRS = {".git", "__pycache__", ".fix-backup", "node_modules", "assets", "media", "_external", ".claude", ".agents", ".codex"}
 # archive/ 为历史快照，允许含旧路径
 SKIP_PATH_PREFIXES = (
+    "personal/",  # 私有层：个人数据含硬编码路径属正常
     "knowledge/archive/",
     "knowledge/projects/",      # 项目文件引用历史路径
     "knowledge/reference/",     # 参考资料中的路径示例

@@ -25,11 +25,11 @@ try:
 except ImportError:
     sys.exit("需要 PyYAML: pip install pyyaml")
 
-SKIP_FILES = {"Thumbs.db", ".DS_Store", "desktop.ini", ".gitkeep", ".placeholder"}
+SKIP_FILES = {"Thumbs.db", ".DS_Store", "desktop.ini", ".gitkeep", ".placeholder", "README.md"}
 SKIP_DIRS = {".git", "__pycache__", ".fix-backup", "node_modules", "assets", "media"}
 # archive/ 为历史快照，允许无 frontmatter
-SKIP_PATH_PREFIXES = ("knowledge/archive/",)
-SCAN_DIRS = {"knowledge", "ops"}  # 仅扫描知识库核心目录
+SKIP_PATH_PREFIXES = ("personal/data/", "personal/system/", "personal/knowledge/archive/", "framework/core/skills/", "framework/core/agents/", "framework/core/hooks/", "framework/samples/")
+SCAN_DIRS = {"framework", "personal"}  # 双目录结构
 
 VALID_STATUS = {"active", "draft", "superseded", "deprecated", "archived", "degraded"}
 TODAY = date.today().isoformat()
@@ -236,6 +236,8 @@ def main():
         rel = f.relative_to(repo)
         first_part = rel.parts[0] if rel.parts else ""
         if first_part not in SCAN_DIRS:
+            continue
+        if len(rel.parts) <= 2:
             continue
         rel_str = str(rel).replace("\\", "/")
         if any(rel_str.startswith(p) for p in SKIP_PATH_PREFIXES):

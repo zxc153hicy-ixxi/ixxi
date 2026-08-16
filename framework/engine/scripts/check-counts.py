@@ -49,13 +49,13 @@ def _collect_counts(repo: Path) -> dict:
 
     # 正/反模式：减索引页（精确排除，避免误伤"索引定期补全""写文件不更新索引"这类含"索引"字样的模式条目）
     INDEX_PAGES = {"正模式索引", "反模式索引"}
-    patterns_dir = repo / "ops" / "patterns"
+    patterns_dir = repo / "personal" / "system" / "patterns"
     c["patterns"] = sum(1 for f in patterns_dir.glob("*.md") if f.stem not in INDEX_PAGES)
-    anti_dir = repo / "ops" / "anti-patterns"
+    anti_dir = repo / "personal" / "system" / "anti-patterns"
     c["antipatterns"] = sum(1 for f in anti_dir.glob("*.md") if f.stem not in INDEX_PAGES)
 
     # 会话：按日期命名（YYYY-MM-DD-）
-    sess_dir = repo / "raw" / "sessions"
+    sess_dir = repo / "personal" / "data" / "sessions"
     if sess_dir.exists():
         c["sessions"] = sum(
             1 for f in sess_dir.glob("*.md")
@@ -65,18 +65,18 @@ def _collect_counts(repo: Path) -> dict:
         c["sessions"] = 0
 
     # 反馈
-    c["feedback_pos"] = _count_md(repo / "raw" / "feedback" / "positive")
-    c["feedback_neg"] = _count_md(repo / "raw" / "feedback" / "negative")
+    c["feedback_pos"] = _count_md(repo / "personal" / "data" / "feedback" / "positive")
+    c["feedback_neg"] = _count_md(repo / "personal" / "data" / "feedback" / "negative")
 
     # 技能：所有含 SKILL.md 的目录（递归，含嵌套）
-    skills_dir = repo / ".agents" / "skills"
+    skills_dir = repo / "framework" / "core" / "skills"
     if skills_dir.exists():
         c["skills"] = sum(1 for _ in skills_dir.rglob("SKILL.md"))
     else:
         c["skills"] = 0
 
     # 脚本：engine/scripts/*.py + *.sh
-    scripts_dir = repo / "engine" / "scripts"
+    scripts_dir = repo / "framework" / "engine" / "scripts"
     if scripts_dir.exists():
         c["scripts"] = sum(
             1 for f in scripts_dir.iterdir()
@@ -89,7 +89,7 @@ def _collect_counts(repo: Path) -> dict:
     c["version"] = "unknown"
     c["g_rules"] = 0
     c["t_labels"] = 0
-    agent_md = repo / "AGENT.md"
+    agent_md = repo / "framework" / "AGENT.md"
     if agent_md.exists():
         text = agent_md.read_text(encoding="utf-8", errors="replace")
         lines = text.split("\n")
