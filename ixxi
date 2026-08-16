@@ -84,10 +84,10 @@ fi
 if [ -d "$PERSONAL" ]; then
   echo "✓ $personal_dir/ 已存在，跳过骨架生成"
 else
-  mkdir -p "$PERSONAL/.claude/skills/personal"
-  mkdir -p "$PERSONAL/ops/patterns" "$PERSONAL/ops/anti-patterns" "$PERSONAL/ops/rules" "$PERSONAL/ops/queries"
+  mkdir -p "$PERSONAL/system/skills"
+  mkdir -p "$PERSONAL/system/patterns" "$PERSONAL/system/anti-patterns" "$PERSONAL/system/rules" "$PERSONAL/system/queries"
   mkdir -p "$PERSONAL/knowledge/projects" "$PERSONAL/knowledge/learning" "$PERSONAL/knowledge/archive"
-  mkdir -p "$PERSONAL/raw/feedback" "$PERSONAL/raw/sessions" "$PERSONAL/raw/inbox"
+  mkdir -p "$PERSONAL/data/feedback" "$PERSONAL/data/sessions" "$PERSONAL/data/inbox" "$PERSONAL/data/memory"
 
   # 占位文件
   cat > "$PERSONAL/README.md" <<'EOF'
@@ -95,9 +95,9 @@ else
 
 本目录是你自己的数据层（私有，.gitignore 排除，不随 framework 开源）。
 
-- `knowledge/` —— 你的项目、学习笔记、归档
-- `ops/patterns/` + `ops/anti-patterns/` —— 你的正/反模式沉淀
-- `raw/` —— 原始输入（feedback / sessions / inbox）
+- `knowledge/` —— 纯知识（项目、学习笔记、归档）
+- `system/` —— 个人机制（skills / rules / patterns / anti-patterns / queries）
+- `data/` —— 运行数据（feedback / sessions / inbox / memory）
 - `用户画像.md` —— 你的输出偏好与沟通风格（绝不导出）
 - `scene-registry.md` —— 你的场景注册数据
 EOF
@@ -114,19 +114,19 @@ EOF
 <!-- 在此登记你的学习领域 -->
 
 ## 个人沉淀
-- 正模式：ops/patterns/
-- 反模式：ops/anti-patterns/
+- 正模式：system/patterns/
+- 反模式：system/anti-patterns/
 EOF
 
-  cat > "$PERSONAL/AGENT.md" <<'EOF'
-# 实例契约
+  cat > "$PERSONAL/CLAUDE.md" <<'EOF'
+# 个人规则覆盖层
 
-本文件 = framework 契约（AGENT.md）+ 你的个人覆盖层（语言偏好、本地知识优先、个人场景规则等）。
+本文件 = 你的实例级个人规则覆盖层（语言偏好、本地知识优先、个人场景规则等）。framework 通用契约见 `../framework/AGENT.md`。
 
 <!-- 在此追加你的个人规则，如语言偏好、领域习惯 -->
 EOF
 
-  cat > "$PERSONAL/用户画像.md" <<'EOF'
+  cat > "$PERSONAL/data/用户画像.md" <<'EOF'
 ---
 status: active
 summary: 个人画像——输出偏好、沟通风格、决策模式（绝不导出）
@@ -147,7 +147,7 @@ created: 2026-08-14
 -->
 EOF
 
-  cat > "$PERSONAL/scene-registry.md" <<'EOF'
+  cat > "$PERSONAL/data/scene-registry.md" <<'EOF'
 # 场景注册表（数据）
 
 > schema 见 framework/engine/config/scene-registry-schema.md。
@@ -157,8 +157,8 @@ EOF
 | （自填） | （自填） | active | （自填） | （自填） | （自填） |
 EOF
 
-  : > "$PERSONAL/queue.md"
-  : > "$PERSONAL/log.md"
+  : > "$PERSONAL/data/queue.md"
+  : > "$PERSONAL/data/log.md"
   echo "✓ personal 骨架已生成（$personal_dir/）"
 fi
 

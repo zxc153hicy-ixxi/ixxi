@@ -35,20 +35,20 @@ def load_scan():
 def make_personal_skeleton(root: Path) -> None:
     """镜像 ixxi init（./ixxi）step 2 的 personal 骨架生成逻辑"""
     p = root / "personal"
-    (p / ".claude" / "skills" / "personal").mkdir(parents=True)
-    for d in ("ops/patterns", "ops/anti-patterns", "ops/rules", "ops/queries"):
+    (p / "system" / "skills").mkdir(parents=True)
+    for d in ("system/patterns", "system/anti-patterns", "system/rules", "system/queries"):
         (p / d).mkdir(parents=True)
     for d in ("knowledge/projects", "knowledge/learning", "knowledge/archive"):
         (p / d).mkdir(parents=True)
-    for d in ("raw/feedback", "raw/sessions", "raw/inbox"):
+    for d in ("data/feedback", "data/sessions", "data/inbox", "data/memory"):
         (p / d).mkdir(parents=True)
     (p / "README.md").write_text("# personal 实例层\n", encoding="utf-8")
     (p / "index.md").write_text("# 实例导航\n", encoding="utf-8")
-    (p / "AGENT.md").write_text("# 实例契约\n", encoding="utf-8")
-    (p / "用户画像.md").write_text("---\nstatus: active\n---\n# 用户画像\n", encoding="utf-8")
-    (p / "scene-registry.md").write_text("# 场景注册表\n", encoding="utf-8")
-    (p / "queue.md").write_text("", encoding="utf-8")
-    (p / "log.md").write_text("", encoding="utf-8")
+    (p / "CLAUDE.md").write_text("# 个人规则覆盖层\n", encoding="utf-8")
+    (p / "data" / "用户画像.md").write_text("---\nstatus: active\n---\n# 用户画像\n", encoding="utf-8")
+    (p / "data" / "scene-registry.md").write_text("# 场景注册表\n", encoding="utf-8")
+    (p / "data" / "queue.md").write_text("", encoding="utf-8")
+    (p / "data" / "log.md").write_text("", encoding="utf-8")
 
 
 class TestInitScanLoop(unittest.TestCase):
@@ -60,13 +60,13 @@ class TestInitScanLoop(unittest.TestCase):
 
     def _assert_skeleton_files(self):
         p = self.root / "personal"
-        for rel in ("README.md", "index.md", "AGENT.md", "用户画像.md",
-                    "scene-registry.md", "queue.md", "log.md"):
+        for rel in ("README.md", "index.md", "CLAUDE.md",
+                    "data/用户画像.md", "data/scene-registry.md", "data/queue.md", "data/log.md"):
             self.assertTrue((p / rel).is_file(), f"骨架缺 {rel}")
-        self.assertTrue((p / ".claude" / "skills" / "personal").is_dir())
-        for d in ("ops/patterns", "ops/anti-patterns", "ops/rules", "ops/queries",
+        self.assertTrue((p / "system" / "skills").is_dir())
+        for d in ("system/patterns", "system/anti-patterns", "system/rules", "system/queries",
                   "knowledge/projects", "knowledge/learning", "knowledge/archive",
-                  "raw/feedback", "raw/sessions", "raw/inbox"):
+                  "data/feedback", "data/sessions", "data/inbox", "data/memory"):
             self.assertTrue((p / d).is_dir(), f"骨架缺目录 {d}")
 
     def test_full_loop_personal_skeleton_demo_data_scan_pass(self):
@@ -74,10 +74,10 @@ class TestInitScanLoop(unittest.TestCase):
         # 步骤 2（模拟）：复制 demo 数据到 raw 输入
         src_demo = SAMPLES / "demo-note.md"
         self.assertTrue(src_demo.is_file(), f"缺少 demo 数据: {src_demo}")
-        shutil.copy(src_demo, self.root / "personal" / "raw" / "inbox" / "demo-note.md")
+        shutil.copy(src_demo, self.root / "personal" / "data" / "inbox" / "demo-note.md")
 
         self._assert_skeleton_files()
-        self.assertTrue((self.root / "personal" / "raw" / "inbox" / "demo-note.md").is_file())
+        self.assertTrue((self.root / "personal" / "data" / "inbox" / "demo-note.md").is_file())
 
         # 步骤 3：跑 scan-sensitive（库函数 + CLI 路径双验证）
         mod = load_scan()
