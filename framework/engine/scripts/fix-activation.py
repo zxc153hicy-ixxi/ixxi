@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """fix-activation.py -- 按实际目录结构重写 activation.md
 
-扫描 knowledge/ ops/ engine/ raw/ 等目录，与旧 activation.md 对比，
+扫描 core/ ops/ engine/ docs/ 等目录，与旧 activation.md 对比，
 生成新版文件。
 
 用法:
@@ -22,7 +22,7 @@ except Exception:
 SKIP_FILES = {"Thumbs.db", ".DS_Store", "desktop.ini", ".gitkeep", ".placeholder"}
 SKIP_DIRS = {".git", "__pycache__", ".fix-backup", "node_modules", "_external", ".obsidian", ".claudian", ".mineru-tmp"}
 SKIP_FULL_DIRS = {"core/skills", "core/agents", "core/hooks", "engine/__pycache__"}
-SCAN_ROOTS = ["knowledge", "ops", "engine", "raw", ".inbox", ".claude"]
+SCAN_ROOTS = ["core", "ops", "engine", "docs"]
 TODAY = date.today().isoformat()
 
 

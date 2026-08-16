@@ -88,9 +88,9 @@ def add_index_entry(index_path: Path, file_path: str, repo: Path) -> bool:
     if summary:
         entry += f" —— {summary}"
 
-    # 简单策略：追加到文件末尾的 raw/ 区域之前
-    if "## raw/" in text:
-        text = text.replace("## raw/", f"{entry}\n\n## raw/")
+    # 简单策略：追加到「样例与文档」节之前
+    if "## 样例与文档" in text:
+        text = text.replace("## 样例与文档", f"{entry}\n\n## 样例与文档")
     else:
         text += f"\n{entry}\n"
 
@@ -115,9 +115,9 @@ def main():
     dead = issues.get("dead_links", [])
     unindexed = issues.get("unindexed", [])
 
-    # 过滤：只处理 knowledge/ 和 ops/ 下的文件，跳过 archive/
+    # 过滤：只处理 framework/ 和 personal/ 下的文件，跳过 archive/
     unindexed = [u for u in unindexed
-                 if u["file"].startswith(("knowledge/", "ops/"))
+                 if u["file"].startswith(("framework/", "personal/"))
                  and "archive" not in u["file"]
                  and not u["file"].split("/")[-1].lower() in ("readme", "")]
 
